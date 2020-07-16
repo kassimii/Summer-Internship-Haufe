@@ -7,7 +7,7 @@ const renderCollapsiblePart = () => {
   return (
     <>
       <button
-        class="navbar-toggler"
+        className="navbar-toggler"
         type="button"
         data-toggle="collapse"
         data-target="#navbarText"
@@ -15,9 +15,9 @@ const renderCollapsiblePart = () => {
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
-        <span class="navbar-toggler-icon"></span>
+        <span className="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarText">
+      <div className="collapse navbar-collapse" id="navbarText">
         <div className="navbar-nav w-100 justify-content-left">
           <Link className="nav-link" to="/groups">
             Groups
@@ -36,13 +36,13 @@ const renderCollapsiblePart = () => {
 
 const Header = (props) => {
   return (
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <Link class="navbar-brand" to="/">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <Link className="navbar-brand" to="/">
         <img
           src={home}
           width="30"
           height="30"
-          class="d-inline-block align-top"
+          className="d-inline-block align-top"
           alt=""
         />
         Home

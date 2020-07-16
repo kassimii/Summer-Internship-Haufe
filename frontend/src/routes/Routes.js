@@ -1,35 +1,26 @@
 import React from "react";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { Router } from "react-router-dom";
 
-import Header from "../components/Header";
+import AdminRoutes from "./AdminRoutes";
+import NoAuthRoutes from "./NoAuthRoutes";
+import UserRoutes from "./UserRoutes";
 import history from "../history";
-import TestRoute from "../components/TestRoute";
-import LoginPage from "../pages/LoginPage";
 
-const Routes = () => {
+const renderRoutesForUserType = (user) => {
+  switch (user) {
+    case "user":
+      return <UserRoutes />;
+    case "admin":
+      return <AdminRoutes />;
+    default:
+      return <NoAuthRoutes />;
+  }
+};
+
+const Routes = (props) => {
+  console.log(props);
   return (
-    <Router history={history}>
-      <div>
-        <Header />
-        <Switch class="container vh-100 d-flex justify-content-center">
-          <Route path="/" exact component={LoginPage} />
-          <Route path="/groups" exact component={TestRoute} />
-          <Route path="/groups/:groupId" exact component={TestRoute} />
-          <Route path="/groups/new/:groupId" exact component={TestRoute} />
-          <Route
-            path="/groups/:groupId/:clientId"
-            exact
-            component={TestRoute}
-          />
-          <Route
-            path="/groups/edit/:groupId/:clientId"
-            exact
-            component={TestRoute}
-          />
-          <Redirect to="/" />
-        </Switch>
-      </div>
-    </Router>
+    <Router history={history}>{renderRoutesForUserType(props.userType)}</Router>
   );
 };
 
