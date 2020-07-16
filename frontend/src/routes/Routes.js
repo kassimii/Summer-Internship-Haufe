@@ -11,7 +11,7 @@ const Routes = () => {
     <Router history={history}>
       <div>
         <Header />
-        <Switch>
+        <Switch class="container vh-100 d-flex justify-content-center">
           <Route path="/" exact component={LoginPage} />
           <Route path="/groups" exact component={TestRoute} />
           <Route path="/groups/:groupId" exact component={TestRoute} />
