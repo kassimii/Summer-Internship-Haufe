@@ -5,7 +5,7 @@ import Routes from "./routes/Routes";
 function App() {
   return (
     <div>
-      <Routes userType="admin" />
+      <Routes userType="user" />
     </div>
   );
 }
