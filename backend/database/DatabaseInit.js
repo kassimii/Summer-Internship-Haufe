@@ -74,7 +74,24 @@ CREATE TABLE clients(
 );
 `;
 
-client.query(intiTables, (err,res) => {
+const addClaimsAndSettingTable = `
+CREATE TABLE group_claims(
+    group_id uuid,
+    claims varchar(32),
+    FOREIGN KEY (group_id) REFERENCES groups(group_id)
+
+);
+
+CREATE TABLE advanced_settings(
+    group_id uuid,
+    key varchar(32),
+    val varchar(32),
+    FOREIGN KEY (group_id) REFERENCES groups(group_id)
+
+);
+`;
+
+client.query(addClaimsAndSettingTable, (err,res) => {
     if(err){
         console.log(err);
         return;
