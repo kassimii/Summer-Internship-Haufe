@@ -7,7 +7,7 @@ const clients = ["1", "2", "3", "4", "5"];
 const ClientList = () => {
   return clients.map((client) => {
     return (
-      <div className="col-md-4">
+      <div key={client} className="col-md-4">
         <div className="card mb-4 shadow-sm">
           <ClientCard id={client} />
         </div>
@@ -16,4 +16,4 @@ const ClientList = () => {
   });
 };
 
-export default ClientList;
+export default ClientsList;
