@@ -1,21 +1,24 @@
-const {Sequelize, DataTypes, DATE} = require('sequelize');
+const { Sequelize, DataTypes, DATE } = require("sequelize");
+const sequelize = new Sequelize("sqlite::memory");
 
-const Group = sequelize.define('Group', {
-
+const Group = sequelize.define(
+  "Group",
+  {
     group_id: {
-         type: DataTypes.UUID
+      type: DataTypes.UUID,
     },
     name: {
-        type: DataTypes.STRING(32)
+      type: DataTypes.STRING(32),
     },
     creationDate: {
-        type: DataTypes.DATE
+      type: DataTypes.DATE,
     },
     createdBy: {
-        type: DataTypes.UUID
-    }
-
-}, {
-    tableName: 'groups'
-});
+      type: DataTypes.UUID,
+    },
+  },
+  {
+    tableName: "groups",
+  }
+);
 module.exports = Group;

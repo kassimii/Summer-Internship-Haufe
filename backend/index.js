@@ -1,9 +1,16 @@
 const express = require("express");
 const app = express();
-const cors = require("cors");
+const bodyParser = require("body-parser");
 
-app.use(cors());
+const groupRoutes = require("./routes/group-routes");
 
-app.listen(5000, () => {
-  console.log("Server started on port 5000");
+const PORT = process.env.PORT || 5000;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use("/api/groups", groupRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
