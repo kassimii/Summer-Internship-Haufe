@@ -2,18 +2,16 @@ import React from "react";
 
 import GroupCard from "./GroupCard";
 
-const clients = ["1", "2", "3", "4", "5"];
-
-const GroupsList = () => {
+const GroupsList = (props) => {
   return (
     <div className="album py-5 bg-light">
       <div className="container">
         <div className="row">
-          {clients.map((client) => {
+          {props.groups.map((group) => {
             return (
-              <div key={client} className="col-md-4">
+              <div key={group} className="col-md-4">
                 <div className="card mb-4 shadow-sm">
-                  <GroupCard id={client} />
+                  <GroupCard id={group} />
                 </div>
               </div>
             );

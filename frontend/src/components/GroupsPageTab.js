@@ -1,6 +1,8 @@
 import React from "react";
 
-export default function GroupsPageTab() {
+import CreateGroupModal from "./CreateGroupModal";
+
+export default function GroupsPageTab(props) {
   return (
     <>
       <div className="d-flex justify-content-center m-2 col-mb-6">
@@ -18,19 +20,9 @@ export default function GroupsPageTab() {
               placeholder="Search groups"
             />
           </form>
-          {renderCreateGroupModal()}
+          <CreateGroupModal createGroup={props.createGroup} />
         </div>
       </div>
     </>
   );
 }
-
-const renderCreateGroupModal = () => {
-  return (
-    <div className="px-3">
-      <button type="button" className="form-control btn btn-primary">
-        Create Group
-      </button>
-    </div>
-  );
-};

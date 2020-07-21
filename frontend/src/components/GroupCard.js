@@ -15,7 +15,7 @@ const renderEditModal = () => {
       <div
         className="modal fade"
         id="groupModal"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="groupModalLabel"
         aria-hidden="true"
