@@ -18,13 +18,12 @@ class GroupsPage extends React.Component {
       this.setState({ searchedGroups: this.props.groups });
   }
 
-  componentDidMount(prevProps) {
+  componentDidMount() {
     this.props.getGroups();
   }
 
   createGroup = (event) => {
     event.preventDefault();
-    console.log(event.target[0].value);
     this.props.createGroup(event.target[0].value);
   };
 
@@ -41,7 +40,6 @@ class GroupsPage extends React.Component {
   };
 
   render() {
-    console.log(this.state);
     return (
       <div className="bg-light">
         <GroupsPageTab

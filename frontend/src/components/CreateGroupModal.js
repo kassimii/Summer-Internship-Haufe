@@ -1,76 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
+import { Modal, Button } from "react-bootstrap";
+import { store } from "../redux/store";
 
 export default function CreateGroupModal({ createGroup }) {
-  return (
-    <div>
-      <button
-        type="button"
-        className="btn btn-primary"
-        data-toggle="modal"
-        data-target="#createGroupModal"
-      >
-        Create group
-      </button>
-      <div
-        className="modal fade"
-        id="createGroupModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="creategroupModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="createGroupModalLabel">
-                Create a new group
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body row justify-content-md-center">
-              <form onSubmit={createGroup}>
-                <div className="form-group">
-                  <label htmlFor="group-name" className="col-form-label m-2">
-                    Group name:
-                    <br />
-                  </label>
+  const [modalShow, setModalShow] = useState(false);
 
-                  <input
-                    type="text"
-                    className="form-control m-2"
-                    id="group-name"
-                    name="group-name"
-                    placeholder="Enter name"
-                  />
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    data-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    data-dismiss="modal"
-                  >
-                    Create group
-                  </button>
-                </div>
-              </form>
+  const handleClose = () => setModalShow(false);
+  const handleShow = () => setModalShow(true);
+  const handleSubmit = (event) => {
+    createGroup(event);
+    const unsubscribe = store.subscribe(() => {
+      handleClose();
+      unsubscribe();
+    });
+  };
+
+  return (
+    <>
+      <Button variant="primary" onClick={handleShow}>
+        Create group
+      </Button>
+
+      <Modal
+        onHide={handleClose}
+        show={modalShow}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Create a new group
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="group-name" className="col-form-label">
+                Group name:
+                <br />
+              </label>
+
+              <input
+                type="text"
+                className="form-control"
+                id="group-name"
+                name="group-name"
+                placeholder="Enter name"
+              />
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <Modal.Footer>
+              <Button onClick={handleClose} className="btn btn-secondary">
+                Close
+              </Button>
+              <Button type="submit" className="btn btn-primary">
+                Create group
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 }
