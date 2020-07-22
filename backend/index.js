@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const { Sequelize } = require("sequelize");
+
+const sequelize = new Sequelize("postgres://user:1234@localhost:3000/haufe");
 
 const groupRoutes = require("./routes/group-routes");
 

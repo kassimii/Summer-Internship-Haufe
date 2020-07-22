@@ -2,12 +2,18 @@ const express = require("express");
 const Group = require("../models/groups");
 
 const createGroup = async (req, res) => {
-  const groupName = req.body;
+  const groupName = req.body.name;
+  const creationDate = req.body.creationDate;
+  const createdBy = req.body.createdBy;
 
   try {
-    console.log(req.body);
+    const group = await Group.create({
+      name: groupName,
+      creationDate: creationDate,
+      createdBy: createdBy,
+    });
   } catch (error) {
-    console.err(error.message);
+    console.log(error.message);
   }
 };
 

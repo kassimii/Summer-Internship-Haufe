@@ -21,4 +21,6 @@ const Group = sequelize.define(
     tableName: "groups",
   }
 );
+
+//Group.sync();
 module.exports = Group;
