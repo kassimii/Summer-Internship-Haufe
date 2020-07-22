@@ -1,12 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
 export default function CreateGroupModal({ createGroup }) {
-  const [nameField, setNameField] = useState("");
-
-  const onInputChange = (event) => {
-    setNameField(event.target.value);
-  };
-
   return (
     <div>
       <button
@@ -54,7 +48,6 @@ export default function CreateGroupModal({ createGroup }) {
                     id="group-name"
                     name="group-name"
                     placeholder="Enter name"
-                    onChange={onInputChange}
                   />
                 </div>
                 <div className="modal-footer">

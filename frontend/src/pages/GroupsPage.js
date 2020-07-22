@@ -6,7 +6,19 @@ import GroupsPageTab from "../components/GroupsPageTab";
 import { getGroups, createGroup } from "../redux/actions/index";
 
 class GroupsPage extends React.Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchedGroups: this.props.groups,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.groups !== this.props.groups)
+      this.setState({ searchedGroups: this.props.groups });
+  }
+
+  componentDidMount(prevProps) {
     this.props.getGroups();
   }
 
@@ -16,11 +28,27 @@ class GroupsPage extends React.Component {
     this.props.createGroup(event.target[0].value);
   };
 
+  onSearchChange = (event) => {
+    let searchedGroups =
+      this.state.searchField === ""
+        ? this.props.groups
+        : this.props.groups.filter((group) => {
+            return group.name
+              .toLowerCase()
+              .includes(event.target.value.toLowerCase());
+          });
+    this.setState({ searchedGroups: searchedGroups });
+  };
+
   render() {
+    console.log(this.state);
     return (
       <div className="bg-light">
-        <GroupsPageTab createGroup={this.createGroup} />
-        <GroupsList groups={this.props.groups} />
+        <GroupsPageTab
+          createGroup={this.createGroup}
+          onSearchChange={this.onSearchChange}
+        />
+        <GroupsList groups={this.state.searchedGroups} />
       </div>
     );
   }

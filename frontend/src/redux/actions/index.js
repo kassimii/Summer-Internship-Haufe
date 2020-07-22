@@ -1,6 +1,12 @@
 import { GET_GROUPS, CREATE_GROUP } from "./types";
 
-const groups = ["1", "2", "3", "4", "5"];
+const groups = [
+  { name: "group1" },
+  { name: "group2" },
+  { name: "group3" },
+  { name: "group4" },
+  { name: "group5" },
+];
 
 export const getGroups = () => async (dispatch) => {
   await new Promise((resolve) => setTimeout(resolve, 2000));

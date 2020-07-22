@@ -18,6 +18,7 @@ export default function GroupsPageTab(props) {
               name="name"
               id="name"
               placeholder="Search groups"
+              onChange={props.onSearchChange}
             />
           </form>
           <CreateGroupModal createGroup={props.createGroup} />

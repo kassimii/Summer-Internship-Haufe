@@ -9,9 +9,9 @@ const GroupsList = (props) => {
         <div className="row">
           {props.groups.map((group) => {
             return (
-              <div key={group} className="col-md-4">
+              <div key={group.name} className="col-md-4">
                 <div className="card mb-4 shadow-sm">
-                  <GroupCard id={group} />
+                  <GroupCard id={group.name} />
                 </div>
               </div>
             );
