@@ -1,11 +1,11 @@
-const {Client} = require('pg');
+const { Client } = require("pg");
 
 const client = new Client({
-    user:'user',
-    host:'localhost',
-    password: '1234',
-    database:'haufe',
-    port:3000,
+  user: "user",
+  host: "localhost",
+  password: "1234",
+  database: "haufe",
+  port: 3000,
 });
 
 client.connect();
@@ -91,12 +91,11 @@ CREATE TABLE advanced_settings(
 );
 `;
 
-client.query(addClaimsAndSettingTable, (err,res) => {
-    if(err){
-        console.log(err);
-        return;
-    }
-    console.log('Hooray, your database  is succesfully initialized');
-    client.end();
+client.query(addClaimsAndSettingTable, (err, res) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  console.log("Hooray, your database  is succesfully initialized");
+  client.end();
 });
-
