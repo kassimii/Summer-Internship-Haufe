@@ -11,7 +11,11 @@ const GroupsList = (props) => {
             return (
               <div key={group.name} className="col-md-4">
                 <div className="card mb-4 shadow-sm">
-                  <GroupCard id={group.name} />
+                  <GroupCard
+                    id={group.name}
+                    name={group.name}
+                    editGroup={props.editGroup}
+                  />
                 </div>
               </div>
             );

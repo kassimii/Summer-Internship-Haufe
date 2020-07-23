@@ -1,4 +1,4 @@
-import { GET_GROUPS, CREATE_GROUP } from "../actions/types";
+import { GET_GROUPS, CREATE_GROUP, EDIT_GROUP } from "../actions/types";
 
 export default (
   state = [
@@ -15,6 +15,14 @@ export default (
       return state;
     case CREATE_GROUP:
       return [...state, action.payload];
+    case EDIT_GROUP:
+      let newState = state;
+      newState = state.map((group) =>
+        group.name === action.payload.oldName
+          ? { name: action.payload.newName }
+          : group
+      );
+      return newState;
     default:
       return state;
   }

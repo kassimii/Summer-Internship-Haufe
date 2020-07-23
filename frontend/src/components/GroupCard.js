@@ -1,59 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const renderEditModal = () => {
-  return (
-    <div>
-      <button
-        type="button"
-        className="btn btn-primary"
-        data-toggle="modal"
-        data-target="#groupModal"
-      >
-        Edit group
-      </button>
-      <div
-        className="modal fade"
-        id="groupModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="groupModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="groupModalLabel">
-                Modal title
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">...</div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" className="btn btn-primary">
-                Save changes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+import EditGroupModal from "./EditGroupModal";
 
 const GroupCard = (props) => {
   return (
@@ -73,7 +21,7 @@ const GroupCard = (props) => {
           >
             Go to group
           </Link>
-          {renderEditModal()}
+          <EditGroupModal name={props.name} editGroup={props.editGroup} />
         </div>
       </div>
     </div>
