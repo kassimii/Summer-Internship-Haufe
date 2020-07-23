@@ -30,12 +30,5 @@ const Group = sequelize.define(
     tableName: "groups",
   }
 );
-// Group.sync({ force: true }).then(() => {
-//   return Group.create({
-//     group_id: "6bbd63b8-b481-466b-bb1a-d0e2b43d8afd",
-//     name: "test",
-//     creation_date: "2020-06-30 15:39:52.270000",
-//     createdBy: "dbbd63b8-b481-466b-bb1a-d0e2b43d8afd",
-//   });
-// });
+
 module.exports = Group;
