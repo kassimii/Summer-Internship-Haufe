@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button } from "react-bootstrap";
+import { connect } from "react-redux";
 
-export default function EditGroupModal(props) {
+import { getGroup, editGroup } from "../redux/actions/index";
+
+function EditGroupModal(props) {
   const [modalShow, setModalShow] = useState(false);
-  const [name, setName] = useState(props.name);
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    setName(props.group.name);
+  }, [props.group.name]);
 
   const handleClose = () => setModalShow(false);
-  const handleShow = () => setModalShow(true);
+  const handleShow = () => {
+    setModalShow(true);
+    props.getGroup(props.id);
+  };
   const handleSubmit = (event) => {
     props.editGroup(event, props.name);
     handleClose();
@@ -21,7 +31,6 @@ export default function EditGroupModal(props) {
       <Button variant="primary" onClick={handleShow}>
         Edit group
       </Button>
-
       <Modal
         onHide={handleClose}
         show={modalShow}
@@ -34,33 +43,45 @@ export default function EditGroupModal(props) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="group-name" className="col-form-label">
-                Group name:
-                <br />
-              </label>
+          {props.group === null || props.group.id !== props.id ? (
+            <div>Loading...</div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="group-name" className="col-form-label">
+                  Group name:
+                  <br />
+                </label>
 
-              <input
-                type="text"
-                className="form-control"
-                id="group-name"
-                name="group-name"
-                value={name}
-                onChange={onChange}
-              />
-            </div>
-            <Modal.Footer>
-              <Button onClick={handleClose} className="btn btn-secondary">
-                Close
-              </Button>
-              <Button type="submit" className="btn btn-primary">
-                Save changes
-              </Button>
-            </Modal.Footer>
-          </form>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="group-name"
+                  name="group-name"
+                  value={name || ""}
+                  onChange={onChange}
+                />
+              </div>
+              <Modal.Footer>
+                <Button onClick={handleClose} className="btn btn-secondary">
+                  Close
+                </Button>
+                <Button type="submit" className="btn btn-primary">
+                  Save changes
+                </Button>
+              </Modal.Footer>
+            </form>
+          )}
         </Modal.Body>
       </Modal>
     </>
   );
 }
+
+const mapStateToProps = (state) => {
+  return { group: state.group };
+};
+
+export default connect(mapStateToProps, { getGroup, editGroup })(
+  EditGroupModal
+);

@@ -3,19 +3,16 @@ import React from "react";
 import GroupCard from "./GroupCard";
 
 const GroupsList = (props) => {
+  console.log(props.groups);
   return (
     <div className="album py-5 bg-light">
       <div className="container">
         <div className="row">
           {props.groups.map((group) => {
             return (
-              <div key={group.name} className="col-md-4">
+              <div key={group.id} className="col-md-4">
                 <div className="card mb-4 shadow-sm">
-                  <GroupCard
-                    id={group.name}
-                    name={group.name}
-                    editGroup={props.editGroup}
-                  />
+                  <GroupCard group={group} />
                 </div>
               </div>
             );

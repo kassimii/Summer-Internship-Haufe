@@ -8,11 +8,12 @@ const GroupCard = (props) => {
     <div className="card">
       <img src="" className="card-img-top" alt="" />
       <div className="card-body">
-        <h5 className="card-title">{props.id}</h5>
-        <p className="card-text">
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </p>
+        <h5 className="card-title">{props.group.name}</h5>
+        <ul className="card-text">
+          {props.group.claimToGroupMapping.map((claim) => {
+            return <li key={claim}>{claim}</li>;
+          })}
+        </ul>
         <div className="d-flex justify-content-center form-inline">
           <Link
             type="button"
@@ -21,7 +22,7 @@ const GroupCard = (props) => {
           >
             Go to group
           </Link>
-          <EditGroupModal name={props.name} editGroup={props.editGroup} />
+          <EditGroupModal id={props.group.id} />
         </div>
       </div>
     </div>

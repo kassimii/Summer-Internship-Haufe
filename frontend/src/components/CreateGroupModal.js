@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { store } from "../redux/store";
 
-export default function CreateGroupModal({ createGroup }) {
+export default function CreateGroupModal(props) {
   const [modalShow, setModalShow] = useState(false);
 
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
+
   const handleSubmit = (event) => {
-    createGroup(event);
+    props.createGroup(event);
     const unsubscribe = store.subscribe(() => {
       handleClose();
       unsubscribe();

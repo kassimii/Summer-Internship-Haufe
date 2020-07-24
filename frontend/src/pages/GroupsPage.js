@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import GroupsList from "../components/GroupsList";
 import GroupsPageTab from "../components/GroupsPageTab";
-import { getGroups, createGroup, editGroup } from "../redux/actions/index";
+import { getGroups, createGroup } from "../redux/actions/index";
 
 class GroupsPage extends React.Component {
   constructor(props) {
@@ -51,10 +51,7 @@ class GroupsPage extends React.Component {
           createGroup={this.createGroup}
           onSearchChange={this.onSearchChange}
         />
-        <GroupsList
-          editGroup={this.editGroup}
-          groups={this.state.searchedGroups}
-        />
+        <GroupsList groups={this.state.searchedGroups} />
       </div>
     );
   }
@@ -64,6 +61,7 @@ const mapStateToProps = (state) => {
   return { groups: state.groups };
 };
 
-export default connect(mapStateToProps, { getGroups, createGroup, editGroup })(
-  GroupsPage
-);
+export default connect(mapStateToProps, {
+  getGroups,
+  createGroup,
+})(GroupsPage);
