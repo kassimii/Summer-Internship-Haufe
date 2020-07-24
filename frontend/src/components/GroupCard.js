@@ -17,7 +17,7 @@ const GroupCard = (props) => {
         <div className="d-flex justify-content-center form-inline">
           <Link
             type="button"
-            to={"/groups/" + props.id}
+            to={"/groups/" + props.group.id}
             className="btn btn-primary m-2"
           >
             Go to group

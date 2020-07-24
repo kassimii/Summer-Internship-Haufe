@@ -22,9 +22,8 @@ class GroupsPage extends React.Component {
     this.props.getGroups();
   }
 
-  createGroup = (event) => {
-    event.preventDefault();
-    this.props.createGroup(event.target[0].value);
+  createGroup = (formValues) => {
+    this.props.createGroup(formValues);
   };
 
   editGroup = (event, oldName) => {
