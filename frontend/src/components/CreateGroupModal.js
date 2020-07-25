@@ -7,6 +7,8 @@ import {
   Form,
   Dropdown,
   ListGroup,
+  OverlayTrigger,
+  Tooltip,
 } from "react-bootstrap";
 import { store } from "../redux/store";
 
@@ -28,6 +30,13 @@ export default function CreateGroupModal(props) {
     });
     setCurrentClaim("");
   };
+  const deleteClaim = (event) => {
+    let newMapping = group.claimToGroupMapping.filter(
+      (claim) => claim !== event.target.value
+    );
+    setGroup({ ...group, claimToGroupMapping: newMapping });
+  };
+
   function handleChange({ target }) {
     if (target.name === "name")
       setGroup({ ...group, [target.name]: target.value });
@@ -100,28 +109,48 @@ export default function CreateGroupModal(props) {
               </InputGroup>
             </Form.Group>
             <Form.Group>
-              <Dropdown>
-                <Dropdown.Toggle variant="info" id="dropdown-basic">
-                  Show added claims
-                </Dropdown.Toggle>
+              {group.claimToGroupMapping.length === 0 ? (
+                <OverlayTrigger
+                  overlay={
+                    <Tooltip id="tooltip-disabled">No claims added yet</Tooltip>
+                  }
+                >
+                  <span className="d-inline-block">
+                    <Button
+                      disabled
+                      variant="info"
+                      style={{ pointerEvents: "none" }}
+                    >
+                      Show added claims
+                    </Button>
+                  </span>
+                </OverlayTrigger>
+              ) : (
+                <Dropdown>
+                  <Dropdown.Toggle variant="info" id="dropdown-basic">
+                    Show added claims
+                  </Dropdown.Toggle>
 
-                <Dropdown.Menu>
-                  <ListGroup>
-                    {group.claimToGroupMapping.map((claim) => (
-                      <ListGroup.Item key={claim} className="d-flex">
-                        <span className="p-2">{claim}</span>
-                        <Button
-                          variant="outline-danger"
-                          className="ml-auto p-2"
-                          size="sm"
-                        >
-                          Delete
-                        </Button>
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
-                </Dropdown.Menu>
-              </Dropdown>
+                  <Dropdown.Menu>
+                    <ListGroup>
+                      {group.claimToGroupMapping.map((claim) => (
+                        <ListGroup.Item key={claim} className="d-flex">
+                          <span className="p-2">{claim}</span>
+                          <Button
+                            variant="outline-danger"
+                            className="ml-auto p-2"
+                            size="sm"
+                            value={claim}
+                            onClick={deleteClaim}
+                          >
+                            Delete
+                          </Button>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
             </Form.Group>
             <Modal.Footer>
               <Button onClick={handleClose} className="btn btn-secondary">
