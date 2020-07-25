@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import EditGroupModal from "./EditGroupModal";
+import CreateEditGroupModal from "./CreateEditGroupModal";
 
 const GroupCard = (props) => {
   return (
@@ -22,7 +22,7 @@ const GroupCard = (props) => {
           >
             Go to group
           </Link>
-          <EditGroupModal id={props.group.id} />
+          <CreateEditGroupModal id={props.group.id} />
         </div>
       </div>
     </div>

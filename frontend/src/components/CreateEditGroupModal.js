@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import {
   Modal,
   Button,
@@ -10,25 +11,55 @@ import {
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
-import { store } from "../redux/store";
 
-export default function CreateGroupModal(props) {
+import { store } from "../redux/store";
+import { getGroup, editGroup, clearGroup } from "../redux/actions/index";
+
+const uninitializedGroup = {
+  id: Math.round(Math.random() * 100),
+  name: "",
+  claimToGroupMapping: [],
+  defaultSettings: [],
+};
+
+function CreateEditGroupModal({
+  id,
+  getGroup,
+  editGroup,
+  clearGroup,
+  createGroup,
+  currentGroup,
+}) {
   const [modalShow, setModalShow] = useState(false);
   const [currentClaim, setCurrentClaim] = useState("");
   const [currentSetting, setCurrentSetting] = useState({
     key: "",
     value: "",
   });
-  const [group, setGroup] = useState({
-    id: null,
-    name: "",
-    claimToGroupMapping: [],
-    defaultSettings: [],
-  });
+  const [group, setGroup] = useState(uninitializedGroup);
+  const createOrEditButtonText = id ? "Edit Group" : "Create group";
+
+  useEffect(() => {
+    if (modalShow && currentGroup && id === currentGroup.id) {
+      setGroup(currentGroup);
+    }
+  }, [currentGroup, modalShow, id]);
+
+  useEffect(() => {
+    if (id && modalShow) {
+      getGroup(id);
+    }
+  }, [modalShow, id, getGroup]);
 
   // Modal display helpers
-  const handleClose = () => setModalShow(false);
-  const handleShow = () => setModalShow(true);
+  const handleClose = () => {
+    clearGroup();
+    setGroup(uninitializedGroup);
+    setModalShow(false);
+  };
+  const handleShow = () => {
+    setModalShow(true);
+  };
   // Form Control helpers
   const handleClaim = () => {
     handleChange({
@@ -69,19 +100,22 @@ export default function CreateGroupModal(props) {
   }
 
   const handleSubmit = (event) => {
-    setGroup({ ...group, id: Math.round(Math.random() * 100) });
     event.preventDefault();
-    props.createGroup(group);
+    if (!id) {
+      createGroup(group);
+    } else {
+      editGroup(group);
+    }
     const unsubscribe = store.subscribe(() => {
-      handleClose();
       unsubscribe();
+      handleClose();
     });
   };
 
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        Create group
+        {createOrEditButtonText}
       </Button>
 
       <Modal
@@ -107,6 +141,7 @@ export default function CreateGroupModal(props) {
                 name="name"
                 type="text"
                 placeholder="Enter a name"
+                value={group.name}
               />
             </Form.Group>
             {/* ======= CLAIMS INPUT COMPONENTS ======= */}
@@ -271,7 +306,7 @@ export default function CreateGroupModal(props) {
                 Close
               </Button>
               <Button type="submit" className="btn btn-primary">
-                Create group
+                {createOrEditButtonText}
               </Button>
             </Modal.Footer>
           </Form>
@@ -280,3 +315,11 @@ export default function CreateGroupModal(props) {
     </>
   );
 }
+
+const mapStateToProps = (state) => {
+  return { currentGroup: state.group };
+};
+
+export default connect(mapStateToProps, { getGroup, editGroup, clearGroup })(
+  CreateEditGroupModal
+);

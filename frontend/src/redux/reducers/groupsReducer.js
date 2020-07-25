@@ -76,9 +76,7 @@ export default (state = defaultState, action) => {
     case EDIT_GROUP:
       let newState = state;
       newState = state.map((group) =>
-        group.name === action.payload.oldName
-          ? { name: action.payload.newName }
-          : group
+        group.id === action.payload.id ? action.payload : group
       );
       return newState;
     default:

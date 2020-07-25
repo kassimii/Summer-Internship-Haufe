@@ -1,6 +1,6 @@
 import React from "react";
 
-import CreateGroupModal from "./CreateGroupModal";
+import CreateEditGroupModal from "./CreateEditGroupModal";
 
 export default function GroupsPageTab(props) {
   return (
@@ -21,7 +21,7 @@ export default function GroupsPageTab(props) {
               onChange={props.onSearchChange}
             />
           </form>
-          <CreateGroupModal createGroup={props.createGroup} />
+          <CreateEditGroupModal createGroup={props.createGroup} />
         </div>
       </div>
     </>

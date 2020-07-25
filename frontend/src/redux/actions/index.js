@@ -1,4 +1,10 @@
-import { GET_GROUPS, GET_GROUP, CREATE_GROUP, EDIT_GROUP } from "./types";
+import {
+  GET_GROUPS,
+  GET_GROUP,
+  CREATE_GROUP,
+  EDIT_GROUP,
+  CLEAR_GROUP,
+} from "./types";
 
 import { store } from "../store";
 
@@ -12,6 +18,10 @@ export const getGroup = (id) => async (dispatch) => {
   const group = currentState.groups.find((group) => group.id === id);
   await new Promise((resolve) => setTimeout(resolve, 2000));
   dispatch({ type: GET_GROUP, payload: group });
+};
+
+export const clearGroup = () => {
+  return { type: CLEAR_GROUP };
 };
 
 export const editGroup = (formValues) => async (dispatch) => {

@@ -18,7 +18,7 @@ const renderRoutesForUserType = (user) => {
 };
 
 const Routes = (props) => {
-  console.log(props);
+  console.log(props.userType);
   return (
     <Router history={history}>{renderRoutesForUserType(props.userType)}</Router>
   );
