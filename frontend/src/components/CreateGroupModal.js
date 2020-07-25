@@ -15,6 +15,10 @@ import { store } from "../redux/store";
 export default function CreateGroupModal(props) {
   const [modalShow, setModalShow] = useState(false);
   const [currentClaim, setCurrentClaim] = useState("");
+  const [currentSetting, setCurrentSetting] = useState({
+    key: "",
+    value: "",
+  });
   const [group, setGroup] = useState({
     id: null,
     name: "",
@@ -22,13 +26,21 @@ export default function CreateGroupModal(props) {
     defaultSettings: [],
   });
 
+  // Modal display helpers
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
+  // Form Control helpers
   const handleClaim = () => {
     handleChange({
       target: { name: "claimToGroupMapping", value: currentClaim },
     });
     setCurrentClaim("");
+  };
+  const handleSetting = () => {
+    handleChange({
+      target: { name: "defaultSettings", value: currentSetting },
+    });
+    setCurrentSetting({ key: "", value: "" });
   };
   const deleteClaim = (event) => {
     let newMapping = group.claimToGroupMapping.filter(
@@ -37,6 +49,14 @@ export default function CreateGroupModal(props) {
     setGroup({ ...group, claimToGroupMapping: newMapping });
   };
 
+  const deleteSetting = (event) => {
+    let newSettings = group.defaultSettings.filter((setting) => {
+      return setting.key !== event.target.value;
+    });
+    setGroup({ ...group, defaultSettings: newSettings });
+  };
+
+  // Handling change to the state of the input
   function handleChange({ target }) {
     if (target.name === "name")
       setGroup({ ...group, [target.name]: target.value });
@@ -49,6 +69,7 @@ export default function CreateGroupModal(props) {
   }
 
   const handleSubmit = (event) => {
+    setGroup({ ...group, id: Math.round(Math.random() * 100) });
     event.preventDefault();
     props.createGroup(group);
     const unsubscribe = store.subscribe(() => {
@@ -56,8 +77,6 @@ export default function CreateGroupModal(props) {
       unsubscribe();
     });
   };
-
-  console.log(group);
 
   return (
     <>
@@ -78,8 +97,11 @@ export default function CreateGroupModal(props) {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
+            {/* ======= NAME INPUT COMPONENTS ======= */}
             <Form.Group controlId="name">
-              <Form.Label>Name</Form.Label>
+              <Form.Label className="font-weight-bold">
+                <li>Name</li>
+              </Form.Label>
               <Form.Control
                 onChange={handleChange}
                 name="name"
@@ -87,8 +109,11 @@ export default function CreateGroupModal(props) {
                 placeholder="Enter a name"
               />
             </Form.Group>
+            {/* ======= CLAIMS INPUT COMPONENTS ======= */}
             <Form.Group controlId="claimsToGroupMapping">
-              <Form.Label>Claims to group</Form.Label>
+              <Form.Label className="font-weight-bold">
+                <li>Claims to group</li>
+              </Form.Label>
               <InputGroup className="mb-3">
                 <FormControl
                   name="claimsToGroupMapping"
@@ -108,11 +133,11 @@ export default function CreateGroupModal(props) {
                 </InputGroup.Append>
               </InputGroup>
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="d-flex justify-content-center">
               {group.claimToGroupMapping.length === 0 ? (
                 <OverlayTrigger
                   overlay={
-                    <Tooltip id="tooltip-disabled">No claims added yet</Tooltip>
+                    <Tooltip id="tooltip-disabled">No claims added</Tooltip>
                   }
                 >
                   <span className="d-inline-block">
@@ -142,6 +167,95 @@ export default function CreateGroupModal(props) {
                             size="sm"
                             value={claim}
                             onClick={deleteClaim}
+                          >
+                            Delete
+                          </Button>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
+            </Form.Group>
+            {/* ======= DEFAULT SETTINGS AND FLAGS INPUT COMPONENTS ======= */}
+            <Form.Group>
+              <Form.Label className="font-weight-bold">
+                <li>Default settings and flags</li>
+              </Form.Label>
+              <InputGroup className="mb-3">
+                <FormControl
+                  name="key"
+                  type="text"
+                  placeholder="Add a key"
+                  value={currentSetting.key}
+                  onChange={(event) =>
+                    setCurrentSetting({
+                      ...currentSetting,
+                      [event.target.name]: event.target.value,
+                    })
+                  }
+                />
+                <FormControl
+                  name="value"
+                  type="text"
+                  placeholder="Add a value"
+                  value={currentSetting.value}
+                  onChange={(event) =>
+                    setCurrentSetting({
+                      ...currentSetting,
+                      [event.target.name]: event.target.value,
+                    })
+                  }
+                />
+                <InputGroup.Append>
+                  <Button
+                    name="defaultSettings"
+                    variant="outline-success"
+                    onClick={handleSetting}
+                  >
+                    Add the setting
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
+            </Form.Group>
+            <Form.Group className="d-flex justify-content-center">
+              {group.defaultSettings.length === 0 ? (
+                <OverlayTrigger
+                  overlay={
+                    <Tooltip id="tooltip-disabled">
+                      No settings or flags added
+                    </Tooltip>
+                  }
+                >
+                  <span className="d-inline-block">
+                    <Button
+                      disabled
+                      variant="info"
+                      style={{ pointerEvents: "none" }}
+                    >
+                      Show added settings and flags
+                    </Button>
+                  </span>
+                </OverlayTrigger>
+              ) : (
+                <Dropdown>
+                  <Dropdown.Toggle variant="info" id="dropdown-basic">
+                    Show added settings and flags
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <ListGroup>
+                      {group.defaultSettings.map((setting) => (
+                        <ListGroup.Item key={setting.key} className="d-flex">
+                          <span className="p-2">
+                            {setting.key} - {setting.value}
+                          </span>
+                          <Button
+                            variant="outline-danger"
+                            className="ml-auto p-2"
+                            size="sm"
+                            value={setting.key}
+                            onClick={deleteSetting}
                           >
                             Delete
                           </Button>

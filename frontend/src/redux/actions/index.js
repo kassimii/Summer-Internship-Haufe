@@ -9,7 +9,6 @@ export const getGroups = () => async (dispatch) => {
 
 export const getGroup = (id) => async (dispatch) => {
   const currentState = store.getState();
-  console.log(currentState);
   const group = currentState.groups.find((group) => group.id === id);
   await new Promise((resolve) => setTimeout(resolve, 2000));
   dispatch({ type: GET_GROUP, payload: group });
@@ -22,5 +21,5 @@ export const editGroup = (formValues) => async (dispatch) => {
 
 export const createGroup = (formValues) => async (dispatch) => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
-  dispatch({ type: CREATE_GROUP, payload: { name: formValues } });
+  dispatch({ type: CREATE_GROUP, payload: formValues });
 };

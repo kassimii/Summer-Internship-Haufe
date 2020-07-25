@@ -3,7 +3,6 @@ import React from "react";
 import GroupCard from "./GroupCard";
 
 const GroupsList = (props) => {
-  console.log(props.groups);
   return (
     <div className="album py-5 bg-light">
       <div className="container">
