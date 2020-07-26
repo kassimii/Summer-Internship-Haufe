@@ -15,11 +15,16 @@ import {
 import { store } from "../redux/store";
 import { getGroup, editGroup, clearGroup } from "../redux/actions/index";
 
-const uninitializedGroup = {
+const initialGroup = {
   id: Math.round(Math.random() * 100),
   name: "",
   claimToGroupMapping: [],
   defaultSettings: [],
+};
+const initialErrors = {
+  name: false,
+  claims: false,
+  setting: false,
 };
 
 function CreateEditGroupModal({
@@ -36,8 +41,9 @@ function CreateEditGroupModal({
     key: "",
     value: "",
   });
-  const [group, setGroup] = useState(uninitializedGroup);
-  const createOrEditButtonText = id ? "Edit Group" : "Create group";
+  const [group, setGroup] = useState(initialGroup);
+  const [errors, setErrors] = useState(initialErrors);
+  const createOrEditText = id ? "Edit Group" : "Create group";
 
   useEffect(() => {
     if (modalShow && currentGroup && id === currentGroup.id) {
@@ -54,7 +60,10 @@ function CreateEditGroupModal({
   // Modal display helpers
   const handleClose = () => {
     clearGroup();
-    setGroup(uninitializedGroup);
+    setCurrentClaim("");
+    setCurrentSetting({ key: "", value: "" });
+    setGroup(initialGroup);
+    setErrors(initialErrors);
     setModalShow(false);
   };
   const handleShow = () => {
@@ -62,12 +71,22 @@ function CreateEditGroupModal({
   };
   // Form Control helpers
   const handleClaim = () => {
+    if (currentClaim === "") {
+      setErrors({ ...errors, claim: true });
+      return;
+    }
+    setErrors({ ...errors, claim: false });
     handleChange({
       target: { name: "claimToGroupMapping", value: currentClaim },
     });
     setCurrentClaim("");
   };
   const handleSetting = () => {
+    if (currentSetting.key === "" || currentSetting.value === "") {
+      setErrors({ ...errors, setting: true });
+      return;
+    }
+    setErrors({ ...errors, setting: false });
     handleChange({
       target: { name: "defaultSettings", value: currentSetting },
     });
@@ -89,9 +108,10 @@ function CreateEditGroupModal({
 
   // Handling change to the state of the input
   function handleChange({ target }) {
-    if (target.name === "name")
+    if (target.name === "name") {
+      setErrors({ ...errors, name: false });
       setGroup({ ...group, [target.name]: target.value });
-    else {
+    } else {
       setGroup({
         ...group,
         [target.name]: [...group[target.name], target.value],
@@ -101,6 +121,10 @@ function CreateEditGroupModal({
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (group.name === "") {
+      setErrors({ ...errors, name: true });
+      return;
+    }
     if (!id) {
       createGroup(group);
     } else {
@@ -115,7 +139,7 @@ function CreateEditGroupModal({
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        {createOrEditButtonText}
+        {createOrEditText}
       </Button>
 
       <Modal
@@ -126,7 +150,7 @@ function CreateEditGroupModal({
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Create a new group
+            {createOrEditText}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -142,7 +166,11 @@ function CreateEditGroupModal({
                 type="text"
                 placeholder="Enter a name"
                 value={group.name}
+                isInvalid={errors.name}
               />
+              <Form.Control.Feedback type="invalid">
+                Please provide a group name
+              </Form.Control.Feedback>
             </Form.Group>
             {/* ======= CLAIMS INPUT COMPONENTS ======= */}
             <Form.Group controlId="claimsToGroupMapping">
@@ -156,6 +184,7 @@ function CreateEditGroupModal({
                   placeholder="Add a claim"
                   value={currentClaim}
                   onChange={(event) => setCurrentClaim(event.target.value)}
+                  isInvalid={errors.claim}
                 />
                 <InputGroup.Append>
                   <Button
@@ -166,6 +195,9 @@ function CreateEditGroupModal({
                     Add the claim
                   </Button>
                 </InputGroup.Append>
+                <Form.Control.Feedback type="invalid">
+                  Please provide a claim
+                </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
             <Form.Group className="d-flex justify-content-center">
@@ -229,6 +261,7 @@ function CreateEditGroupModal({
                       [event.target.name]: event.target.value,
                     })
                   }
+                  isInvalid={errors.setting}
                 />
                 <FormControl
                   name="value"
@@ -241,6 +274,7 @@ function CreateEditGroupModal({
                       [event.target.name]: event.target.value,
                     })
                   }
+                  isInvalid={errors.setting}
                 />
                 <InputGroup.Append>
                   <Button
@@ -251,6 +285,9 @@ function CreateEditGroupModal({
                     Add the setting
                   </Button>
                 </InputGroup.Append>
+                <Form.Control.Feedback type="invalid">
+                  Please provide a key and a value
+                </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
             <Form.Group className="d-flex justify-content-center">
@@ -306,7 +343,7 @@ function CreateEditGroupModal({
                 Close
               </Button>
               <Button type="submit" className="btn btn-primary">
-                {createOrEditButtonText}
+                {createOrEditText}
               </Button>
             </Modal.Footer>
           </Form>
