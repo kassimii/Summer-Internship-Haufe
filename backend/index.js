@@ -1,6 +1,14 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
 const bodyParser = require("body-parser");
+const cors = require("cors");
+const groupsRoter = require("../backend/routes/groups-routes");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.use("/api/groups/", groupsRoter);
 
 const groupRoutes = require("./routes/group-routes");
 

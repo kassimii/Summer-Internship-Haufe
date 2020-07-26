@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes, DATE } = require("sequelize");
-const sequelize = new Sequelize("postgres://user:1234@localhost:3000/postgres");
+const sequelize = new Sequelize("postgres://user:1234@localhost:3000/haufe");
+
 sequelize
   .authenticate()
   .then(() => {
@@ -27,6 +28,12 @@ const Group = sequelize.define(
     },
   },
   {
+    tableName: "groups",
+  },
+
+  {
+    freezeTableName: true,
+    timestamps: false,
     tableName: "groups",
   }
 );
