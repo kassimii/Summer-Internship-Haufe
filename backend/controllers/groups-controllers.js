@@ -1,19 +1,56 @@
 const express = require("express");
 const Group = require("../models/groups");
+const GroupClaims = require("../models/group_claims");
+const AdvancedSettings = require("../models/advanced_settings");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
 
 const createGroup = async (req, res) => {
+  const group_id = uuidv4();
   const groupName = req.body.name;
   const creationDate = req.body.creationDate;
   const createdBy = req.body.createdBy;
+  const groupClaims = req.body.claims;
+  const advanedSettings = req.body.advanedSettings;
+  const key = req.body.key;
+  const value = req.body.value;
 
   try {
     await Group.create({
-      group_id: uuidv4(),
+      group_id: group_id,
       name: groupName,
       creationDate: creationDate,
       createdBy: createdBy,
+    })
+      .then(res.sendStatus(200))
+      .catch((err) => {
+        console.log("Error: " + err);
+        res.sendStatus(400);
+      });
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  try {
+    await GroupClaims.create({
+      group_id: group_id,
+      groupClaims: groupClaims,
+      advanedSettings: advanedSettings,
+    })
+      .then(res.sendStatus(200))
+      .catch((err) => {
+        console.log("Error: " + err);
+        res.sendStatus(400);
+      });
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  try {
+    await AdvancedSettings.create({
+      group_id: group_id,
+      key: key,
+      value: value,
     })
       .then(res.sendStatus(200))
       .catch((err) => {
