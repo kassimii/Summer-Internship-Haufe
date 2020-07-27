@@ -1,9 +1,24 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
+const bodyParser = require("body-parser");
 const cors = require("cors");
+const groupsRoter = require("../backend/routes/groups-routes");
 
-app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app.listen(5000, () => {
-  console.log("Server started on port 5000");
+app.use("/api/groups/", groupsRoter);
+
+const groupRoutes = require("./routes/group-routes");
+
+const PORT = process.env.PORT || 5000;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use("/api/groups", groupRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
