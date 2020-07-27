@@ -6,14 +6,19 @@ import {
   InputGroup,
   FormControl,
   Form,
-  Dropdown,
   ListGroup,
-  OverlayTrigger,
-  Tooltip,
+  Card,
+  Accordion,
+  Alert,
 } from "react-bootstrap";
 
 import { store } from "../redux/store";
-import { getGroup, editGroup, clearGroup } from "../redux/actions/index";
+import {
+  getGroup,
+  editGroup,
+  clearGroup,
+  createGroup,
+} from "../redux/actions/index";
 
 const initialGroup = {
   id: Math.round(Math.random() * 100),
@@ -43,7 +48,13 @@ function CreateEditGroupModal({
   });
   const [group, setGroup] = useState(initialGroup);
   const [errors, setErrors] = useState(initialErrors);
-  const createOrEditText = id ? "Edit Group" : "Create group";
+  const createOrEditText = id
+    ? { header: "Edit Group", button1: "Edit group", button2: "Save" }
+    : {
+        header: "Provide information for the new group",
+        button1: "Create group",
+        button2: "Create",
+      };
 
   useEffect(() => {
     if (modalShow && currentGroup && id === currentGroup.id) {
@@ -69,6 +80,7 @@ function CreateEditGroupModal({
   const handleShow = () => {
     setModalShow(true);
   };
+
   // Form Control helpers
   const handleClaim = () => {
     if (currentClaim === "") {
@@ -81,6 +93,7 @@ function CreateEditGroupModal({
     });
     setCurrentClaim("");
   };
+
   const handleSetting = () => {
     if (currentSetting.key === "" || currentSetting.value === "") {
       setErrors({ ...errors, setting: true });
@@ -92,6 +105,7 @@ function CreateEditGroupModal({
     });
     setCurrentSetting({ key: "", value: "" });
   };
+
   const deleteClaim = (event) => {
     let newMapping = group.claimToGroupMapping.filter(
       (claim) => claim !== event.target.value
@@ -139,7 +153,7 @@ function CreateEditGroupModal({
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        {createOrEditText}
+        {createOrEditText.button1}
       </Button>
 
       <Modal
@@ -150,7 +164,7 @@ function CreateEditGroupModal({
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {createOrEditText}
+            {createOrEditText.header}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -172,178 +186,159 @@ function CreateEditGroupModal({
                 Please provide a group name
               </Form.Control.Feedback>
             </Form.Group>
-            {/* ======= CLAIMS INPUT COMPONENTS ======= */}
-            <Form.Group controlId="claimsToGroupMapping">
-              <Form.Label className="font-weight-bold">
-                <li>Claims to group</li>
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <FormControl
-                  name="claimsToGroupMapping"
-                  type="text"
-                  placeholder="Add a claim"
-                  value={currentClaim}
-                  onChange={(event) => setCurrentClaim(event.target.value)}
-                  isInvalid={errors.claim}
-                />
-                <InputGroup.Append>
-                  <Button
-                    name="claimsToGroupMapping"
-                    variant="outline-success"
-                    onClick={handleClaim}
-                  >
-                    Add the claim
-                  </Button>
-                </InputGroup.Append>
-                <Form.Control.Feedback type="invalid">
-                  Please provide a claim
-                </Form.Control.Feedback>
-              </InputGroup>
-            </Form.Group>
-            <Form.Group className="d-flex justify-content-center">
-              {group.claimToGroupMapping.length === 0 ? (
-                <OverlayTrigger
-                  overlay={
-                    <Tooltip id="tooltip-disabled">No claims added</Tooltip>
-                  }
-                >
-                  <span className="d-inline-block">
-                    <Button
-                      disabled
-                      variant="info"
-                      style={{ pointerEvents: "none" }}
-                    >
-                      Show added claims
-                    </Button>
-                  </span>
-                </OverlayTrigger>
-              ) : (
-                <Dropdown>
-                  <Dropdown.Toggle variant="info" id="dropdown-basic">
-                    Show added claims
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <ListGroup>
-                      {group.claimToGroupMapping.map((claim) => (
-                        <ListGroup.Item key={claim} className="d-flex">
-                          <span className="p-2">{claim}</span>
+            <Accordion>
+              {/* Claims */}
+              <Card>
+                <Card.Header>
+                  <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                    <li className="font-weight-bold">Claims to group</li>
+                  </Accordion.Toggle>
+                </Card.Header>
+                <Accordion.Collapse eventKey="0">
+                  <Card.Body>
+                    <Form.Group controlId="claimsToGroupMapping">
+                      <InputGroup className="mb-3">
+                        <FormControl
+                          name="claimsToGroupMapping"
+                          type="text"
+                          placeholder="Add a claim"
+                          value={currentClaim}
+                          onChange={(event) =>
+                            setCurrentClaim(event.target.value)
+                          }
+                          isInvalid={errors.claim}
+                        />
+                        <InputGroup.Append>
                           <Button
-                            variant="outline-danger"
-                            className="ml-auto p-2"
-                            size="sm"
-                            value={claim}
-                            onClick={deleteClaim}
+                            name="claimsToGroupMapping"
+                            variant="outline-success"
+                            onClick={handleClaim}
                           >
-                            Delete
+                            Add the claim
                           </Button>
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  </Dropdown.Menu>
-                </Dropdown>
-              )}
-            </Form.Group>
-            {/* ======= DEFAULT SETTINGS AND FLAGS INPUT COMPONENTS ======= */}
-            <Form.Group>
-              <Form.Label className="font-weight-bold">
-                <li>Default settings and flags</li>
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <FormControl
-                  name="key"
-                  type="text"
-                  placeholder="Add a key"
-                  value={currentSetting.key}
-                  onChange={(event) =>
-                    setCurrentSetting({
-                      ...currentSetting,
-                      [event.target.name]: event.target.value,
-                    })
-                  }
-                  isInvalid={errors.setting}
-                />
-                <FormControl
-                  name="value"
-                  type="text"
-                  placeholder="Add a value"
-                  value={currentSetting.value}
-                  onChange={(event) =>
-                    setCurrentSetting({
-                      ...currentSetting,
-                      [event.target.name]: event.target.value,
-                    })
-                  }
-                  isInvalid={errors.setting}
-                />
-                <InputGroup.Append>
-                  <Button
-                    name="defaultSettings"
-                    variant="outline-success"
-                    onClick={handleSetting}
-                  >
-                    Add the setting
-                  </Button>
-                </InputGroup.Append>
-                <Form.Control.Feedback type="invalid">
-                  Please provide a key and a value
-                </Form.Control.Feedback>
-              </InputGroup>
-            </Form.Group>
-            <Form.Group className="d-flex justify-content-center">
-              {group.defaultSettings.length === 0 ? (
-                <OverlayTrigger
-                  overlay={
-                    <Tooltip id="tooltip-disabled">
-                      No settings or flags added
-                    </Tooltip>
-                  }
-                >
-                  <span className="d-inline-block">
-                    <Button
-                      disabled
-                      variant="info"
-                      style={{ pointerEvents: "none" }}
-                    >
-                      Show added settings and flags
-                    </Button>
-                  </span>
-                </OverlayTrigger>
-              ) : (
-                <Dropdown>
-                  <Dropdown.Toggle variant="info" id="dropdown-basic">
-                    Show added settings and flags
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <ListGroup>
-                      {group.defaultSettings.map((setting) => (
-                        <ListGroup.Item key={setting.key} className="d-flex">
-                          <span className="p-2">
-                            {setting.key} - {setting.value}
-                          </span>
+                        </InputGroup.Append>
+                        <Form.Control.Feedback type="invalid">
+                          Please provide a claim
+                        </Form.Control.Feedback>
+                      </InputGroup>
+                    </Form.Group>
+                    <Form.Group className="d-flex justify-content-center">
+                      {group.claimToGroupMapping.length === 0 ? (
+                        <Alert variant="danger">No claims added yet</Alert>
+                      ) : (
+                        <ListGroup>
+                          {group.claimToGroupMapping.map((claim) => (
+                            <ListGroup.Item key={claim} className="d-flex">
+                              <span className="p-2">{claim}</span>
+                              <Button
+                                variant="outline-danger"
+                                className="ml-auto p-2"
+                                size="sm"
+                                value={claim}
+                                onClick={deleteClaim}
+                              >
+                                Delete
+                              </Button>
+                            </ListGroup.Item>
+                          ))}
+                        </ListGroup>
+                      )}
+                    </Form.Group>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+              {/* Settings */}
+              <Card>
+                <Card.Header>
+                  <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                    <li className="font-weight-bold">
+                      Default settings and flags
+                    </li>
+                  </Accordion.Toggle>
+                </Card.Header>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body>
+                    <Form.Group>
+                      <InputGroup className="mb-3">
+                        <FormControl
+                          name="key"
+                          type="text"
+                          placeholder="Add a key"
+                          value={currentSetting.key}
+                          onChange={(event) =>
+                            setCurrentSetting({
+                              ...currentSetting,
+                              [event.target.name]: event.target.value,
+                            })
+                          }
+                          isInvalid={errors.setting}
+                        />
+                        <FormControl
+                          name="value"
+                          type="text"
+                          placeholder="Add a value"
+                          value={currentSetting.value}
+                          onChange={(event) =>
+                            setCurrentSetting({
+                              ...currentSetting,
+                              [event.target.name]: event.target.value,
+                            })
+                          }
+                          isInvalid={errors.setting}
+                        />
+                        <InputGroup.Append>
                           <Button
-                            variant="outline-danger"
-                            className="ml-auto p-2"
-                            size="sm"
-                            value={setting.key}
-                            onClick={deleteSetting}
+                            name="defaultSettings"
+                            variant="outline-success"
+                            onClick={handleSetting}
                           >
-                            Delete
+                            Add the setting
                           </Button>
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  </Dropdown.Menu>
-                </Dropdown>
-              )}
-            </Form.Group>
+                        </InputGroup.Append>
+                        <Form.Control.Feedback type="invalid">
+                          Please provide a key and a value
+                        </Form.Control.Feedback>
+                      </InputGroup>
+                    </Form.Group>
+                    <Form.Group className="d-flex justify-content-center">
+                      {group.defaultSettings.length === 0 ? (
+                        <Alert variant="danger">
+                          No setting or flags added yet
+                        </Alert>
+                      ) : (
+                        <ListGroup>
+                          {group.defaultSettings.map((setting) => (
+                            <ListGroup.Item
+                              key={setting.key}
+                              className="d-flex"
+                            >
+                              <span className="p-2">
+                                {setting.key} - {setting.value}
+                              </span>
+                              <Button
+                                variant="outline-danger"
+                                className="ml-auto p-2"
+                                size="sm"
+                                value={setting.key}
+                                onClick={deleteSetting}
+                              >
+                                Delete
+                              </Button>
+                            </ListGroup.Item>
+                          ))}
+                        </ListGroup>
+                      )}
+                    </Form.Group>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
             <Modal.Footer>
               <Button onClick={handleClose} className="btn btn-secondary">
                 Close
               </Button>
               <Button type="submit" className="btn btn-primary">
-                {createOrEditText}
+                {createOrEditText.button2}
               </Button>
             </Modal.Footer>
           </Form>
@@ -357,6 +352,9 @@ const mapStateToProps = (state) => {
   return { currentGroup: state.group };
 };
 
-export default connect(mapStateToProps, { getGroup, editGroup, clearGroup })(
-  CreateEditGroupModal
-);
+export default connect(mapStateToProps, {
+  getGroup,
+  editGroup,
+  clearGroup,
+  createGroup,
+})(CreateEditGroupModal);

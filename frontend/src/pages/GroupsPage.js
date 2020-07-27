@@ -1,59 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 
 import GroupsList from "../components/GroupsList";
 import GroupsPageTab from "../components/GroupsPageTab";
-import { getGroups, createGroup } from "../redux/actions/index";
+import { getGroups } from "../redux/actions/index";
+import { useHttpClient } from "../hooks/http-hook";
 
-class GroupsPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchedGroups: this.props.groups,
-    };
-  }
+function GroupsPage(props) {
+  const { getGroups } = props;
+  const [searchedGroups, setSearchedGroups] = useState(props.groups);
+  const { sendRequest } = useHttpClient();
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.groups !== this.props.groups)
-      this.setState({ searchedGroups: this.props.groups });
-  }
+  useEffect(() => {
+    setSearchedGroups(props.groups);
+  }, [props.groups]);
 
-  componentDidMount() {
-    this.props.getGroups();
-  }
+  useEffect(() => {
+    getGroups(sendRequest);
+  }, [getGroups, sendRequest]);
 
-  createGroup = (formValues) => {
-    this.props.createGroup(formValues);
-  };
-
-  editGroup = (event, oldName) => {
-    event.preventDefault();
-    this.props.editGroup({ newName: event.target[0].value, oldName });
-  };
-
-  onSearchChange = (event) => {
+  const onSearchChange = (event) => {
     let searchedGroups =
-      this.state.searchField === ""
-        ? this.props.groups
-        : this.props.groups.filter((group) => {
+      event.target.value === ""
+        ? props.groups
+        : props.groups.filter((group) => {
             return group.name
               .toLowerCase()
               .includes(event.target.value.toLowerCase());
           });
-    this.setState({ searchedGroups: searchedGroups });
+    setSearchedGroups(searchedGroups);
   };
 
-  render() {
-    return (
-      <div className="bg-light">
-        <GroupsPageTab
-          createGroup={this.createGroup}
-          onSearchChange={this.onSearchChange}
-        />
-        <GroupsList groups={this.state.searchedGroups} />
-      </div>
-    );
-  }
+  return (
+    <div className="bg-light">
+      <GroupsPageTab onSearchChange={onSearchChange} />
+      <GroupsList groups={searchedGroups} />
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -62,5 +45,4 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   getGroups,
-  createGroup,
 })(GroupsPage);
