@@ -114,3 +114,6 @@ dist
 
 .DS_Store
 # End of https://www.toptal.com/developers/gitignore/api/node
+
+package.json
+package-lock.json

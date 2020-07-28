@@ -1,0 +1,17 @@
+version: '3'
+
+services:   
+  # app
+  
+  postgres:
+    image: postgres:10.4
+    ports: 
+      - "${DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME} 
+       
+    
+    volumes:
+    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
