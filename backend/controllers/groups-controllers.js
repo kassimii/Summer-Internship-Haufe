@@ -35,7 +35,6 @@ const createGroup = async (req, res) => {
     await GroupClaims.create({
       group_id: group_id,
       groupClaims: groupClaims,
-      advanedSettings: advanedSettings,
     })
       .then(res.sendStatus(200))
       .catch((err) => {
