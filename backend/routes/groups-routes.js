@@ -8,7 +8,7 @@ const {
   getGroups,
   getGroupsById,
   updateGroup,
-} = require("../controllers/groups-controller");
+} = require("../controllers/groups-controllers");
 
 router.post("/", createGroup);
 router.delete("/delete/:groupId", deleteGroup);

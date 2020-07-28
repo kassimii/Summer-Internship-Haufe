@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const groupsRoter = require("../backend/routes/groups-routes");
 
@@ -10,7 +9,7 @@ app.use(bodyParser.json());
 
 app.use("/api/groups/", groupsRoter);
 
-const groupRoutes = require("./routes/group-routes");
+const groupRoutes = require("./routes/groups-routes");
 
 const PORT = process.env.PORT || 5000;
 
