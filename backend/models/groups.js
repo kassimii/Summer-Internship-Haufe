@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes, DATE } = require("sequelize");
-const sequelize = new Sequelize("postgres://user:1234@localhost:3000/haufe");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../sequelize");
 
 sequelize
   .authenticate()

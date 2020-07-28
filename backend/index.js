@@ -21,3 +21,5 @@ app.use("/api/groups", groupRoutes);
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+
+module.exports = app;

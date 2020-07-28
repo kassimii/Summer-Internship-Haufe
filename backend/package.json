@@ -7,7 +7,8 @@
     "migrate": "npx sequelize-cli db:migrate",
     "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npm run migrate",
     "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
-    "pretest": "cross-env NODE_ENV=test npm run migrate:reset"
+    "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
+    "coverage": "npm run pretest && jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,8 @@
     "uuid": "^8.2.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.2",
+    "env-cmd": "^10.1.0",
     "jest": "^26.1.0",
     "nodemon": "^2.0.4",
     "supertest": "^4.0.2"
