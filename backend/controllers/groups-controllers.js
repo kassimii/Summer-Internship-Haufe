@@ -1,7 +1,7 @@
 const express = require("express");
-const Group = require("../models/groups");
-const GroupClaims = require("../models/group_claims");
-const AdvancedSettings = require("../models/advanced_settings");
+const Group = require("../database/models/groups");
+const GroupClaims = require("../database/models/group_claims");
+const AdvancedSettings = require("../database/models/advanced_settings");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
 
@@ -11,7 +11,6 @@ const createGroup = async (req, res) => {
   const creationDate = req.body.creationDate;
   const createdBy = req.body.createdBy;
   const groupClaims = req.body.claims;
-  const advanedSettings = req.body.advanedSettings;
   const key = req.body.key;
   const value = req.body.value;
 

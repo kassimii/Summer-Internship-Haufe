@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../server");
+const app = require("../index");
 
 describe("Post Endpoint", () => {
   it("should create a new group", async () => {

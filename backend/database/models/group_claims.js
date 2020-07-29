@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize("postgres://user:1234@localhost:3000/haufe");
+const { DataTypes } = require("sequelize");
+const sequelize = require("./sequelize");
 
 sequelize
   .authenticate()
@@ -17,7 +17,7 @@ const GroupClaims = sequelize.define(
       type: DataTypes.UUID,
     },
     claims: {
-      type: DataTypes.STRING(32),
+      type: DataTypes.ARRAY(DataTypes.STRING),
     },
   },
   {
