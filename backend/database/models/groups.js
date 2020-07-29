@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./sequelize");
+const GroupClaims = require("./group_claims");
+const AdvancedSettings = require("./advanced_settings");
 
 sequelize
   .authenticate()
@@ -37,5 +39,19 @@ const Group = sequelize.define(
     tableName: "groups",
   }
 );
+
+Group.associate = function (models) {
+  Group.hasMany(GroupClaims, {
+    foreignKey: "group_id",
+    as: "groupClaims",
+    onDelete: "CASCADE",
+  });
+
+  Group.hasMany(AdvancedSettings, {
+    foreignKey: "group_id",
+    as: "advancedSettings",
+    onDelete: "CASCADE",
+  });
+};
 
 module.exports = Group;

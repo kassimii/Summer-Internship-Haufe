@@ -4,13 +4,13 @@ module.exports = {
       "AdvancedSettings",
       {
         group_id: {
-          type: DataTypes.UUID,
+          type: Sequelize.UUID,
         },
         key: {
-          type: DataTypes.STRING(32),
+          type: Sequelize.STRING(32),
         },
         value: {
-          type: DataTypes.STRING(32),
+          type: Sequelize.STRING(32),
         },
       },
       {
