@@ -9,7 +9,7 @@ import {
   ListGroup,
   Card,
   Accordion,
-  Alert,
+  Alert
 } from "react-bootstrap";
 
 import { store } from "../redux/store";
@@ -17,19 +17,19 @@ import {
   getGroup,
   editGroup,
   clearGroup,
-  createGroup,
+  createGroup
 } from "../redux/actions/index";
 
 const initialGroup = {
   id: Math.round(Math.random() * 100),
   name: "",
   claimToGroupMapping: [],
-  defaultSettings: [],
+  defaultSettings: []
 };
 const initialErrors = {
   name: false,
   claims: false,
-  setting: false,
+  setting: false
 };
 
 function CreateEditGroupModal({
@@ -38,13 +38,13 @@ function CreateEditGroupModal({
   editGroup,
   clearGroup,
   createGroup,
-  currentGroup,
+  currentGroup
 }) {
   const [modalShow, setModalShow] = useState(false);
   const [currentClaim, setCurrentClaim] = useState("");
   const [currentSetting, setCurrentSetting] = useState({
     key: "",
-    value: "",
+    value: ""
   });
   const [group, setGroup] = useState(initialGroup);
   const [errors, setErrors] = useState(initialErrors);
@@ -53,7 +53,7 @@ function CreateEditGroupModal({
     : {
         header: "Provide information for the new group",
         button1: "Create group",
-        button2: "Create",
+        button2: "Create"
       };
 
   useEffect(() => {
@@ -89,7 +89,7 @@ function CreateEditGroupModal({
     }
     setErrors({ ...errors, claim: false });
     handleChange({
-      target: { name: "claimToGroupMapping", value: currentClaim },
+      target: { name: "claimToGroupMapping", value: currentClaim }
     });
     setCurrentClaim("");
   };
@@ -101,7 +101,7 @@ function CreateEditGroupModal({
     }
     setErrors({ ...errors, setting: false });
     handleChange({
-      target: { name: "defaultSettings", value: currentSetting },
+      target: { name: "defaultSettings", value: currentSetting }
     });
     setCurrentSetting({ key: "", value: "" });
   };
@@ -128,7 +128,7 @@ function CreateEditGroupModal({
     } else {
       setGroup({
         ...group,
-        [target.name]: [...group[target.name], target.value],
+        [target.name]: [...group[target.name], target.value]
       });
     }
   }
@@ -268,7 +268,7 @@ function CreateEditGroupModal({
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value,
+                              [event.target.name]: event.target.value
                             })
                           }
                           isInvalid={errors.setting}
@@ -281,7 +281,7 @@ function CreateEditGroupModal({
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value,
+                              [event.target.name]: event.target.value
                             })
                           }
                           isInvalid={errors.setting}
@@ -356,5 +356,5 @@ export default connect(mapStateToProps, {
   getGroup,
   editGroup,
   clearGroup,
-  createGroup,
+  createGroup
 })(CreateEditGroupModal);

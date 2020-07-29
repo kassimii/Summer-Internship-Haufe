@@ -8,13 +8,13 @@ export let defaultState = [
     defaultSettings: [
       {
         key: "setting1",
-        value: "true",
+        value: "true"
       },
       {
         key: "setting2",
-        value: "false",
-      },
-    ],
+        value: "false"
+      }
+    ]
   },
   {
     id: "2",
@@ -23,17 +23,17 @@ export let defaultState = [
     defaultSettings: [
       {
         key: "setting1",
-        value: "false",
+        value: "false"
       },
       {
         key: "setting2",
-        value: "false",
+        value: "false"
       },
       {
         key: "flag1",
-        value: "true",
-      },
-    ],
+        value: "true"
+      }
+    ]
   },
   {
     id: "3",
@@ -42,17 +42,17 @@ export let defaultState = [
     defaultSettings: [
       {
         key: "setting3",
-        value: "true",
+        value: "true"
       },
       {
         key: "setting2",
-        value: "false",
+        value: "false"
       },
       {
         key: "setting4",
-        value: "false",
-      },
-    ],
+        value: "false"
+      }
+    ]
   },
   {
     id: "4",
@@ -61,10 +61,10 @@ export let defaultState = [
     defaultSettings: [
       {
         key: "setting1",
-        value: "true",
-      },
-    ],
-  },
+        value: "true"
+      }
+    ]
+  }
 ];
 
 export default (state = defaultState, action) => {

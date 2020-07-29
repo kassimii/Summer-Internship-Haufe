@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import CreateEditGroupModal from "./CreateEditGroupModal";
 
 const GroupCard = (props) => {
-  return (
+  return props.group ? (
     <div className="card">
       <img src="" className="card-img-top" alt="" />
       <div className="card-body">
@@ -26,6 +26,8 @@ const GroupCard = (props) => {
         </div>
       </div>
     </div>
+  ) : (
+    <div>Loading...</div>
   );
 };
 
