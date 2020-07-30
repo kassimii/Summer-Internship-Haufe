@@ -37,16 +37,16 @@ describe("CreateEditGroupModal", () => {
 
   it("render a button to pen modal", () => {
     expect(component.toJSON()).toMatchSnapshot();
-  });
+    //   });
 
-  it("render fields empty without given state -> create", () => {
-    renderer.act(() => {
-      console.log(component.root.findByType("button").props);
-      component.root.findByType("button").props.onClick();
-    });
-  });
+    //   it("render fields empty without given state -> create", () => {
+    //     renderer.act(() => {
+    //       console.log(component.root.findByType("button").props);
+    //       component.root.findByType("button").props.onClick();
+    //     });
+    //   });
 
-  it("render fields with given state from store -> edit", () => {
-    expect(true).toEqual(true);
+    //   it("render fields with given state from store -> edit", () => {
+    //     expect(true).toEqual(true);
   });
 });

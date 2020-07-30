@@ -3,7 +3,7 @@ import React from "react";
 import GroupCard from "./GroupCard";
 
 const GroupsList = (props) => {
-  return (
+  return props.groups ? (
     <div className="album py-5 bg-light">
       <div className="container">
         <div className="row">
@@ -19,6 +19,8 @@ const GroupsList = (props) => {
         </div>
       </div>
     </div>
+  ) : (
+    <div>Loading....</div>
   );
 };
 
