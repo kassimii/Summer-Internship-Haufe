@@ -9,18 +9,26 @@ const sequelize = new Sequelize(
   {}
 );
 
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
-      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
-    );
-  })
-  .forEach((file) => {
-    //const model = sequelize["import"](path.join(__dirname, file));
-    //const model = require(path.join(__dirname, file))(sequelize, Sequelize)
-    const model = require(path.join(__dirname, file)).default(sequelize, Sequelize);
-    db[model.name] = model;
-  });
+// fs.readdirSync(__dirname)
+//   .filter((file) => {
+//     return (
+//       file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
+//     );
+//   })
+//   .forEach((file) => {
+
+//     console.log(path.join(__dirname, file));
+//     //const model = sequelize["import"](path.join(__dirname, file));
+//     //const model = require(path.join(__dirname, file))(sequelize, Sequelize)
+//     const model = require(path.join(__dirname, file)).default(sequelize, Sequelize);
+//     db[model.name] = model;
+//   });
+
+const files = require.context('.', false, /\.js$/)
+files.keys().forEach(key => {
+  if (key === './index.js') return
+  db[key.replace(/(\.\/|\.js)/g, '')] = files(key)(sequelize, Sequelize) // import model
+});
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
