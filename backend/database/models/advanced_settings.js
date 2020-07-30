@@ -1,16 +1,4 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
-const Group = require("./groups");
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-  })
-  .catch((err) => {
-    console.error("Unable to connect to the database:", err);
-  });
-
+module.exports = (sequelize, DataTypes) => {
 const AdvancedSettings = sequelize.define(
   "AdvancedSettings",
   {
@@ -31,10 +19,6 @@ const AdvancedSettings = sequelize.define(
   }
 );
 
-AdvancedSettings.associate = function (models) {
-  AdvancedSettings.belongsTo(Group, {
-    foreignKey: "group_id"
-  });
-} 
+return AdvancedSettings;
 
-module.exports = AdvancedSettings;
+};

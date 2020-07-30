@@ -4,7 +4,7 @@ const GroupClaims = require("../database/models/group_claims");
 const AdvancedSettings = require("../database/models/advanced_settings");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
-const { models } = require("../database/models/sequelize");
+const models  = require("../database/models");
 
 const createGroup = async (req, res) => {
   const group_id = uuidv4();

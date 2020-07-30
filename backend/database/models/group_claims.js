@@ -1,15 +1,4 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
-const Group = require("./groups");
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-  })
-  .catch((err) => {
-    console.error("Unable to connect to the database:", err);
-  });
+module.export = (sequelize, DataTypes) => {
 
 const GroupClaims = sequelize.define(
   "GroupClaims",
@@ -24,17 +13,17 @@ const GroupClaims = sequelize.define(
   {
     freezeTableName: true,
     timestamps: false,
-    tableName: "GroupClaims",
+    tableName: "GroupClaims"
   }
 );
 
 
-GroupClaims.associate = function (models) {
-  GroupClaims.belongsTo(models.Group, {
-    foreignKey: "group_id"
-  });
+// GroupClaims.associate = function (models) {
+//   GroupClaims.belongsTo(models.Group, {
+//     foreignKey: "group_id"
+//   });
 
-};
+// };
 
-
-module.exports = GroupClaims;
+return GroupClaims;
+}
