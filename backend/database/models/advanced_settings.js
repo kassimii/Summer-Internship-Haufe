@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./sequelize");
+const Group = require("./groups");
 
 sequelize
   .authenticate()
@@ -24,14 +25,16 @@ const AdvancedSettings = sequelize.define(
     },
   },
   {
-    tableName: "advanced_settings",
-  },
-
-  {
     freezeTableName: true,
     timestamps: false,
-    tableName: "advanced_settings",
+    tableName: "AdvancedSettings",
   }
 );
+
+AdvancedSettings.associate = function (models) {
+  AdvancedSettings.belongsTo(Group, {
+    foreignKey: "group_id"
+  });
+} 
 
 module.exports = AdvancedSettings;

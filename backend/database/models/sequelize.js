@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 const sequelize = new Sequelize(
-  "postgres://postgres:1234@localhost:5432/haufetest"
+  "postgres://user:1234@localhost:3001/haufe"
 );
 
 module.exports = sequelize;

@@ -30,27 +30,23 @@ const Group = sequelize.define(
     },
   },
   {
-    tableName: "groups",
-  },
-
-  {
     freezeTableName: true,
     timestamps: false,
-    tableName: "groups",
+    tableName: "Groups"
   }
 );
 
-Group.associate = function (models) {
+Group.associate = function () {
   Group.hasMany(GroupClaims, {
     foreignKey: "group_id",
     as: "groupClaims",
-    onDelete: "CASCADE",
+    onDelete: "CASCADE"
   });
 
   Group.hasMany(AdvancedSettings, {
     foreignKey: "group_id",
     as: "advancedSettings",
-    onDelete: "CASCADE",
+    onDelete: "CASCADE"
   });
 };
 

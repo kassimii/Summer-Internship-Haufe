@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./sequelize");
+const Group = require("./groups");
 
 sequelize
   .authenticate()
@@ -21,14 +22,19 @@ const GroupClaims = sequelize.define(
     },
   },
   {
-    tableName: "group_claims",
-  },
-
-  {
     freezeTableName: true,
     timestamps: false,
-    tableName: "group_claims",
+    tableName: "GroupClaims",
   }
 );
+
+
+GroupClaims.associate = function (models) {
+  GroupClaims.belongsTo(models.Group, {
+    foreignKey: "group_id"
+  });
+
+};
+
 
 module.exports = GroupClaims;

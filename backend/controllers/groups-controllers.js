@@ -4,6 +4,7 @@ const GroupClaims = require("../database/models/group_claims");
 const AdvancedSettings = require("../database/models/advanced_settings");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
+const { models } = require("../database/models/sequelize");
 
 const createGroup = async (req, res) => {
   const group_id = uuidv4();
@@ -84,7 +85,16 @@ const getGroups = async (req, res) => {
   let groups;
   try {
     groups = await Group.findAll({
-      attributes: ["group_id", "name"],
+      include: [
+        {
+          model: GroupClaims,
+          as: "groupClaims"
+        },
+        {
+          model: AdvancedSettings,
+          as: "advancedSettings"
+        }
+      ]
     }).then((groups) => res.json(groups));
   } catch (err) {
     console.log(err);
