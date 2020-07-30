@@ -10,82 +10,61 @@ const createGroup = async (req, res) => {
   const groupName = req.body.name;
   const creationDate = req.body.creationDate;
   const createdBy = req.body.createdBy;
-  const groupClaims = req.body.claims;
+  const groupClaims = req.body.groupClaims;
   const key = req.body.key;
   const value = req.body.value;
 
-  try {
-    await Group.create({
-      group_id: group_id,
-      name: groupName,
-      creationDate: creationDate,
-      createdBy: createdBy,
-    })
-      .then(res.sendStatus(200))
-      .catch((err) => {
-        console.log("Error: " + err);
-        res.sendStatus(400);
-      });
-  } catch (error) {
-    console.log(error.message);
-  }
+  await Group.create({
+    group_id: group_id,
+    name: groupName,
+    creationDate: creationDate,
+    createdBy: createdBy,
+  }).catch((err) => {
+    console.log("Error: " + err);
+    return res.sendStatus(400);
+  });
 
-  try {
-    await GroupClaims.create({
-      group_id: group_id,
-      groupClaims: groupClaims,
-    })
-      .then(res.sendStatus(200))
-      .catch((err) => {
-        console.log("Error: " + err);
-        res.sendStatus(400);
-      });
-  } catch (error) {
-    console.log(error.message);
-  }
+  await GroupClaims.create({
+    group_id: group_id,
+    groupClaims: groupClaims,
+  }).catch((err) => {
+    //console.log("Error: " + err);
+    return res.sendStatus(400);
+  });
 
-  try {
-    await AdvancedSettings.create({
-      group_id: group_id,
-      key: key,
-      value: value,
-    })
-      .then(res.sendStatus(200))
-      .catch((err) => {
-        console.log("Error: " + err);
-        res.sendStatus(400);
-      });
-  } catch (error) {
-    console.log(error.message);
-  }
+  await AdvancedSettings.create({
+    group_id: group_id,
+    key: key,
+    value: value,
+  })
+    .then(res.sendStatus(200))
+    .catch((err) => {
+      //console.log("Error: " + err);
+      return res.sendStatus(400);
+    });
 };
 
 const deleteGroup = async (req, res) => {
   const groupId = req.params.groupId;
-  try {
-    await Group.destroy({
-      where: {
-        group_id: {
-          [Op.eq]: groupId,
-        },
+
+  await Group.destroy({
+    where: {
+      group_id: {
+        [Op.eq]: groupId,
       },
-    })
-      .then(res.sendStatus(200))
-      .catch((err) => {
-        console.log("Error: " + err);
-        res.sendStatus(400);
-      });
-  } catch (error) {
-    console.log(error.message);
-  }
+    },
+  })
+    .then(res.sendStatus(200))
+    .catch((err) => {
+      console.log("Error: " + err);
+      return res.sendStatus(400);
+    });
 };
 
 const getGroups = async (req, res) => {
   let groups;
   try {
-    groups = await Group.findAll({
-      attributes: ["group_id", "name"],
-    }).then((groups) => res.json(groups));
+    groups = await Group.findAll().then((groups) => res.json(groups));
   } catch (err) {
     console.log(err);
   }
