@@ -2,6 +2,7 @@ module.exports = (sequelize, DataTypes) => {
 const AdvancedSettings = sequelize.define(
   "AdvancedSettings",
   {
+    
     group_id: {
       type: DataTypes.UUID,
     },
@@ -18,6 +19,8 @@ const AdvancedSettings = sequelize.define(
     tableName: "AdvancedSettings",
   }
 );
+
+AdvancedSettings.removeAttribute("id");
 
 return AdvancedSettings;
 

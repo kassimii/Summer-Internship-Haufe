@@ -1,8 +1,9 @@
-module.export = (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
 
 const GroupClaims = sequelize.define(
   "GroupClaims",
   {
+   
     group_id: {
       type: DataTypes.UUID,
     },
@@ -17,13 +18,7 @@ const GroupClaims = sequelize.define(
   }
 );
 
-
-// GroupClaims.associate = function (models) {
-//   GroupClaims.belongsTo(models.Group, {
-//     foreignKey: "group_id"
-//   });
-
-// };
+GroupClaims.removeAttribute("id");
 
 return GroupClaims;
 }
