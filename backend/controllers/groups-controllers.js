@@ -20,8 +20,7 @@ const createGroup = async (req, res) => {
     name: groupName,
     creationDate: creationDate,
     createdBy: createdBy,
-  })
-  .catch((err) => {
+  }).catch((err) => {
     console.log("Error: " + err);
     res.sendStatus(400);
   });
@@ -29,8 +28,7 @@ const createGroup = async (req, res) => {
   await models.GroupClaims.create({
     group_id: group_id,
     claims: claims,
-  })
-  .catch((err) => {
+  }).catch((err) => {
     console.log("Error: " + err);
     res.sendStatus(400);
   });
@@ -56,8 +54,7 @@ const deleteGroup = async (req, res) => {
         [Op.eq]: groupId,
       },
     },
-  })
-  .catch((err) => {
+  }).catch((err) => {
     console.log("Error: " + err);
     res.sendStatus(400);
   });
@@ -68,8 +65,7 @@ const deleteGroup = async (req, res) => {
         [Op.eq]: groupId,
       },
     },
-  })
-  .catch((err) => {
+  }).catch((err) => {
     console.log("Error: " + err);
     res.sendStatus(400);
   });
@@ -176,17 +172,19 @@ const updateGroup = async (req, res) => {
           {
             model: models.GroupClaims,
             as: "claims",
-            attributes: { exclude: ["id"] },
           },
           {
             model: models.AdvancedSettings,
             as: "advancedSettings",
-            attributes: ["group_id", "key", "value"],
           },
         ],
         where: { group_id: groupId },
       });
-      return res.status(200).json({ group: updatedGroup });
+      if (updatedGroupClaims) {
+        if (updatedGroupSettings) {
+          return res.status(200).json({ group: updatedGroup });
+        }
+      }
     }
     throw new Error("Group not found");
   } catch (error) {

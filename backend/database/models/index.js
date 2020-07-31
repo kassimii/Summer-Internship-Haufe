@@ -3,9 +3,12 @@ const path = require("path");
 const basename = path.basename(__filename);
 const db = {};
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("postgres://user:1234@localhost:3001/haufe", {
-  dialect: "postgres",
-});
+const sequelize = new Sequelize(
+  "postgres://postgres:1234@localhost:5432/haufetest",
+  {
+    dialect: "postgres",
+  }
+);
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
