@@ -84,18 +84,23 @@ const deleteGroup = async (req, res) => {
 const getGroups = async (req, res) => {
   let groups;
   try {
-    groups = await Group.findAll({
+    groups = await models.Group.findAll({
       include: [
         {
-          model: GroupClaims,
-          as: "groupClaims"
+          model: models.GroupClaims,
+          as: "groupClaims",
+          attributes: {exclude: ['id']},
         },
         {
-          model: AdvancedSettings,
-          as: "advancedSettings"
+          model: models.AdvancedSettings,
+          as: "advancedSettings",
+          attributes: ['group_id', 'key', 'value'],
         }
       ]
-    }).then((groups) => res.json(groups));
+    });
+    // .then((groups) => res.json(groups));
+    return  res.status(200).json({ groups });
+
   } catch (err) {
     console.log(err);
   }
