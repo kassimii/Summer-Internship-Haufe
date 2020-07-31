@@ -20,6 +20,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("groups");
+    return queryInterface.dropTable("advanced_settings");
   },
 };

@@ -28,7 +28,7 @@ const createGroup = async (req, res) => {
     group_id: group_id,
     groupClaims: groupClaims,
   }).catch((err) => {
-    //console.log("Error: " + err);
+    console.log("Error: " + err);
     return res.sendStatus(400);
   });
 
@@ -39,7 +39,7 @@ const createGroup = async (req, res) => {
   })
     .then(res.sendStatus(200))
     .catch((err) => {
-      //console.log("Error: " + err);
+      console.log("Error: " + err);
       return res.sendStatus(400);
     });
 };
