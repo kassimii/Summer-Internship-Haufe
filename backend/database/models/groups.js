@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
 Group.associate = function (models) {
   Group.hasMany(models.GroupClaims, {
     foreignKey: "group_id",
-    as: "groupClaims",
+    as: "claims",
     onDelete: "CASCADE"
   });
 
