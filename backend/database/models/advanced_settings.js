@@ -1,18 +1,8 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-  })
-  .catch((err) => {
-    console.error("Unable to connect to the database:", err);
-  });
-
+module.exports = (sequelize, DataTypes) => {
 const AdvancedSettings = sequelize.define(
   "AdvancedSettings",
   {
+    
     group_id: {
       type: DataTypes.UUID,
     },
@@ -24,14 +14,14 @@ const AdvancedSettings = sequelize.define(
     },
   },
   {
-    tableName: "advanced_settings",
-  },
-
-  {
     freezeTableName: true,
     timestamps: false,
-    tableName: "advanced_settings",
+    tableName: "AdvancedSettings",
   }
 );
 
-module.exports = AdvancedSettings;
+AdvancedSettings.removeAttribute("id");
+
+return AdvancedSettings;
+
+};

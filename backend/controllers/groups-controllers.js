@@ -4,35 +4,38 @@ const GroupClaims = require("../database/models/group_claims");
 const AdvancedSettings = require("../database/models/advanced_settings");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
+const models = require("../database/models");
 
 const createGroup = async (req, res) => {
   const group_id = uuidv4();
   const groupName = req.body.name;
   const creationDate = req.body.creationDate;
   const createdBy = req.body.createdBy;
-  const groupClaims = req.body.groupClaims;
-  const key = req.body.key;
-  const value = req.body.value;
+  const claims = req.body.claims;
+  const key = req.body.advancedSettings.key;
+  const value = req.body.advancedSettings.value;
 
-  await Group.create({
+  await models.Group.create({
     group_id: group_id,
     name: groupName,
     creationDate: creationDate,
     createdBy: createdBy,
-  }).catch((err) => {
+  })
+  .catch((err) => {
     console.log("Error: " + err);
-    return res.sendStatus(400);
+    res.sendStatus(400);
   });
 
-  await GroupClaims.create({
+  await models.GroupClaims.create({
     group_id: group_id,
-    groupClaims: groupClaims,
-  }).catch((err) => {
+    claims: claims,
+  })
+  .catch((err) => {
     console.log("Error: " + err);
-    return res.sendStatus(400);
+    res.sendStatus(400);
   });
 
-  await AdvancedSettings.create({
+  await models.AdvancedSettings.create({
     group_id: group_id,
     key: key,
     value: value,
@@ -40,14 +43,38 @@ const createGroup = async (req, res) => {
     .then(res.sendStatus(200))
     .catch((err) => {
       console.log("Error: " + err);
-      return res.sendStatus(400);
+      res.sendStatus(400);
     });
 };
 
 const deleteGroup = async (req, res) => {
   const groupId = req.params.groupId;
 
-  await Group.destroy({
+  await models.Group.destroy({
+    where: {
+      group_id: {
+        [Op.eq]: groupId,
+      },
+    },
+  })
+  .catch((err) => {
+    console.log("Error: " + err);
+    res.sendStatus(400);
+  });
+
+  await models.GroupClaims.destroy({
+    where: {
+      group_id: {
+        [Op.eq]: groupId,
+      },
+    },
+  })
+  .catch((err) => {
+    console.log("Error: " + err);
+    res.sendStatus(400);
+  });
+
+  await models.AdvancedSettings.destroy({
     where: {
       group_id: {
         [Op.eq]: groupId,
@@ -57,14 +84,27 @@ const deleteGroup = async (req, res) => {
     .then(res.sendStatus(200))
     .catch((err) => {
       console.log("Error: " + err);
-      return res.sendStatus(400);
+      res.sendStatus(400);
     });
 };
 
 const getGroups = async (req, res) => {
   let groups;
   try {
-    groups = await Group.findAll().then((groups) => res.json(groups));
+    groups = await models.Group.findAll({
+      include: [
+        {
+          model: models.GroupClaims,
+          as: "claims",
+        },
+        {
+          model: models.AdvancedSettings,
+          as: "advancedSettings",
+        },
+      ],
+    });
+
+    return res.status(200).json({ groups });
   } catch (err) {
     console.log(err);
   }
@@ -76,40 +116,81 @@ const getGroupsById = async (req, res) => {
   let group;
 
   try {
-    group = await Group.findAll({
-      attributes: ["group_id", "name"],
+    group = await models.Group.findAll({
+      include: [
+        {
+          model: models.GroupClaims,
+          as: "claims",
+          attributes: { exclude: ["id"] },
+        },
+        {
+          model: models.AdvancedSettings,
+          as: "advancedSettings",
+          attributes: ["group_id", "key", "value"],
+        },
+      ],
 
       where: {
         group_id: groupId,
       },
-    }).then((group) => res.json(group));
+    });
+    return res.status(200).json({ group });
   } catch (err) {
     console.log(err);
   }
 
   if (!group) {
     console.log("HTTP error 404");
-    return;
+    return res.status(404);
   }
 };
 
 const updateGroup = async (req, res) => {
-  const { name } = req.body;
-  const { groupId } = req.params;
-
-  let group;
-
   try {
-    group = await Group.update(
-      { name: name },
+    const { groupId } = req.params;
+    const claims = req.body.claims;
+    const key = req.body.advancedSettings.key;
+    const value = req.body.advancedSettings.value;
+
+    const [updatedGroup] = await models.Group.update(req.body, {
+      where: { group_id: groupId },
+    });
+
+    const [updatedGroupClaims] = await models.GroupClaims.update(
+      { claims: claims },
       {
-        where: {
-          group_id: groupId,
-        },
+        where: { group_id: groupId },
       }
     );
-  } catch (err) {
-    console.log(err);
+
+    const [updatedGroupSettings] = await models.AdvancedSettings.update(
+      { key: key, value: value },
+      {
+        where: { group_id: groupId },
+      }
+    );
+
+    if (updatedGroup) {
+      const updatedGroup = await models.Group.findOne({
+        include: [
+          {
+            model: models.GroupClaims,
+            as: "claims",
+            attributes: { exclude: ["id"] },
+          },
+          {
+            model: models.AdvancedSettings,
+            as: "advancedSettings",
+            attributes: ["group_id", "key", "value"],
+          },
+        ],
+        where: { group_id: groupId },
+      });
+      return res.status(200).json({ group: updatedGroup });
+    }
+    throw new Error("Group not found");
+  } catch (error) {
+    return res.status(500).send(error.message);
   }
 };
 

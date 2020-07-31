@@ -1,19 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
-const GroupClaims = require("./group_claims");
-const AdvancedSettings = require("./advanced_settings");
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-  })
-  .catch((err) => {
-    console.error("Unable to connect to the database:", err);
-  });
-
-const Group = sequelize.define(
-  "Group",
+module.exports = (sequelize, DataTypes) => {
+  const Group = sequelize.define('Group',
   {
     group_id: {
       type: DataTypes.UUID,
@@ -30,28 +16,24 @@ const Group = sequelize.define(
     },
   },
   {
-    tableName: "groups",
-  },
-
-  {
     freezeTableName: true,
     timestamps: false,
-    tableName: "groups",
+    tableName: "Groups"
   }
-);
-
+  );
 Group.associate = function (models) {
-  Group.hasMany(GroupClaims, {
+  Group.hasMany(models.GroupClaims, {
     foreignKey: "group_id",
-    as: "groupClaims",
-    onDelete: "CASCADE",
+    as: "claims",
+    onDelete: "CASCADE"
   });
 
-  Group.hasMany(AdvancedSettings, {
+  Group.hasMany(models.AdvancedSettings, {
     foreignKey: "group_id",
     as: "advancedSettings",
-    onDelete: "CASCADE",
+    onDelete: "CASCADE"
   });
 };
 
-module.exports = Group;
+ return Group;
+}

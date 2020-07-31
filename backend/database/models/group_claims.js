@@ -1,18 +1,9 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-  })
-  .catch((err) => {
-    console.error("Unable to connect to the database:", err);
-  });
+module.exports = (sequelize, DataTypes) => {
 
 const GroupClaims = sequelize.define(
   "GroupClaims",
   {
+   
     group_id: {
       type: DataTypes.UUID,
     },
@@ -21,14 +12,13 @@ const GroupClaims = sequelize.define(
     },
   },
   {
-    tableName: "group_claims",
-  },
-
-  {
     freezeTableName: true,
     timestamps: false,
-    tableName: "group_claims",
+    tableName: "GroupClaims"
   }
 );
 
-module.exports = GroupClaims;
+GroupClaims.removeAttribute("id");
+
+return GroupClaims;
+}
