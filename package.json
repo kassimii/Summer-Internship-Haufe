@@ -1,25 +1,31 @@
 {
-    "name": "summer-internship-haufe",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/kassimii/Summer-Internship-Haufe.git"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/kassimii/Summer-Internship-Haufe/issues"
-    },
-    "homepage": "https://github.com/kassimii/Summer-Internship-Haufe#readme",
-    "dependencies": {
-        "cors": "^2.8.5",
-        "pg": "^8.3.0",
-        "sequelize": "^6.3.3"
-    }
+  "name": "summer-internship-haufe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kassimii/Summer-Internship-Haufe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kassimii/Summer-Internship-Haufe/issues"
+  },
+  "homepage": "https://github.com/kassimii/Summer-Internship-Haufe#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "mysql2": "^2.1.0",
+    "pg": "^8.3.0",
+    "sequelize": "^6.3.3"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "jest": "^26.1.0",
+    "supertest": "^4.0.2"
+  }
 }
