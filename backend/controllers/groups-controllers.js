@@ -20,7 +20,7 @@ const createGroup = async (req, res) => {
     group_id: group_id,
     name: groupName,
     creationDate: creationDate,
-    createdBy: createdBy,
+    createdBy: createdBy
   }).catch((err) => {
     console.log("Error: " + err);
     res.sendStatus(400);
@@ -28,7 +28,7 @@ const createGroup = async (req, res) => {
 
   await models.GroupClaims.create({
     group_id: group_id,
-    claims: claims,
+    claims: claims
   }).catch((err) => {
     console.log("Error: " + err);
     res.sendStatus(400);
@@ -37,7 +37,7 @@ const createGroup = async (req, res) => {
   await models.AdvancedSettings.create({
     group_id: group_id,
     key: key,
-    value: value,
+    value: value
   })
     .then(res.sendStatus(200))
     .catch((err) => {
@@ -52,9 +52,9 @@ const deleteGroup = async (req, res) => {
   await models.Group.destroy({
     where: {
       group_id: {
-        [Op.eq]: groupId,
-      },
-    },
+        [Op.eq]: groupId
+      }
+    }
   }).catch((err) => {
     console.log("Error: " + err);
     res.sendStatus(400);
@@ -63,9 +63,9 @@ const deleteGroup = async (req, res) => {
   await models.GroupClaims.destroy({
     where: {
       group_id: {
-        [Op.eq]: groupId,
-      },
-    },
+        [Op.eq]: groupId
+      }
+    }
   }).catch((err) => {
     console.log("Error: " + err);
     res.sendStatus(400);
@@ -74,9 +74,9 @@ const deleteGroup = async (req, res) => {
   await models.AdvancedSettings.destroy({
     where: {
       group_id: {
-        [Op.eq]: groupId,
-      },
-    },
+        [Op.eq]: groupId
+      }
+    }
   })
     .then(res.sendStatus(200))
     .catch((err) => {
@@ -92,13 +92,13 @@ const getGroups = async (req, res) => {
       include: [
         {
           model: models.GroupClaims,
-          as: "claims",
+          as: "claims"
         },
         {
           model: models.AdvancedSettings,
-          as: "advancedSettings",
-        },
-      ],
+          as: "advancedSettings"
+        }
+      ]
     });
 
     return res.status(200).json({ groups });
@@ -118,18 +118,18 @@ const getGroupsById = async (req, res) => {
         {
           model: models.GroupClaims,
           as: "claims",
-          attributes: { exclude: ["id"] },
+          attributes: { exclude: ["id"] }
         },
         {
           model: models.AdvancedSettings,
           as: "advancedSettings",
-          attributes: ["group_id", "key", "value"],
-        },
+          attributes: ["group_id", "key", "value"]
+        }
       ],
 
       where: {
-        group_id: groupId,
-      },
+        group_id: groupId
+      }
     });
     return res.status(200).json({ group });
   } catch (err) {
@@ -150,20 +150,20 @@ const updateGroup = async (req, res) => {
     const value = req.body.advancedSettings.value;
 
     const [updatedGroup] = await models.Group.update(req.body, {
-      where: { group_id: groupId },
+      where: { group_id: groupId }
     });
 
     const [updatedGroupClaims] = await models.GroupClaims.update(
       { claims: claims },
       {
-        where: { group_id: groupId },
+        where: { group_id: groupId }
       }
     );
 
     const [updatedGroupSettings] = await models.AdvancedSettings.update(
       { key: key, value: value },
       {
-        where: { group_id: groupId },
+        where: { group_id: groupId }
       }
     );
 
@@ -172,14 +172,14 @@ const updateGroup = async (req, res) => {
         include: [
           {
             model: models.GroupClaims,
-            as: "claims",
+            as: "claims"
           },
           {
             model: models.AdvancedSettings,
-            as: "advancedSettings",
-          },
+            as: "advancedSettings"
+          }
         ],
-        where: { group_id: groupId },
+        where: { group_id: groupId }
       });
       if (updatedGroupClaims) {
         if (updatedGroupSettings) {
