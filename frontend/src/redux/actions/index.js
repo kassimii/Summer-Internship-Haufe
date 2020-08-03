@@ -4,7 +4,7 @@ import {
   CREATE_GROUP,
   EDIT_GROUP,
   DELETE_GROUP,
-  CLEAR_GROUP
+  CLEAR_GROUP,
 } from "./types";
 
 import { store } from "../store";
@@ -38,7 +38,7 @@ export const getGroup = (id) => async (dispatch) => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
   dispatch({
     type: GET_GROUP,
-    payload: group
+    payload: group,
   });
 };
 
@@ -59,25 +59,26 @@ export const editGroup = (formValues) => async (dispatch) => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
   dispatch({
     type: EDIT_GROUP,
-    payload: formValues
+    payload: formValues,
   });
 };
 
-export const createGroup = (formValues) => async (dispatch) => {
-  // const response = await sendRequest(
-  //   `http://localhost:3001/api/groups/&{formValues.id}`,
-  //   "POST",
-  //   JSON.stringify(formValues),
-  //   {
-  //     "Content-Type": "application/json",
-  //   }
-  // );
-  // dispatch({ type: CREATE_GROUP, payload: response });
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  dispatch({
-    type: CREATE_GROUP,
-    payload: formValues
-  });
+export const createGroup = (formValues, sendRequest) => async (dispatch) => {
+  const response = await sendRequest(
+    `/api/groups`,
+    "POST",
+    JSON.stringify(formValues),
+    {
+      "Content-Type": "application/json",
+    }
+  );
+  dispatch({ type: CREATE_GROUP, payload: response });
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
+  // console.log(formValues);
+  // dispatch({
+  //   type: CREATE_GROUP,
+  //   payload: formValues,
+  // });
 };
 
 export const deleteGroup = (id) => async (dispatch) => {
@@ -93,6 +94,6 @@ export const deleteGroup = (id) => async (dispatch) => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
   dispatch({
     type: DELETE_GROUP,
-    payload: id
+    payload: id,
   });
 };

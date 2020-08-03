@@ -7,6 +7,7 @@ const { Op } = require("sequelize");
 const models = require("../database/models");
 
 const createGroup = async (req, res) => {
+  console.log(req.body);
   const group_id = uuidv4();
   const groupName = req.body.name;
   const creationDate = req.body.creationDate;
