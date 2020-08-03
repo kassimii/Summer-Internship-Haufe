@@ -1,17 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CreateEditGroupModal render a button to pen modal 1`] = `
-<button
-  className="btn btn-primary"
-  disabled={false}
-  onClick={[Function]}
-  type="button"
->
-  Create group
-</button>
-`;
-
-exports[`CreateEditGroupModal render empty without given state 1`] = `
+exports[`CreateEditGroupModal render default button 1`] = `
 <button
   className="btn btn-primary"
   disabled={false}
