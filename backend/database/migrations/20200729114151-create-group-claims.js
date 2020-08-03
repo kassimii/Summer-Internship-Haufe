@@ -7,7 +7,7 @@ module.exports = {
           type: Sequelize.UUID,
         },
         claims: {
-          type: Sequelize.ARRAY(Sequelize.STRING),
+          type: Sequelize.STRING,
         },
       },
       {

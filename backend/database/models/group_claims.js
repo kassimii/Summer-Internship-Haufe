@@ -1,24 +1,22 @@
 module.exports = (sequelize, DataTypes) => {
-
-const GroupClaims = sequelize.define(
-  "GroupClaims",
-  {
-   
-    group_id: {
-      type: DataTypes.UUID,
+  const GroupClaims = sequelize.define(
+    "GroupClaims",
+    {
+      group_id: {
+        type: DataTypes.UUID,
+      },
+      claims: {
+        type: DataTypes.STRING,
+      },
     },
-    claims: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-    },
-  },
-  {
-    freezeTableName: true,
-    timestamps: false,
-    tableName: "GroupClaims"
-  }
-);
+    {
+      freezeTableName: true,
+      timestamps: false,
+      tableName: "GroupClaims",
+    }
+  );
 
-GroupClaims.removeAttribute("id");
+  GroupClaims.removeAttribute("id");
 
-return GroupClaims;
-}
+  return GroupClaims;
+};
