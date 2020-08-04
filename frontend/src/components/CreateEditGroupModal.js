@@ -18,7 +18,8 @@ import {
   getGroup,
   editGroup,
   clearGroup,
-  createGroup
+  createGroup,
+  deleteGroup
 } from "../redux/actions/index";
 
 const initialGroup = {
@@ -150,6 +151,14 @@ function CreateEditGroupModal({
       unsubscribe();
       handleClose();
     });
+  };
+
+  const handleDelete = (event) => {
+    event.preventDefault();
+    if (id) {
+      deleteGroup(id, sendRequest);
+      handleClose();
+    }
   };
 
   return (
@@ -339,6 +348,13 @@ function CreateEditGroupModal({
               <Button onClick={handleClose} className="btn btn-secondary">
                 Close
               </Button>
+              {id ? (
+                <Button onClick={handleDelete} className="btn btn-danger">
+                  Delete
+                </Button>
+              ) : (
+                <></>
+              )}
               <Button type="submit" className="btn btn-primary">
                 {createOrEditText.button2}
               </Button>
@@ -358,5 +374,6 @@ export default connect(mapStateToProps, {
   getGroup,
   editGroup,
   clearGroup,
-  createGroup
+  createGroup,
+  deleteGroup
 })(CreateEditGroupModal);
