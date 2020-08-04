@@ -1,16 +1,15 @@
 const { check } = require("express-validator");
-const Group = require("../database/models/groups");
+const models = require("../database/models");
 
 module.exports = {
   requireGroupName: check("name")
-    .not()
-    .isEmpty()
-    .trim()
+    .isLength({ min: 1 })
     .withMessage("Group name must not be empty."),
-  // .custom(async (name) => {
+
+  // requireUniqueGroupName: check("name").custom(async (req) => {
   //   let existingGroup;
   //   try {
-  //     existingGroup = await Group.findAll({ name });
+  //     existingGroup = await models.Group.findAll(req.body.name);
   //   } catch (error) {
   //     console.log(error);
   //   }
@@ -19,15 +18,16 @@ module.exports = {
   //     console.log("Group already exists.");
   //   }
   //   return true;
-  // })
-  requireClaims: check("claims")
-    .not()
-    .isEmpty()
-    .trim()
-    .withMessage("Claims must not be empty."),
-  requireAdvancedSettings: check("advancedSettings")
-    .not()
-    .isEmpty()
-    .trim()
-    .withMessage("Advanced settings must not be empty."),
+  // }),
+
+  // requireClaims: check("claims")
+  //   .not()
+  //   .isEmpty()
+  //   .trim()
+  //   .withMessage("Claims must not be empty."),
+  // requireAdvancedSettings: check("advancedSettings")
+  //   .not()
+  //   .isEmpty()
+  //   .trim()
+  //   .withMessage("Advanced settings must not be empty."),
 };

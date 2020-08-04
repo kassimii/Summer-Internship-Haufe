@@ -2,7 +2,7 @@
 
 module.exports = {
   development: {
-    url: "postgres://postgres:1234@localhost:5432/haufedb",
+    url: "postgres://postgres:1234@localhost:5432/haufe",
     dialect: "postgres",
   },
   test: {

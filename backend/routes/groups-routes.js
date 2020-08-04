@@ -1,13 +1,10 @@
 const express = require("express");
-
 const router = express.Router();
-
 const {
   requireGroupName,
-  requireClaims,
-  requireAdvancedSettings,
+  // requireClaims,
+  // requireAdvancedSettings,
 } = require("../validators/group-validators");
-
 const {
   createGroup,
   deleteGroup,
@@ -15,8 +12,9 @@ const {
   getGroupsById,
   updateGroup,
 } = require("../controllers/groups-controllers");
+const handleErrors = require("../middlewares/handle-errors");
 
-router.post("/", createGroup);
+router.post("/", [requireGroupName], handleErrors, createGroup);
 router.delete("/delete/:groupId", deleteGroup);
 router.get("/", getGroups);
 router.get("/:groupId", getGroupsById);
