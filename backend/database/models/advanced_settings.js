@@ -1,8 +1,9 @@
+const {v4: uuidv4} = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
-const AdvancedSettings = sequelize.define(
-  "AdvancedSettings",
+const AdvancedSetting = sequelize.define(
+  "advancedSetting",
   {
-    
     group_id: {
       type: DataTypes.UUID,
     },
@@ -16,12 +17,16 @@ const AdvancedSettings = sequelize.define(
   {
     freezeTableName: true,
     timestamps: false,
-    tableName: "AdvancedSettings",
+    tableName: "advanced_settings",
   }
 );
 
-AdvancedSettings.removeAttribute("id");
+  AdvancedSetting.beforeCreate((advancedSetting, _) => {
+    return advancedSetting.id = uuidv4();
+  });
 
-return AdvancedSettings;
+// AdvancedSetting.removeAttribute("id");
+
+return AdvancedSetting;
 
 };
