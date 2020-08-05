@@ -1,5 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const Group = sequelize.define('group',
+  const Group = sequelize.define(
+    "group",
     {
       id: {
         type: DataTypes.UUID,
@@ -18,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       freezeTableName: true,
       timestamps: false,
-      tableName: "groups"
+      tableName: "groups",
     }
   );
 
@@ -26,15 +27,15 @@ module.exports = (sequelize, DataTypes) => {
     Group.hasMany(models.Claim, {
       foreignKey: "group_id",
       // as: "claims",
-      onDelete: "CASCADE"
+      onDelete: "CASCADE",
     });
 
     Group.hasMany(models.AdvancedSetting, {
       foreignKey: "group_id",
       // as: "advancedSettings",
-      onDelete: "CASCADE"
+      onDelete: "CASCADE",
     });
   };
 
   return Group;
-}
+};
