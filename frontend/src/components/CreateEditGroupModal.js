@@ -24,8 +24,8 @@ import {
 
 const initialGroup = {
   name: "",
-  claimToGroupMapping: [],
-  defaultSettings: []
+  claims: [],
+  advancedSettings: []
 };
 const initialErrors = {
   name: false,
@@ -92,7 +92,7 @@ function CreateEditGroupModal({
     }
     setErrors({ ...errors, claim: false });
     handleChange({
-      target: { name: "claimToGroupMapping", value: currentClaim }
+      target: { name: "claims", value: currentClaim }
     });
     setCurrentClaim("");
   };
@@ -104,23 +104,23 @@ function CreateEditGroupModal({
     }
     setErrors({ ...errors, setting: false });
     handleChange({
-      target: { name: "defaultSettings", value: currentSetting }
+      target: { name: "advancedSettings", value: currentSetting }
     });
     setCurrentSetting({ key: "", value: "" });
   };
 
   const deleteClaim = (event) => {
-    let newMapping = group.claimToGroupMapping.filter(
+    let newMapping = group.claims.filter(
       (claim) => claim !== event.target.value
     );
-    setGroup({ ...group, claimToGroupMapping: newMapping });
+    setGroup({ ...group, claims: newMapping });
   };
 
   const deleteSetting = (event) => {
-    let newSettings = group.defaultSettings.filter((setting) => {
+    let newSettings = group.advancedSettings.filter((setting) => {
       return setting.key !== event.target.value;
     });
-    setGroup({ ...group, defaultSettings: newSettings });
+    setGroup({ ...group, advancedSettings: newSettings });
   };
 
   // Handling change to the state of the input
@@ -234,11 +234,11 @@ function CreateEditGroupModal({
                       </InputGroup>
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-center">
-                      {group.claimToGroupMapping.length === 0 ? (
+                      {group.claims.length === 0 ? (
                         <Alert variant="danger">No claims added yet</Alert>
                       ) : (
                         <ListGroup>
-                          {group.claimToGroupMapping.map((claim) => (
+                          {group.claims.map((claim) => (
                             <ListGroup.Item key={claim} className="d-flex">
                               <span className="p-2">{claim}</span>
                               <Button
@@ -299,7 +299,7 @@ function CreateEditGroupModal({
                         />
                         <InputGroup.Append>
                           <Button
-                            name="defaultSettings"
+                            name="advancedSettings"
                             variant="outline-success"
                             onClick={handleSetting}
                           >
@@ -312,13 +312,13 @@ function CreateEditGroupModal({
                       </InputGroup>
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-center">
-                      {group.defaultSettings.length === 0 ? (
+                      {group.advancedSettings.length === 0 ? (
                         <Alert variant="danger">
                           No setting or flags added yet
                         </Alert>
                       ) : (
                         <ListGroup>
-                          {group.defaultSettings.map((setting) => (
+                          {group.advancedSettings.map((setting) => (
                             <ListGroup.Item
                               key={setting.key}
                               className="d-flex"

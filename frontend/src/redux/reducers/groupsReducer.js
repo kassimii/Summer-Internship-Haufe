@@ -3,7 +3,7 @@ import { GET_GROUPS, CREATE_GROUP, EDIT_GROUP } from "../actions/types";
 export default (state = [], action) => {
   switch (action.type) {
     case GET_GROUPS:
-      return action.payload;
+      return action.payload.groups;
     case CREATE_GROUP:
       return [...state, action.payload];
     case EDIT_GROUP:

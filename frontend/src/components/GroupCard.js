@@ -3,26 +3,26 @@ import { Link } from "react-router-dom";
 
 import CreateEditGroupModal from "./CreateEditGroupModal";
 
-const GroupCard = (props) => {
-  return props.group ? (
+const GroupCard = ({ group }) => {
+  return group ? (
     <div className="card">
       <img src="" className="card-img-top" alt="" />
       <div className="card-body">
-        <h5 className="card-title">{props.group.name}</h5>
+        <h5 className="card-title">{group.name}</h5>
         <ul className="card-text">
-          {props.group.claimToGroupMapping.map((claim) => {
-            return <li key={claim}>{claim}</li>;
+          {group.claims.map((claim) => {
+            return <li key={claim.claim}>{claim.claim}</li>;
           })}
         </ul>
         <div className="d-flex justify-content-center form-inline">
           <Link
             type="button"
-            to={"/groups/" + props.group.id}
+            to={"/groups/" + group.id}
             className="btn btn-primary m-2"
           >
             Go to group
           </Link>
-          <CreateEditGroupModal id={props.group.id} />
+          <CreateEditGroupModal id={group.id} />
         </div>
       </div>
     </div>

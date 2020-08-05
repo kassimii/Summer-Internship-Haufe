@@ -1,19 +1,20 @@
 module.exports = (sequelize, DataTypes) => {
-  const Group = sequelize.define('group',
+  const Group = sequelize.define(
+    "group",
     {
       id: {
         type: DataTypes.UUID,
-        primaryKey: true,
+        primaryKey: true
       },
       name: {
-        type: DataTypes.STRING(32),
+        type: DataTypes.STRING(32)
       },
       creationDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE
       },
       createdBy: {
-        type: DataTypes.UUID,
-      },
+        type: DataTypes.UUID
+      }
     },
     {
       freezeTableName: true,
@@ -37,4 +38,4 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   return Group;
-}
+};

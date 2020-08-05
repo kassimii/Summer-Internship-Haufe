@@ -44,5 +44,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  getGroups,
+  getGroups
 })(GroupsPage);
