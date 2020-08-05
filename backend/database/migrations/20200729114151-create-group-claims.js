@@ -1,13 +1,17 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      "GroupClaims",
+      "group_claims",
       {
+        id: {
+          type: Sequelize.UUID,
+          primaryKey: true,
+        },
         group_id: {
           type: Sequelize.UUID,
         },
-        claims: {
-          type: Sequelize.ARRAY(Sequelize.STRING),
+        claim: {
+          type: Sequelize.STRING,
         },
       },
       {

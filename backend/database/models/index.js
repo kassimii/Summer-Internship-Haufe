@@ -4,7 +4,7 @@ const basename = path.basename(__filename);
 const db = {};
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
-  "postgres://postgres:1234@localhost:5432/haufetest",
+  "postgres://user:1234@localhost:5432/haufe",
   {
     dialect: "postgres",
   }
@@ -17,7 +17,8 @@ fs.readdirSync(__dirname)
   })
   .forEach((file) => {
     const model = require(path.join(__dirname, file))(sequelize, Sequelize);
-    db[model.name] = model;
+    const upperName = model.name[0].toUpperCase() + model.name.slice(1);
+    db[upperName] = model;
   });
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

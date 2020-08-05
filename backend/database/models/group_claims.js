@@ -1,24 +1,28 @@
+const {v4: uuidv4} = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
-
-const GroupClaims = sequelize.define(
-  "GroupClaims",
-  {
-   
-    group_id: {
-      type: DataTypes.UUID,
+  const GroupClaim= sequelize.define(
+    "claim",
+    {
+      group_id: {
+        type: DataTypes.UUID,
+      },
+      claim: {
+        type: DataTypes.STRING,
+      },
     },
-    claims: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-    },
-  },
-  {
-    freezeTableName: true,
-    timestamps: false,
-    tableName: "GroupClaims"
-  }
-);
+    {
+      freezeTableName: true,
+      timestamps: false,
+      tableName: "group_claims",
+    }
+  );
 
-GroupClaims.removeAttribute("id");
+  GroupClaim.beforeCreate((claim, _) => {
+    return claim.id = uuidv4();
+  });
 
-return GroupClaims;
-}
+  // GroupClaim.removeAttribute("id");
+
+  return GroupClaim;
+};

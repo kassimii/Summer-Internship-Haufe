@@ -3,6 +3,12 @@ const express = require("express");
 const router = express.Router();
 
 const {
+  requireGroupName,
+  requireClaims,
+  requireAdvancedSettings,
+} = require("../validators/group-validators");
+
+const {
   createGroup,
   deleteGroup,
   getGroups,

@@ -1,8 +1,13 @@
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      "AdvancedSettings",
+      "advanced_settings",
       {
+        id: {
+          type: Sequelize.UUID,
+          primaryKey: true,
+        },
         group_id: {
           type: Sequelize.UUID,
         },
