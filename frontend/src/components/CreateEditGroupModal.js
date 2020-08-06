@@ -39,7 +39,8 @@ function CreateEditGroupModal({
   editGroup,
   clearGroup,
   createGroup,
-  currentGroup
+  currentGroup,
+  deleteGroup
 }) {
   const [modalShow, setModalShow] = useState(false);
   const [currentClaim, setCurrentClaim] = useState("");
@@ -157,8 +158,11 @@ function CreateEditGroupModal({
     event.preventDefault();
     if (id) {
       deleteGroup(id, sendRequest);
-      handleClose();
     }
+    const unsubscribe = store.subscribe(() => {
+      unsubscribe();
+      handleClose();
+    });
   };
 
   return (
@@ -354,7 +358,11 @@ function CreateEditGroupModal({
                 Close
               </Button>
               {id ? (
-                <Button onClick={handleDelete} className="btn btn-danger">
+                <Button
+                  type="button"
+                  onClick={handleDelete}
+                  className="btn btn-danger"
+                >
                   Delete
                 </Button>
               ) : (

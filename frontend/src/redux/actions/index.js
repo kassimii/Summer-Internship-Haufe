@@ -51,7 +51,7 @@ export const createGroup = (formValues, sendRequest) => async (dispatch) => {
 };
 
 export const deleteGroup = (id, sendRequest) => async (dispatch) => {
-  const response = await sendRequest(`/groups/&{id}`, "DELETE", null, {
+  const response = await sendRequest(`/groups/${id}`, "DELETE", null, {
     "Content-Type": "application/json"
   });
   dispatch({ type: DELETE_GROUP, payload: response });
