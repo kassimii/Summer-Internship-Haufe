@@ -66,13 +66,7 @@ const getGroups = async (req, res) => {
   let groups;
   try {
     groups = await models.Group.findAll({
-      include: [
-        {
-          model: models.Claim,
-          required: true
-        },
-        models.AdvancedSetting
-      ]
+      include: [models.Claim, models.AdvancedSetting]
     });
 
     return res.status(200).json({ groups });
@@ -82,41 +76,18 @@ const getGroups = async (req, res) => {
 };
 
 const getGroupsById = async (req, res) => {
-  const { groupId } = req.params;
-
-  let group;
-
   try {
-    group = await models.Group.findAll({
-      include: [
-        {
-          model: models.GroupClaims,
-          as: "claims",
-          attributes: { exclude: ["id"] }
-        },
-        {
-          model: models.AdvancedSettings,
-          as: "advancedSettings",
-          attributes: ["group_id", "key", "value"]
-        }
-      ],
-
-      where: {
-        group_id: groupId
-      }
+    const group = await models.Group.findByPk(req.params.groupId, {
+      include: [models.Claim, models.AdvancedSetting]
     });
     return res.status(200).json({ group });
   } catch (err) {
-    console.log(err);
-  }
-
-  if (!group) {
-    console.log("HTTP error 404");
-    return res.status(404);
+    return res.status(404).json({ error: err });
   }
 };
 
 const updateGroup = async (req, res) => {
+  console.log(req.body);
   try {
     const { groupId } = req.params;
     const claims = req.body.claims;
@@ -163,7 +134,7 @@ const updateGroup = async (req, res) => {
     }
     throw new Error("Group not found");
   } catch (error) {
-    return res.status(500).send(error.message);
+    return res.status(500).json({ error });
   }
 };
 

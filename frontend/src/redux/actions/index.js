@@ -22,14 +22,19 @@ export const getGroup = (id, sendRequest) => async (dispatch) => {
 };
 
 export const editGroup = (formValues, sendRequest) => async (dispatch) => {
-  const response = await sendRequest(
-    `/groups/${formValues.id}`,
-    "PATCH",
-    JSON.stringify(formValues),
-    {
-      "Content-Type": "application/json"
-    }
-  );
+  let response;
+  try {
+    response = await sendRequest(
+      `/groups/${formValues.id}`,
+      "PATCH",
+      JSON.stringify(formValues),
+      {
+        "Content-Type": "application/json"
+      }
+    );
+  } catch (err) {
+    response = err;
+  }
   dispatch({ type: EDIT_GROUP, payload: response });
 };
 

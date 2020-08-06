@@ -239,8 +239,8 @@ function CreateEditGroupModal({
                       ) : (
                         <ListGroup>
                           {group.claims.map((claim) => (
-                            <ListGroup.Item key={claim} className="d-flex">
-                              <span className="p-2">{claim}</span>
+                            <ListGroup.Item key={claim.id} className="d-flex">
+                              <span className="p-2">{claim.claim}</span>
                               <Button
                                 variant="outline-danger"
                                 className="ml-auto p-2"

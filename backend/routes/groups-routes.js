@@ -5,7 +5,7 @@ const router = express.Router();
 const {
   requireGroupName,
   requireClaims,
-  requireAdvancedSettings,
+  requireAdvancedSettings
 } = require("../validators/group-validators");
 
 const {
@@ -13,13 +13,13 @@ const {
   deleteGroup,
   getGroups,
   getGroupsById,
-  updateGroup,
+  updateGroup
 } = require("../controllers/groups-controllers");
 
 router.post("/", createGroup);
 router.delete("/delete/:groupId", deleteGroup);
 router.get("/", getGroups);
 router.get("/:groupId", getGroupsById);
-router.patch("/update/:groupId", updateGroup);
+router.patch("/:groupId", updateGroup);
 
 module.exports = router;

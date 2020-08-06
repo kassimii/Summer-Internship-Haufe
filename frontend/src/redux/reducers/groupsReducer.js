@@ -1,17 +1,33 @@
 import { GET_GROUPS, CREATE_GROUP, EDIT_GROUP } from "../actions/types";
 
 export default (state = [], action) => {
+  console.log(action);
   switch (action.type) {
     case GET_GROUPS:
-      return action.payload.groups;
+      if (action.payload.groups) {
+        if (action.payload.groups.length === 0) return null;
+        return action.payload.groups;
+      } else {
+        return state;
+      }
     case CREATE_GROUP:
-      return [...state, action.payload.group];
+      if (action.payload.group) {
+        if (state === null) return [action.payload.group];
+        else return [...state, action.payload.group];
+      }
+      return state;
+
     case EDIT_GROUP:
-      let newState = state;
-      newState = state.map((group) =>
-        group.id === action.payload.id ? action.payload : group
-      );
-      return newState;
+      if (action.payload.group) {
+        let newState = state;
+        newState = state.map((group) =>
+          group.id === action.payload.id ? action.payload : group
+        );
+        return newState;
+      } else {
+        return state;
+      }
+
     default:
       return state;
   }
