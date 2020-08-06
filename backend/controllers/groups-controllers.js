@@ -95,17 +95,17 @@ const updateGroup = async (req, res) => {
     const value = req.body.advancedSettings.value;
 
     const [updatedGroup] = await models.Group.update(req.body, {
-      where: { group_id: groupId }
+      where: { id: groupId }
     });
 
-    const [updatedGroupClaims] = await models.GroupClaims.update(
+    const [updatedGroupClaims] = await models.Claim.update(
       { claims: claims },
       {
         where: { group_id: groupId }
       }
     );
 
-    const [updatedGroupSettings] = await models.AdvancedSettings.update(
+    const [updatedGroupSettings] = await models.AdvancedSetting.update(
       { key: key, value: value },
       {
         where: { group_id: groupId }
@@ -116,11 +116,11 @@ const updateGroup = async (req, res) => {
       const updatedGroup = await models.Group.findOne({
         include: [
           {
-            model: models.GroupClaims,
+            model: models.Claim,
             as: "claims"
           },
           {
-            model: models.AdvancedSettings,
+            model: models.AdvancedSetting,
             as: "advancedSettings"
           }
         ],

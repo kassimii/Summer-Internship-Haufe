@@ -17,7 +17,7 @@ const {
 } = require("../controllers/groups-controllers");
 
 router.post("/", createGroup);
-router.delete("/delete/:groupId", deleteGroup);
+router.delete("/:groupId", deleteGroup);
 router.get("/", getGroups);
 router.get("/:groupId", getGroupsById);
 router.patch("/:groupId", updateGroup);

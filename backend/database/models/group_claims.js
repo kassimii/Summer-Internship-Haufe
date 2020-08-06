@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 
 module.exports = (sequelize, DataTypes) => {
-  const GroupClaim = sequelize.define(
+  const Claim = sequelize.define(
     "claim",
     {
       group_id: {
@@ -18,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  GroupClaim.beforeCreate((claim, _) => {
+  Claim.beforeCreate((claim, _) => {
     return (claim.id = uuidv4());
   });
 
   // GroupClaim.removeAttribute("id");
 
-  return GroupClaim;
+  return Claim;
 };

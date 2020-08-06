@@ -1,7 +1,6 @@
 import { GET_GROUPS, CREATE_GROUP, EDIT_GROUP } from "../actions/types";
 
 export default (state = [], action) => {
-  console.log(action);
   switch (action.type) {
     case GET_GROUPS:
       if (action.payload.groups) {
