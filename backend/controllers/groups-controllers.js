@@ -26,40 +26,26 @@ const createGroup = async (req, res) => {
 const deleteGroup = async (req, res) => {
   const groupId = req.params.groupId;
 
-  await models.Group.destroy({
-    where: {
-      group_id: {
-        [Op.eq]: groupId
+  try {
+    const group = await models.Group.findOne({
+      where: {
+        id: {
+          [Op.eq]: groupId
+        }
       }
-    }
-  }).catch((err) => {
-    console.log("Error: " + err);
-    res.sendStatus(400);
-  });
-
-  await models.GroupClaims.destroy({
-    where: {
-      group_id: {
-        [Op.eq]: groupId
-      }
-    }
-  }).catch((err) => {
-    console.log("Error: " + err);
-    res.sendStatus(400);
-  });
-
-  await models.AdvancedSettings.destroy({
-    where: {
-      group_id: {
-        [Op.eq]: groupId
-      }
-    }
-  })
-    .then(res.sendStatus(200))
-    .catch((err) => {
-      console.log("Error: " + err);
-      res.sendStatus(400);
     });
+
+    if (group) {
+      await group.destroy();
+
+      return res
+        .status(200)
+        .json({ message: "deleted group", id: req.params.groupId });
+    }
+  } catch (err) {
+    console.log("Error: " + err);
+    res.status(400).json({ error: err });
+  }
 };
 
 const getGroups = async (req, res) => {

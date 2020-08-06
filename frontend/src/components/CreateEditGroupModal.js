@@ -148,21 +148,23 @@ function CreateEditGroupModal({
     } else {
       editGroup(group, sendRequest);
     }
-    const unsubscribe = store.subscribe(() => {
-      unsubscribe();
-      handleClose();
-    });
+    handleClose();
+    // const unsubscribe = store.subscribe(() => {
+    //   unsubscribe();
+    //   handleClose();
+    // });
   };
 
   const handleDelete = (event) => {
     event.preventDefault();
     if (id) {
       deleteGroup(id, sendRequest);
-    }
-    const unsubscribe = store.subscribe(() => {
-      unsubscribe();
       handleClose();
-    });
+    }
+    // const unsubscribe = store.subscribe(() => {
+    //   unsubscribe();
+    //   handleClose();
+    // });
   };
 
   return (
