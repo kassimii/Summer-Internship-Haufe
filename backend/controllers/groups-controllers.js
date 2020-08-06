@@ -12,16 +12,14 @@ const createGroup = async (req, res) => {
     creationDate: new Date().toISOString(),
     id: uuidv4()
   };
-  console.log(req.body);
+
   try {
     const result = await models.Group.create(newGroup, {
       include: [models.AdvancedSetting, models.Claim]
     });
-    // console.log(result.json());
-    return res.sendStatus(201);
+    return res.status(201).json({ group: result });
   } catch (err) {
-    console.log("Error: " + err);
-    res.sendStatus(400);
+    res.status(400).json({ error: err });
   }
 };
 

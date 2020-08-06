@@ -5,7 +5,7 @@ export default (state = [], action) => {
     case GET_GROUPS:
       return action.payload.groups;
     case CREATE_GROUP:
-      return [...state, action.payload];
+      return [...state, action.payload.group];
     case EDIT_GROUP:
       let newState = state;
       newState = state.map((group) =>
