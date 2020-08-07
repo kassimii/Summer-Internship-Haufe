@@ -27,13 +27,15 @@ module.exports = (sequelize, DataTypes) => {
     Group.hasMany(models.Claim, {
       foreignKey: "group_id",
       // as: "claims",
-      onDelete: "CASCADE"
+      onDelete: "CASCADE",
+      hooks: true
     });
 
     Group.hasMany(models.AdvancedSetting, {
       foreignKey: "group_id",
       // as: "advancedSettings",
-      onDelete: "CASCADE"
+      onDelete: "CASCADE",
+      hooks: true
     });
   };
 

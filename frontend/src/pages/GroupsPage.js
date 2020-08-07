@@ -9,11 +9,10 @@ import { useHttpClient } from "../hooks/http-hook";
 function GroupsPage(props) {
   const { getGroups } = props;
   const [searchField, setSearchField] = useState("");
-  const [groups, setSearchedGroups] = useState(props.groups);
+  const groups = props.groups;
   const { sendRequest } = useHttpClient();
 
   useEffect(() => {
-    setSearchedGroups(props.groups);
     setSearchField("");
   }, [props.groups]);
 

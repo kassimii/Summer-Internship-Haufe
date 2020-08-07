@@ -19,6 +19,11 @@ const GroupsList = ({ props }) => {
       else setSearchedGroups(searchedGroups);
     }
   }, [groups, searchField]);
+
+  useEffect(() => {
+    setSearchedGroups(groups);
+  }, [groups]);
+
   return (
     <div className="album py-5 bg-light">
       <div className="container">

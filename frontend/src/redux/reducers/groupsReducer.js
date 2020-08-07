@@ -1,4 +1,4 @@
-import { GET_GROUPS, CREATE_GROUP, EDIT_GROUP } from "../actions/types";
+import { GET_GROUPS, CREATE_GROUP } from "../actions/types";
 
 export default (state = [], action) => {
   switch (action.type) {
@@ -16,17 +16,6 @@ export default (state = [], action) => {
       }
       return state;
 
-    case EDIT_GROUP:
-      if (action.payload.group) {
-        let newState = state;
-        newState = state.map((group) =>
-          group.id === action.payload.id ? action.payload : group
-        );
-        if (newState.length === 0) return null;
-        return newState;
-      } else {
-        return state;
-      }
     default:
       return state;
   }
