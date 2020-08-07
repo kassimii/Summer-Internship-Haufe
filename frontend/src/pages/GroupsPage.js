@@ -8,11 +8,13 @@ import { useHttpClient } from "../hooks/http-hook";
 
 function GroupsPage(props) {
   const { getGroups } = props;
-  const [searchedGroups, setSearchedGroups] = useState(props.groups);
+  const [searchField, setSearchField] = useState("");
+  const [groups, setSearchedGroups] = useState(props.groups);
   const { sendRequest } = useHttpClient();
 
   useEffect(() => {
     setSearchedGroups(props.groups);
+    setSearchField("");
   }, [props.groups]);
 
   useEffect(() => {
@@ -20,21 +22,16 @@ function GroupsPage(props) {
   }, [getGroups, sendRequest]);
 
   const onSearchChange = (event) => {
-    let searchedGroups =
-      event.target.value === ""
-        ? props.groups
-        : props.groups.filter((group) => {
-            return group.name
-              .toLowerCase()
-              .includes(event.target.value.toLowerCase());
-          });
-    setSearchedGroups(searchedGroups);
+    setSearchField(event.target.value);
   };
 
   return (
     <div className="bg-light">
-      <GroupsPageTab onSearchChange={onSearchChange} />
-      <GroupsList groups={searchedGroups} />
+      <GroupsPageTab
+        searchValue={searchField}
+        onSearchChange={onSearchChange}
+      />
+      <GroupsList props={{ groups, searchField }} />
     </div>
   );
 }

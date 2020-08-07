@@ -15,6 +15,7 @@ import {
 import { store } from "../redux/store";
 import { useHttpClient } from "../hooks/http-hook";
 import {
+  getGroups,
   getGroup,
   editGroup,
   clearGroup,
@@ -36,6 +37,7 @@ const initialErrors = {
 function CreateEditGroupModal({
   id,
   getGroup,
+  getGroups,
   editGroup,
   clearGroup,
   createGroup,
@@ -148,23 +150,22 @@ function CreateEditGroupModal({
     } else {
       editGroup(group, sendRequest);
     }
-    handleClose();
-    // const unsubscribe = store.subscribe(() => {
-    //   unsubscribe();
-    //   handleClose();
-    // });
+    const unsubscribe = store.subscribe(() => {
+      unsubscribe();
+      handleClose();
+    });
   };
 
   const handleDelete = (event) => {
     event.preventDefault();
     if (id) {
       deleteGroup(id, sendRequest);
-      handleClose();
+      const unsubscribe = store.subscribe(() => {
+        unsubscribe();
+        handleClose();
+        getGroups(sendRequest);
+      });
     }
-    // const unsubscribe = store.subscribe(() => {
-    //   unsubscribe();
-    //   handleClose();
-    // });
   };
 
   return (
@@ -386,6 +387,7 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
+  getGroups,
   getGroup,
   editGroup,
   clearGroup,

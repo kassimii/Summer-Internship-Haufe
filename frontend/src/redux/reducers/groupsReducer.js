@@ -1,12 +1,6 @@
-import {
-  GET_GROUPS,
-  CREATE_GROUP,
-  EDIT_GROUP,
-  DELETE_GROUP
-} from "../actions/types";
+import { GET_GROUPS, CREATE_GROUP, EDIT_GROUP } from "../actions/types";
 
 export default (state = [], action) => {
-  console.log(action);
   switch (action.type) {
     case GET_GROUPS:
       if (action.payload.groups) {
@@ -28,14 +22,7 @@ export default (state = [], action) => {
         newState = state.map((group) =>
           group.id === action.payload.id ? action.payload : group
         );
-        return newState;
-      } else {
-        return state;
-      }
-    case DELETE_GROUP:
-      if (action.payload.message === "deleted group" && action.payload.id) {
-        let newState = state;
-        newState = state.filter((group) => action.payload.id !== group.id);
+        if (newState.length === 0) return null;
         return newState;
       } else {
         return state;
