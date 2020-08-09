@@ -10,7 +10,22 @@ describe("Post Group", () => {
         name: "group1",
         creationDate: "2020-06-30 15:39:52.270000",
         createdBy: "dbbd63b8-b481-466b-bb1a-d0e2b43d8afd",
-        claims: ["claim1", "claim2"],
+        claims: [{ claim: "claim1" }, { claim: "claim2" }],
+        advancedSettings: { key: "key", value: "value" },
+      });
+    expect(res.statusCode).toEqual(200);
+  });
+});
+
+describe("Post Group", () => {
+  it("should throw an error if group has no name", async () => {
+    const res = await request(app)
+      .post("/api/groups")
+      .send({
+        name: "",
+        creationDate: "2020-06-30 15:39:52.270000",
+        createdBy: "dbbd63b8-b481-466b-bb1a-d0e2b43d8afd",
+        claims: [{ claim: "claim1" }, { claim: "claim2" }],
         advancedSettings: { key: "key", value: "value" },
       });
     expect(res.statusCode).toEqual(200);
