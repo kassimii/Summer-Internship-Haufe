@@ -10,14 +10,14 @@ const createGroup = async (req, res) => {
       return { claim: claim };
     }),
     creationDate: new Date().toISOString(),
-    id: uuidv4()
+    id: uuidv4(),
   };
 
   try {
     const result = await models.Group.create(newGroup, {
-      include: [models.AdvancedSetting, models.Claim]
+      include: [models.AdvancedSetting, models.Claim],
     });
-    return res.status(201).json({ group: result });
+    return res.status(200).json({ group: result });
   } catch (err) {
     res.status(400).json({ error: err });
   }
@@ -30,9 +30,9 @@ const deleteGroup = async (req, res) => {
     const group = await models.Group.findOne({
       where: {
         id: {
-          [Op.eq]: groupId
-        }
-      }
+          [Op.eq]: groupId,
+        },
+      },
     });
 
     if (group) {
@@ -41,6 +41,10 @@ const deleteGroup = async (req, res) => {
       return res
         .status(200)
         .json({ message: "deleted group", id: req.params.groupId });
+    } else {
+      return res
+        .status(404)
+        .json({ message: "group does not exist", id: req.params.groupId });
     }
   } catch (err) {
     console.log("Error: " + err);
@@ -52,7 +56,7 @@ const getGroups = async (req, res) => {
   let groups;
   try {
     groups = await models.Group.findAll({
-      include: [models.Claim, models.AdvancedSetting]
+      include: [models.Claim, models.AdvancedSetting],
     });
 
     return res.status(200).json({ groups });
@@ -64,7 +68,7 @@ const getGroups = async (req, res) => {
 const getGroupsById = async (req, res) => {
   try {
     const group = await models.Group.findByPk(req.params.groupId, {
-      include: [models.Claim, models.AdvancedSetting]
+      include: [models.Claim, models.AdvancedSetting],
     });
     return res.status(200).json({ group });
   } catch (err) {
@@ -82,7 +86,7 @@ const updateGroup = async (req, res) => {
     return {
       group_id: req.params.groupId,
       key: setting.key,
-      value: setting.value
+      value: setting.value,
     };
   });
 
@@ -92,9 +96,9 @@ const updateGroup = async (req, res) => {
 
       where: {
         id: {
-          [Op.eq]: groupId
-        }
-      }
+          [Op.eq]: groupId,
+        },
+      },
     });
 
     if (group) {
@@ -111,7 +115,7 @@ const updateGroup = async (req, res) => {
           console.log("deja este");
         } else {
           models.Claim.destroy({
-            where: { claim: claim.dataValues.claim }
+            where: { claim: claim.dataValues.claim },
           });
         }
       });
@@ -150,8 +154,8 @@ const updateGroup = async (req, res) => {
         } else {
           models.AdvancedSetting.destroy({
             where: {
-              key: existing_key
-            }
+              key: existing_key,
+            },
           });
         }
       });
@@ -173,8 +177,8 @@ const updateGroup = async (req, res) => {
             { value: newSetting.value },
             {
               where: {
-                key: newSetting.key
-              }
+                key: newSetting.key,
+              },
             }
           );
         } else {
