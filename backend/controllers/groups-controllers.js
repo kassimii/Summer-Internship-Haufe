@@ -26,40 +26,26 @@ const createGroup = async (req, res) => {
 const deleteGroup = async (req, res) => {
   const groupId = req.params.groupId;
 
-  await models.Group.destroy({
-    where: {
-      group_id: {
-        [Op.eq]: groupId
+  try {
+    const group = await models.Group.findOne({
+      where: {
+        id: {
+          [Op.eq]: groupId
+        }
       }
-    }
-  }).catch((err) => {
-    console.log("Error: " + err);
-    res.sendStatus(400);
-  });
-
-  await models.GroupClaims.destroy({
-    where: {
-      group_id: {
-        [Op.eq]: groupId
-      }
-    }
-  }).catch((err) => {
-    console.log("Error: " + err);
-    res.sendStatus(400);
-  });
-
-  await models.AdvancedSettings.destroy({
-    where: {
-      group_id: {
-        [Op.eq]: groupId
-      }
-    }
-  })
-    .then(res.sendStatus(200))
-    .catch((err) => {
-      console.log("Error: " + err);
-      res.sendStatus(400);
     });
+
+    if (group) {
+      await group.destroy();
+
+      return res
+        .status(200)
+        .json({ message: "deleted group", id: req.params.groupId });
+    }
+  } catch (err) {
+    console.log("Error: " + err);
+    res.status(400).json({ error: err });
+  }
 };
 
 const getGroups = async (req, res) => {
@@ -87,54 +73,120 @@ const getGroupsById = async (req, res) => {
 };
 
 const updateGroup = async (req, res) => {
-  console.log(req.body);
+  console.log("====" + req.body);
+  const { groupId } = req.params;
+  const claimsNew = req.body.claims.map((claim) => {
+    return { group_id: req.params.groupId, claim: claim };
+  });
+  const advancedSettingsNew = req.body.advancedSettings.map((setting) => {
+    return {
+      group_id: req.params.groupId,
+      key: setting.key,
+      value: setting.value
+    };
+  });
+
   try {
-    const { groupId } = req.params;
-    const claims = req.body.claims;
-    const key = req.body.advancedSettings.key;
-    const value = req.body.advancedSettings.value;
+    let group = await models.Group.findOne({
+      include: [models.Claim, models.AdvancedSetting],
 
-    const [updatedGroup] = await models.Group.update(req.body, {
-      where: { id: groupId }
-    });
-
-    const [updatedGroupClaims] = await models.Claim.update(
-      { claims: claims },
-      {
-        where: { group_id: groupId }
-      }
-    );
-
-    const [updatedGroupSettings] = await models.AdvancedSetting.update(
-      { key: key, value: value },
-      {
-        where: { group_id: groupId }
-      }
-    );
-
-    if (updatedGroup) {
-      const updatedGroup = await models.Group.findOne({
-        include: [
-          {
-            model: models.Claim,
-            as: "claims"
-          },
-          {
-            model: models.AdvancedSetting,
-            as: "advancedSettings"
-          }
-        ],
-        where: { group_id: groupId }
-      });
-      if (updatedGroupClaims) {
-        if (updatedGroupSettings) {
-          return res.status(200).json({ group: updatedGroup });
+      where: {
+        id: {
+          [Op.eq]: groupId
         }
       }
+    });
+
+    if (group) {
+      const groupClaims = group.claims;
+      const groupAdvancedSettings = group.advancedSettings;
+
+      group.update(req.body);
+      group.save();
+
+      groupClaims.forEach((claim) => {
+        if (
+          claimsNew.map((claim) => claim.claim).includes(claim.dataValues.claim)
+        ) {
+          console.log("deja este");
+        } else {
+          models.Claim.destroy({
+            where: { claim: claim.dataValues.claim }
+          });
+        }
+      });
+
+      console.log(groupClaims);
+      console.log(claimsNew);
+      claimsNew.forEach((newClaim) => {
+        if (
+          groupClaims.map((gc) => gc.dataValues.claim).includes(newClaim.claim)
+        ) {
+          console.log("deja este ma");
+        } else {
+          models.Claim.create(newClaim);
+          console.log("created");
+        }
+      });
+
+      // groupAdvancedSettings.forEach( (setting, flag) => {
+      //   advancedSettingsNew.forEach((newSetting => {
+      //     if(newSetting.key === setting.key){
+
+      //   }));
+
+      // });
+
+      const existingAdvancedSettingsKeys = groupAdvancedSettings.map(
+        (setting) => setting.key
+      );
+      const newAdvancedSettingsKeys = advancedSettingsNew.map(
+        (setting) => setting.key
+      );
+
+      existingAdvancedSettingsKeys.forEach((existing_key) => {
+        if (newAdvancedSettingsKeys.includes(existing_key)) {
+          console.log("exists");
+        } else {
+          models.AdvancedSetting.destroy({
+            where: {
+              key: existing_key
+            }
+          });
+        }
+      });
+      // advancedSettingsNew.forEach((newSetting) => {
+      //   groupAdvancedSettings.forEach( (setting) => {
+      //     if(setting.key === newSetting.key) {
+
+      //     }
+
+      //   });
+
+      // if(flag !==2){
+      //   models.AdvancedSetting.create(newSetting);
+      // }
+
+      advancedSettingsNew.forEach((newSetting) => {
+        if (existingAdvancedSettingsKeys.includes(newSetting.key)) {
+          models.AdvancedSetting.update(
+            { value: newSetting.value },
+            {
+              where: {
+                key: newSetting.key
+              }
+            }
+          );
+        } else {
+          models.AdvancedSetting.create(newSetting);
+        }
+      });
+      console.log(group);
+      return res.status(201).json({ group });
     }
-    throw new Error("Group not found");
-  } catch (error) {
-    return res.status(500).json({ error });
+  } catch (err) {
+    console.log("Error: " + err);
+    res.status(400).json({ error: err });
   }
 };
 

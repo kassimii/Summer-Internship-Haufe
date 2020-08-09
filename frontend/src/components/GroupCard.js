@@ -11,7 +11,8 @@ const GroupCard = ({ group }) => {
         <h5 className="card-title">{group.name}</h5>
         <ul className="card-text">
           {group.claims.map((claim) => {
-            return <li key={claim.claim}>{claim.claim}</li>;
+            const value = claim.claim ? claim.claim : claim;
+            return <li key={value}>{value}</li>;
           })}
         </ul>
         <div className="d-flex justify-content-center form-inline">

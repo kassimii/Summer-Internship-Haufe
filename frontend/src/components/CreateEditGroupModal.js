@@ -15,6 +15,7 @@ import {
 import { store } from "../redux/store";
 import { useHttpClient } from "../hooks/http-hook";
 import {
+  getGroups,
   getGroup,
   editGroup,
   clearGroup,
@@ -29,13 +30,14 @@ const initialGroup = {
 };
 const initialErrors = {
   name: false,
-  claims: false,
-  setting: false
+  claim: { empty: false, exists: false },
+  setting: { empty: false, exists: false }
 };
 
 function CreateEditGroupModal({
   id,
   getGroup,
+  getGroups,
   editGroup,
   clearGroup,
   createGroup,
@@ -87,11 +89,30 @@ function CreateEditGroupModal({
 
   // Form Control helpers
   const handleClaim = () => {
+    let fieldExists = false;
     if (currentClaim === "") {
-      setErrors({ ...errors, claim: true });
+      setErrors({ ...errors, claim: { empty: true, exists: false } });
       return;
     }
-    setErrors({ ...errors, claim: false });
+    group.claims.forEach((claim) => {
+      if (claim.claim) {
+        if (claim.claim === currentClaim) {
+          fieldExists = true;
+          return;
+        }
+      } else {
+        if (claim === currentClaim) {
+          fieldExists = true;
+          return;
+        }
+      }
+    });
+    if (fieldExists) {
+      setErrors({ ...errors, claim: { empty: false, exists: true } });
+      setCurrentClaim("");
+      return;
+    }
+    setErrors({ ...errors, claim: { empty: false, exists: false } });
     handleChange({
       target: { name: "claims", value: currentClaim }
     });
@@ -99,11 +120,23 @@ function CreateEditGroupModal({
   };
 
   const handleSetting = () => {
+    let fieldExists = false;
     if (currentSetting.key === "" || currentSetting.value === "") {
-      setErrors({ ...errors, setting: true });
+      setErrors({ ...errors, setting: { empty: true, exists: false } });
       return;
     }
-    setErrors({ ...errors, setting: false });
+    group.advancedSettings.forEach((setting) => {
+      if (currentSetting.key === setting.key) {
+        fieldExists = true;
+        return;
+      }
+    });
+    if (fieldExists) {
+      setErrors({ ...errors, setting: { empty: false, exists: true } });
+      setCurrentSetting({ key: "", value: "" });
+      return;
+    }
+    setErrors({ ...errors, setting: { empty: false, exists: false } });
     handleChange({
       target: { name: "advancedSettings", value: currentSetting }
     });
@@ -111,9 +144,13 @@ function CreateEditGroupModal({
   };
 
   const deleteClaim = (event) => {
-    let newMapping = group.claims.filter(
-      (claim) => claim !== event.target.value
-    );
+    let newMapping = group.claims.filter((claim) => {
+      if (claim.claim) {
+        return claim.claim !== event.target.value;
+      } else {
+        return claim !== event.target.value;
+      }
+    });
     setGroup({ ...group, claims: newMapping });
   };
 
@@ -146,10 +183,15 @@ function CreateEditGroupModal({
     if (!id) {
       createGroup(group, sendRequest);
     } else {
-      editGroup(group, sendRequest);
+      let parsedGroup = group;
+      parsedGroup.claims = parsedGroup.claims.map((claim) =>
+        claim.id ? claim.claim : claim
+      );
+      editGroup(parsedGroup, sendRequest);
     }
     const unsubscribe = store.subscribe(() => {
       unsubscribe();
+      getGroups(sendRequest);
       handleClose();
     });
   };
@@ -158,11 +200,12 @@ function CreateEditGroupModal({
     event.preventDefault();
     if (id) {
       deleteGroup(id, sendRequest);
+      const unsubscribe = store.subscribe(() => {
+        unsubscribe();
+        getGroups(sendRequest);
+        handleClose();
+      });
     }
-    const unsubscribe = store.subscribe(() => {
-      unsubscribe();
-      handleClose();
-    });
   };
 
   return (
@@ -219,9 +262,9 @@ function CreateEditGroupModal({
                           placeholder="Add a claim"
                           value={currentClaim}
                           onChange={(event) =>
-                            setCurrentClaim(event.target.value)
+                            setCurrentClaim(event.target.value.trim())
                           }
-                          isInvalid={errors.claim}
+                          isInvalid={errors.claim.empty || errors.claim.exists}
                         />
                         <InputGroup.Append>
                           <Button
@@ -233,7 +276,11 @@ function CreateEditGroupModal({
                           </Button>
                         </InputGroup.Append>
                         <Form.Control.Feedback type="invalid">
-                          Please provide a claim
+                          {errors.claim.empty ? (
+                            <span>Please provide a value</span>
+                          ) : (
+                            <span>Claim with this name exists</span>
+                          )}
                         </Form.Control.Feedback>
                       </InputGroup>
                     </Form.Group>
@@ -254,7 +301,7 @@ function CreateEditGroupModal({
                                 variant="outline-danger"
                                 className="ml-auto p-2"
                                 size="sm"
-                                value={claim}
+                                value={claim.claim ? claim.claim : claim}
                                 onClick={deleteClaim}
                               >
                                 Delete
@@ -288,10 +335,12 @@ function CreateEditGroupModal({
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
-                          isInvalid={errors.setting}
+                          isInvalid={
+                            errors.setting.empty || errors.setting.exists
+                          }
                         />
                         <FormControl
                           name="value"
@@ -301,10 +350,12 @@ function CreateEditGroupModal({
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
-                          isInvalid={errors.setting}
+                          isInvalid={
+                            errors.setting.empty || errors.setting.exists
+                          }
                         />
                         <InputGroup.Append>
                           <Button
@@ -316,7 +367,11 @@ function CreateEditGroupModal({
                           </Button>
                         </InputGroup.Append>
                         <Form.Control.Feedback type="invalid">
-                          Please provide a key and a value
+                          {errors.setting.empty ? (
+                            <span>Please provide a key and a value</span>
+                          ) : (
+                            <span>Setting with this key exists</span>
+                          )}
                         </Form.Control.Feedback>
                       </InputGroup>
                     </Form.Group>
@@ -384,6 +439,7 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
+  getGroups,
   getGroup,
   editGroup,
   clearGroup,
