@@ -27,4 +27,10 @@ module.exports = {
       }
       return true;
     }),
+
+  requireNotEmptyGroupName: check("name")
+    .not()
+    .isEmpty()
+    .trim()
+    .withMessage("Group name must not be empty."),
 };

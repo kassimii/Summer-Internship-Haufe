@@ -1,7 +1,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) =>
     queryInterface.bulkInsert(
-      "AdvancedSettings",
+      "advanced_settings",
       [
         {
           group_id: "123e4567-e89b-12d3-a456-426614174000",
@@ -18,6 +18,6 @@ module.exports = {
     ),
 
   down: async (queryInterface, Sequelize) => {
-    queryInterface.bulkDelete("AdvancedSettings", null, {});
+    queryInterface.bulkDelete("advanced_settings", null, {});
   },
 };

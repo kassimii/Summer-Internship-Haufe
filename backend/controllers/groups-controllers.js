@@ -10,12 +10,12 @@ const createGroup = async (req, res) => {
       return { claim: claim };
     }),
     creationDate: new Date().toISOString(),
-    id: uuidv4()
+    id: uuidv4(),
   };
 
   try {
     const result = await models.Group.create(newGroup, {
-      include: [models.AdvancedSetting, models.Claim]
+      include: [models.AdvancedSetting, models.Claim],
     });
     return res.status(200).json({ group: result });
   } catch (err) {
@@ -30,9 +30,9 @@ const deleteGroup = async (req, res) => {
     const group = await models.Group.findOne({
       where: {
         id: {
-          [Op.eq]: groupId
-        }
-      }
+          [Op.eq]: groupId,
+        },
+      },
     });
 
     if (group) {
@@ -56,7 +56,7 @@ const getGroups = async (req, res) => {
   let groups;
   try {
     groups = await models.Group.findAll({
-      include: [models.Claim, models.AdvancedSetting]
+      include: [models.Claim, models.AdvancedSetting],
     });
 
     return res.status(200).json({ groups });
@@ -68,11 +68,15 @@ const getGroups = async (req, res) => {
 const getGroupsById = async (req, res) => {
   try {
     const group = await models.Group.findByPk(req.params.groupId, {
-      include: [models.Claim, models.AdvancedSetting]
+      include: [models.Claim, models.AdvancedSetting],
     });
-    return res.status(200).json({ group });
+    if (group) {
+      return res.status(200).json({ group });
+    } else {
+      return res.status(404).json({ group });
+    }
   } catch (err) {
-    return res.status(404).json({ error: err });
+    return res.status(400).json({ error: err });
   }
 };
 
@@ -85,7 +89,7 @@ const updateGroup = async (req, res) => {
     return {
       group_id: req.params.groupId,
       key: setting.key,
-      value: setting.value
+      value: setting.value,
     };
   });
 
@@ -95,9 +99,9 @@ const updateGroup = async (req, res) => {
 
       where: {
         id: {
-          [Op.eq]: groupId
-        }
-      }
+          [Op.eq]: groupId,
+        },
+      },
     });
 
     if (group) {
@@ -111,10 +115,10 @@ const updateGroup = async (req, res) => {
         if (
           claimsNew.map((claim) => claim.claim).includes(claim.dataValues.claim)
         ) {
-          console.log("deja este");
+          console.log("already exists");
         } else {
           models.Claim.destroy({
-            where: { claim: claim.dataValues.claim }
+            where: { claim: claim.dataValues.claim },
           });
         }
       });
@@ -125,20 +129,12 @@ const updateGroup = async (req, res) => {
         if (
           groupClaims.map((gc) => gc.dataValues.claim).includes(newClaim.claim)
         ) {
-          console.log("deja este ma");
+          console.log("already exists");
         } else {
           models.Claim.create(newClaim);
           console.log("created");
         }
       });
-
-      // groupAdvancedSettings.forEach( (setting, flag) => {
-      //   advancedSettingsNew.forEach((newSetting => {
-      //     if(newSetting.key === setting.key){
-
-      //   }));
-
-      // });
 
       const existingAdvancedSettingsKeys = groupAdvancedSettings.map(
         (setting) => setting.key
@@ -153,22 +149,11 @@ const updateGroup = async (req, res) => {
         } else {
           models.AdvancedSetting.destroy({
             where: {
-              key: existing_key
-            }
+              key: existing_key,
+            },
           });
         }
       });
-      // advancedSettingsNew.forEach((newSetting) => {
-      //   groupAdvancedSettings.forEach( (setting) => {
-      //     if(setting.key === newSetting.key) {
-
-      //     }
-
-      //   });
-
-      // if(flag !==2){
-      //   models.AdvancedSetting.create(newSetting);
-      // }
 
       advancedSettingsNew.forEach((newSetting) => {
         if (existingAdvancedSettingsKeys.includes(newSetting.key)) {
@@ -176,8 +161,8 @@ const updateGroup = async (req, res) => {
             { value: newSetting.value },
             {
               where: {
-                key: newSetting.key
-              }
+                key: newSetting.key,
+              },
             }
           );
         } else {
@@ -185,7 +170,7 @@ const updateGroup = async (req, res) => {
         }
       });
       console.log(group);
-      return res.status(201).json({ group });
+      return res.status(200).json({ group });
     }
   } catch (err) {
     console.log("Error: " + err);
