@@ -11,13 +11,13 @@ const {
   deleteGroup,
   getGroups,
   getGroupsById,
-  updateGroup,
+  updateGroup
 } = require("../controllers/groups-controllers");
 
 router.post("/", [requireGroupName], handleErrors, createGroup);
 router.delete("/:groupId", deleteGroup);
 router.get("/", getGroups);
 router.get("/:groupId", getGroupsById);
-router.patch("/:groupId", [requireGroupName], handleErrors, updateGroup);
+router.patch("/:groupId", updateGroup);
 
 module.exports = router;
