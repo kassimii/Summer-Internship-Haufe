@@ -8,7 +8,12 @@ const {
   getClient,
   updateClient,
   deleteClient,
-  addStatus
+  addStatus,
+  addMetadata,
+  getAllMetadata,
+  getMetadata,
+  updateMetadata,
+  deleteMetadata
 } = require("../controllers/client-controllers");
 
 router.get("/", getClients);
@@ -17,3 +22,8 @@ router.get("/:clientId", getClient);
 router.patch("/:clientId", updateClient);
 router.delete("/:clientId", deleteClient);
 router.post("/:clientId/status", addStatus);
+router.post("/:clientId/metadata", addMetadata);
+router.get("/:clientId/metadata", getAllMetadata);
+router.get("/:clientId/metadata/:metadataId", getMetadata);
+router.patch("/:clientId/metadata/:metadataId", updateMetadata);
+router.delete("/:clientId/metadata/:metadataId", deleteMetadata);
