@@ -1,10 +1,11 @@
+const { Sequelize } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   const AttributeMapping = sequelize.define(
     "attributeMapping",
     {
       id: {
         type: DataTypes.UUID,
-        defaulValue: Sequelize.UUIDV4,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true
       },
       client_id: {

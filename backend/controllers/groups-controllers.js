@@ -1,24 +1,25 @@
 const express = require("express");
-const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
 const models = require("../database/models");
 
 const createGroup = async (req, res) => {
+  console.log(req.body);
   const newGroup = {
     ...req.body,
     claims: req.body.claims.map((claim) => {
       return { claim: claim };
     }),
-    creationDate: new Date().toISOString(),
-    id: uuidv4()
+    creationDate: new Date().toISOString()
   };
 
   try {
     const result = await models.Group.create(newGroup, {
       include: [models.AdvancedSetting, models.Claim]
     });
+
     return res.status(200).json({ group: result });
   } catch (err) {
+    console.log(err);
     res.status(400).json({ error: err });
   }
 };

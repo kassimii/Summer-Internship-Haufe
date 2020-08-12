@@ -1,10 +1,11 @@
+const { Sequelize } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   const Client = sequelize.define(
     "client",
     {
       id: {
         type: DataTypes.UUID,
-        defaulValue: Sequelize.UUIDV4,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true
       },
       name: {
@@ -33,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Client.associate = function (modela) {
+  Client.associate = function (models) {
     Client.hasMany(models.AdvancedSettingClient, {
       foreignKey: "client_id",
       onDelete: "CASCADE",

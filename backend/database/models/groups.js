@@ -1,9 +1,11 @@
+const { Sequelize } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   const Group = sequelize.define(
     "group",
     {
       id: {
         type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true
       },
       name: {

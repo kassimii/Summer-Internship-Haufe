@@ -1,32 +1,32 @@
-const {v4: uuidv4} = require("uuid");
+const { Sequelize } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-const AdvancedSetting = sequelize.define(
-  "advancedSetting",
-  {
-    group_id: {
-      type: DataTypes.UUID,
+  const AdvancedSetting = sequelize.define(
+    "advancedSetting",
+    {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        primaryKey: true
+      },
+      group_id: {
+        type: DataTypes.UUID
+      },
+      key: {
+        type: DataTypes.STRING(32)
+      },
+      value: {
+        type: DataTypes.STRING(32)
+      }
     },
-    key: {
-      type: DataTypes.STRING(32),
-    },
-    value: {
-      type: DataTypes.STRING(32),
-    },
-  },
-  {
-    freezeTableName: true,
-    timestamps: false,
-    tableName: "advanced_settings",
-  }
-);
+    {
+      freezeTableName: true,
+      timestamps: false,
+      tableName: "advanced_settings"
+    }
+  );
 
-  AdvancedSetting.beforeCreate((advancedSetting, _) => {
-    return advancedSetting.id = uuidv4();
-  });
+  // AdvancedSetting.removeAttribute("id");
 
-// AdvancedSetting.removeAttribute("id");
-
-return AdvancedSetting;
-
+  return AdvancedSetting;
 };

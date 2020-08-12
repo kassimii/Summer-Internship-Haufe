@@ -16,7 +16,7 @@ module.exports = {
           type: Sequelize.STRING(32)
         },
         content: {
-          type: Sequelize.BLOB
+          type: Sequelize.TEXT
         }
       },
       {

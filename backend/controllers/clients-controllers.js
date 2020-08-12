@@ -1,14 +1,46 @@
 const express = require("express");
-const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
 const models = require("../database/models");
 
 const getClients = async (req, res) => {
-  res.status(400).json({ message: "got clients" });
+  let clients;
+  try {
+    clients = await models.Client.findAll({
+      include: [
+        models.AdvancedSettingClient,
+        models.AttributeMapping,
+        models.Metadata,
+        models.ClientStatus
+      ]
+    });
+
+    return res.status(200).json({ clients });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const createClient = async (req, res) => {
-  res.status(400).json({ message: "created client" });
+  const newClient = {
+    ...req.body,
+    creationDate: new Date().toISOString(),
+    lastModified: new Date().toISOString(),
+    lastModifiedBy: req.body.createdBy
+  };
+
+  try {
+    console.log(newClient);
+    const result = await models.Client.create(newClient, {
+      include: [
+        models.AdvancedSettingClient,
+        models.AttributeMapping
+        // models.Metadata
+      ]
+    });
+    return res.status(200).json({ client: result });
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
 };
 
 const getClient = async (req, res) => {

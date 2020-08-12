@@ -1,10 +1,11 @@
+const { Sequelize } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   const Metadata = sequelize.define(
     "metadata",
     {
       id: {
         type: DataTypes.UUID,
-        defaulValue: Sequelize.UUIDV4,
+        defaultValue: Sequelize.UUIDV4,
         primaryKey: true
       },
       client_id: {
@@ -14,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(32)
       },
       content: {
-        type: DataTypes.BLOB
+        type: DataTypes.TEXT
       }
     },
     {
