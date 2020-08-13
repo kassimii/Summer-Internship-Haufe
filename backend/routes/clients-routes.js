@@ -5,7 +5,7 @@ const router = express.Router();
 const {
   getClients,
   createClient,
-  getClient,
+  getClientById,
   updateClient,
   deleteClient,
   addStatus,
@@ -18,7 +18,7 @@ const {
 
 router.get("/", getClients);
 router.post("/", createClient);
-router.get("/:clientId", getClient);
+router.get("/:clientId", getClientById);
 router.patch("/:clientId", updateClient);
 router.delete("/:clientId", deleteClient);
 router.post("/:clientId/status", addStatus);

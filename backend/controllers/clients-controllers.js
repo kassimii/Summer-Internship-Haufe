@@ -43,8 +43,20 @@ const createClient = async (req, res) => {
   }
 };
 
-const getClient = async (req, res) => {
-  res.status(400).json({ message: "got client" });
+const getClientById = async (req, res) => {
+  try {
+    const client = await models.Client.findByPk(req.params.clientId, {
+      include: [
+        models.AdvancedSettingClient,
+        models.AttributeMapping,
+        models.Metadata,
+        models.ClientStatus
+      ]
+    });
+    return res.status(200).json({ client });
+  } catch (err) {
+    return res.status(404).json({ error: err });
+  }
 };
 
 const updateClient = async (req, res) => {
@@ -52,7 +64,16 @@ const updateClient = async (req, res) => {
 };
 
 const deleteClient = async (req, res) => {
-  res.status(400).json({ message: "deleted client" });
+  const clientId = req.params.groupId;
+  try {
+    const client = await models.Client.findByPk(clientId);
+    if (client) {
+      await client.destroy();
+      return res.status(200).json({ message: "deleted client", id: clientId });
+    }
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
 };
 
 const addStatus = async (req, res) => {
@@ -81,7 +102,7 @@ const deleteMetadata = async (req, res) => {
 
 exports.getClients = getClients;
 exports.createClient = createClient;
-exports.getClient = getClient;
+exports.getClientById = getClientById;
 exports.updateClient = updateClient;
 exports.deleteClient = deleteClient;
 exports.addStatus = addStatus;
