@@ -11,7 +11,7 @@ const ClientCard = (props) => {
           bulk of the card's content.
         </p>
         <a href="/" className="btn btn-primary">
-          Go somewhere
+          View Details
         </a>
       </div>
     </div>
