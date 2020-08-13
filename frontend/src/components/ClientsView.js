@@ -1,18 +1,28 @@
 import React from "react";
+import { MDBContainer, MDBScrollbar } from "mdbreact";
 import { Row, Col, Container } from "react-bootstrap";
+import "./scrollbar.css";
 
 import ClientsList from "../components/ClientsList";
 import ClientDetails from "../components/ClientDetails";
 
 function ClientsView() {
+  const scrollContainerStyle = { maxHeight: "650px" };
   return (
     <>
       <Container>
         <Row>
-          <Col xs={12} md={8}>
-            <ClientsList />
+          <Col>
+            <MDBContainer>
+              <div
+                className="scrollbar scrollbar-primary align-self-starts mr-3"
+                style={scrollContainerStyle}
+              >
+                <ClientsList />
+              </div>
+            </MDBContainer>
           </Col>
-          <Col xs={6} md={4}>
+          <Col xs={10} md={6}>
             <ClientDetails clientTitle="Client" />
           </Col>
         </Row>
