@@ -21,11 +21,26 @@ const getClients = async (req, res) => {
 };
 
 const createClient = async (req, res) => {
+  let newStatusId;
+  try {
+    newStatusId = await models.Status.findOne({
+      where: {
+        type: {
+          [Op.eq]: "NEW"
+        }
+      }
+    });
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
   const newClient = {
     ...req.body,
     creationDate: new Date().toISOString(),
     lastModified: new Date().toISOString(),
-    lastModifiedBy: req.body.createdBy
+    lastModifiedBy: req.body.createdBy,
+    clientStatuses: [
+      { creationDate: new Date().toISOString(), status_id: newStatusId.id }
+    ]
   };
 
   try {
@@ -33,7 +48,8 @@ const createClient = async (req, res) => {
     const result = await models.Client.create(newClient, {
       include: [
         models.AdvancedSettingClient,
-        models.AttributeMapping
+        models.AttributeMapping,
+        models.ClientStatus
         // models.Metadata
       ]
     });
