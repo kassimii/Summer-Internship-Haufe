@@ -19,7 +19,6 @@ const createGroup = async (req, res) => {
 
     return res.status(200).json({ group: result });
   } catch (err) {
-    console.log(err);
     res.status(400).json({ error: err });
   }
 };
