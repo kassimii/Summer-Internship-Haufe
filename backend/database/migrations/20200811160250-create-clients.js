@@ -14,7 +14,8 @@ module.exports = {
           type: Sequelize.UUID
         },
         name: {
-          type: Sequelize.STRING(32)
+          type: Sequelize.STRING(32),
+          unique: true
         },
         creationDate: {
           type: Sequelize.DATE

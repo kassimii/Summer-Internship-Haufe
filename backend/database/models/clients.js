@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID
       },
       name: {
-        type: DataTypes.STRING(32)
+        type: DataTypes.STRING(32),
+        unique: true
       },
       creationDate: {
         type: DataTypes.DATE

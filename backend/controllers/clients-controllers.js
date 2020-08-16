@@ -3,7 +3,8 @@ const { Op } = require("sequelize");
 const models = require("../database/models");
 
 const getClients = async (req, res) => {
-  let clients;
+  let clients,
+    latestStatuses = [];
   try {
     clients = await models.Client.findAll({
       include: [
@@ -13,8 +14,33 @@ const getClients = async (req, res) => {
         models.ClientStatus
       ]
     });
-
-    return res.status(200).json({ clients });
+    latestStatuses = await clients.map(async (client) => {
+      let statusList = client.clientStatuses;
+      let latestStatusUpdate = new Date(
+        Math.max.apply(
+          null,
+          statusList.map(function (e) {
+            return new Date(e.creationDate);
+          })
+        )
+      );
+      let latestStatusDate = statusList.filter(
+        (status) =>
+          new Date(status.creationDate).getTime() ===
+          new Date(latestStatusUpdate).getTime()
+      );
+      let latestStatus = await models.Status.findByPk(
+        latestStatusDate[0].status_id
+      );
+      return {
+        clientId: client.id,
+        statusId: latestStatus.id,
+        type: latestStatus.type
+      };
+    });
+    Promise.all(latestStatuses).then((values) =>
+      res.status(200).json({ clients, latestStatuses: values })
+    );
   } catch (err) {
     res.status(400).json({ error: err });
   }
