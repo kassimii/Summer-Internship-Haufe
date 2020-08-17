@@ -3,17 +3,20 @@ const { Op } = require("sequelize");
 const models = require("../database/models");
 
 const getClients = async (req, res) => {
-  let clients,
-    latestStatuses = [];
+  let clients;
   try {
     clients = await models.Client.findAll({
       include: [
         models.AdvancedSettingClient,
         models.AttributeMapping,
-        models.Metadata,
-        models.ClientStatus
+        models.ClientStatus,
+        models.Metadata
       ]
     });
+    if (!clients) {
+      return res.status(200).json({ clients: {}, message: "No clients in DB" });
+    }
+    convertedClients = clients.map((client) => client.get({ plain: true }));
     latestStatuses = await clients.map(async (client) => {
       let statusList = client.clientStatuses;
       let latestStatusUpdate = new Date(
@@ -33,16 +36,63 @@ const getClients = async (req, res) => {
         latestStatusDate[0].status_id
       );
       return {
-        clientId: client.id,
-        statusId: latestStatus.id,
+        id: latestStatus.id,
         type: latestStatus.type
       };
     });
-    Promise.all(latestStatuses).then((values) =>
-      res.status(200).json({ clients, latestStatuses: values })
-    );
+
+    Promise.all(latestStatuses).then((values) => {
+      let convertedClients = [];
+      clients.forEach((client, index) => {
+        convertedClients.push(client.get({ plain: true }));
+        convertedClients[index].latestStatus = values[index];
+        delete convertedClients[index].clientStatuses;
+      });
+      res.status(200).json({ clients: convertedClients });
+    });
   } catch (err) {
     res.status(400).json({ error: err });
+  }
+};
+
+const getClientById = async (req, res) => {
+  try {
+    const client = await models.Client.findByPk(req.params.clientId, {
+      include: [
+        models.AdvancedSettingClient,
+        models.AttributeMapping,
+        models.ClientStatus,
+        models.Metadata
+      ]
+    });
+    if (!client) {
+      return res
+        .status(200)
+        .json({ client: {}, message: "Client does not exist" });
+    }
+    let statusList = client.clientStatuses;
+    let latestStatusUpdate = new Date(
+      Math.max.apply(
+        null,
+        statusList.map(function (e) {
+          return new Date(e.creationDate);
+        })
+      )
+    );
+    let latestStatusDate = statusList.filter(
+      (status) =>
+        new Date(status.creationDate).getTime() ===
+        new Date(latestStatusUpdate).getTime()
+    );
+    let latestStatus = await models.Status.findByPk(
+      latestStatusDate[0].status_id
+    );
+    var convertedClient = client.get({ plain: true });
+    delete convertedClient.clientStatuses;
+    convertedClient.latestStatus = latestStatus;
+    return res.status(200).json({ client: convertedClient });
+  } catch (err) {
+    return res.status(404).json({ error: err });
   }
 };
 
@@ -85,45 +135,12 @@ const createClient = async (req, res) => {
   }
 };
 
-const getClientById = async (req, res) => {
-  try {
-    const client = await models.Client.findByPk(req.params.clientId, {
-      include: [
-        models.AdvancedSettingClient,
-        models.AttributeMapping,
-        models.Metadata,
-        models.ClientStatus
-      ]
-    });
-    let statusList = client.clientStatuses;
-    let latestStatusUpdate = new Date(
-      Math.max.apply(
-        null,
-        statusList.map(function (e) {
-          return new Date(e.creationDate);
-        })
-      )
-    );
-    let latestStatusDate = statusList.filter(
-      (status) =>
-        new Date(status.creationDate).getTime() ===
-        new Date(latestStatusUpdate).getTime()
-    );
-    let latestStatus = await models.Status.findByPk(
-      latestStatusDate[0].status_id
-    );
-    return res.status(200).json({ client, latestStatus });
-  } catch (err) {
-    return res.status(404).json({ error: err });
-  }
-};
-
 const updateClient = async (req, res) => {
   res.status(400).json({ message: "updated client" });
 };
 
 const deleteClient = async (req, res) => {
-  const clientId = req.params.cliebtId;
+  const clientId = req.params.clientId;
   try {
     const client = await models.Client.findByPk(clientId);
     if (client) {

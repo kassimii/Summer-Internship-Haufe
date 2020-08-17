@@ -18,68 +18,57 @@ Example of an accepted request body
 }
 ```
 
+<b>{POST} /api/clients/:clientId/status</b>
+Example of an accepted request body
+
+```json
+{
+  "status": "WAIT FOR DEPLOYMENT"
+}
+```
+
 <b>{GET} /api/clients/:clientId</b>
 Example of a returned response when getting a client
 
 ```json
 {
   "client": {
-    "id": "01c79821-a62b-4284-917c-32896fd71dec",
+    "id": "539a0d75-088a-414c-b7c9-49c1e351efc4",
     "group_id": "123e4567-e89b-12d3-a456-426614175000",
     "user_id": "123e4567-e89b-12d3-a456-426614174000",
-    "name": "client2",
-    "creationDate": "2020-08-15T16:20:52.226Z",
+    "name": "",
+    "creationDate": "2020-08-16T10:24:42.278Z",
     "createdBy": "123e4567-e89b-12d3-a456-426614174000",
-    "lastModified": "2020-08-15T16:20:52.226Z",
+    "lastModified": "2020-08-16T10:24:42.278Z",
     "lastModifiedBy": "123e4567-e89b-12d3-a456-426614174000",
     "lastDeployed": null,
     "advancedSettingClients": [
       {
-        "id": "78c0b924-cb1f-4c8e-abdb-fd17803a7316",
-        "client_id": "01c79821-a62b-4284-917c-32896fd71dec",
+        "id": "ea62680b-241a-4522-9a6a-9fd82583c37d",
+        "client_id": "539a0d75-088a-414c-b7c9-49c1e351efc4",
         "key": "key1",
         "value": "value1"
       }
     ],
     "attributeMappings": [
       {
-        "id": "20ea5a74-656f-4d49-ad82-19acfa221b72",
-        "client_id": "01c79821-a62b-4284-917c-32896fd71dec",
+        "id": "8974efbd-c7d2-4171-901c-ff9145eeaaa1",
+        "client_id": "539a0d75-088a-414c-b7c9-49c1e351efc4",
         "key": "attribute1",
         "value": "mapping1"
       },
       {
-        "id": "6908ebd5-f7df-4b89-89b4-6b0c17fee2f3",
-        "client_id": "01c79821-a62b-4284-917c-32896fd71dec",
+        "id": "8044edd3-72d8-4aaf-a2c0-48b10bf75805",
+        "client_id": "539a0d75-088a-414c-b7c9-49c1e351efc4",
         "key": "attribute2",
         "value": "mapping2"
       }
     ],
     "metadata": [],
-    "clientStatuses": [
-      {
-        "id": "76c4099e-e531-40b5-ac55-bf311a41aae2",
-        "client_id": "01c79821-a62b-4284-917c-32896fd71dec",
-        "status_id": "a64eb51a-eb67-4488-8191-b3e0274d7847",
-        "creationDate": "2020-08-15T16:20:52.226Z"
-      },
-      {
-        "id": "2e1e1903-fb40-4476-88c4-f424dbb419c1",
-        "client_id": "01c79821-a62b-4284-917c-32896fd71dec",
-        "status_id": "29a6b6f2-903e-4feb-838f-eaed4ff3af00",
-        "creationDate": "2020-08-15T16:38:01.827Z"
-      },
-      {
-        "id": "4ad0960c-10e0-4940-a8dc-7b069ea9e9b2",
-        "client_id": "01c79821-a62b-4284-917c-32896fd71dec",
-        "status_id": "29a6b6f2-903e-4feb-838f-eaed4ff3af00",
-        "creationDate": "2020-08-15T16:41:18.903Z"
-      }
-    ]
-  },
-  "latestStatus": {
-    "id": "29a6b6f2-903e-4feb-838f-eaed4ff3af00",
-    "type": "REQUEST APPROVAL"
+    "latestStatus": {
+      "id": "4da994da-0fd5-443d-ad1f-9f01b97eb918",
+      "type": "WAIT FOR DEPLOYMENT"
+    }
   }
 }
 ```
