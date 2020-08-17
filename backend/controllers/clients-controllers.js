@@ -67,7 +67,7 @@ const getClientById = async (req, res) => {
     });
     if (!client) {
       return res
-        .status(200)
+        .status(400)
         .json({ client: {}, message: "Client does not exist" });
     }
     let statusList = client.clientStatuses;
@@ -136,7 +136,107 @@ const createClient = async (req, res) => {
 };
 
 const updateClient = async (req, res) => {
-  res.status(400).json({ message: "updated client" });
+  const clientId = req.params.clientId;
+  var incomingAdvancedSettings = req.body.advancedSettingClients;
+  var incomingAttributesMapping = req.body.attributeMappings;
+  const userId = req.body.user_id;
+
+  try {
+    let client = await models.Client.findByPk(clientId, {
+      include: [
+        models.AdvancedSettingClient,
+        models.AttributeMapping,
+        models.ClientStatus,
+        models.Metadata
+      ]
+    });
+    if (!client) {
+      return res
+        .status(400)
+        .json({ client: {}, message: "Client does not exist" });
+    }
+
+    const updateSettingsOrAttributes = async (decider) => {
+      let existingData, incomingData;
+      switch (decider) {
+        case "settings":
+          existingData = client.advancedSettingClients;
+          incomingData = incomingAdvancedSettings;
+          break;
+        case "attributes":
+          existingData = client.attributeMappings;
+          incomingData = incomingAttributesMapping;
+          break;
+        default:
+          return;
+      }
+      // checking if some settings have been deleted
+      for (let i = 0; i < existingData.length; i++) {
+        let setting = existingData[i];
+        if (!incomingData.find((inSetting) => setting.key === inSetting.key)) {
+          // if so we delete them from the DB
+          if (decider === "settings") {
+            await models.AdvancedSettingClient.destroy({
+              where: { client_id: clientId, key: setting.key }
+            });
+          }
+          if (decider === "attributes") {
+            await models.AttributeMapping.destroy({
+              where: { client_id: clientId, key: setting.key }
+            });
+          }
+        }
+      }
+
+      // checking if we have new settings incoming or old ones have been updated
+      for (let i = 0; i < incomingData.length; i++) {
+        let inSetting = incomingData[i];
+        let currentExistingSetting = existingData.find(
+          (setting) => setting.key === inSetting.key
+        );
+        if (!currentExistingSetting) {
+          // if the incoming setting is new, it is created
+          if (decider === "settings") {
+            await models.AdvancedSettingClient.create({
+              client_id: clientId,
+              ...inSetting
+            });
+          }
+          if (decider === "attributes") {
+            await models.AttributeMapping.create({
+              client_id: clientId,
+              ...inSetting
+            });
+          }
+        } else {
+          // if the current key exists but the value is different, value is updated
+          if (inSetting.value !== currentExistingSetting.value) {
+            currentExistingSetting.value = inSetting.value;
+            await currentExistingSetting.save({ fields: ["value"] });
+          }
+        }
+      }
+    };
+
+    await updateSettingsOrAttributes("settings");
+    await updateSettingsOrAttributes("attributes");
+
+    client.lastModified = new Date().toISOString();
+    client.lastModifiedBy = userId;
+    client.name = req.body.name;
+    await client.save({ fields: ["name", "lastModified", "lastModifiedBy"] });
+    client = await models.Client.findByPk(clientId, {
+      include: [
+        models.AdvancedSettingClient,
+        models.AttributeMapping,
+        models.ClientStatus,
+        models.Metadata
+      ]
+    });
+    res.status(200).json({ client });
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
 };
 
 const deleteClient = async (req, res) => {
@@ -165,6 +265,9 @@ const addStatus = async (req, res) => {
       }
     });
 
+    client = await models.Client.findByPk(clientId);
+    if (!client)
+      return res.status(400).json({ error: [{ message: "Wrong client id" }] });
     const newEntry = {
       client_id: clientId,
       status_id: newStatusId.id,
