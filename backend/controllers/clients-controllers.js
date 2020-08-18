@@ -9,47 +9,29 @@ const getClients = async (req, res) => {
       include: [
         models.AdvancedSettingClient,
         models.AttributeMapping,
-        models.ClientStatus,
+        {
+          model: models.ClientStatus,
+          order: [["creationDate", "DESC"]],
+          limit: 1
+        },
         models.Metadata
       ]
     });
+
     if (!clients) {
       return res.status(200).json({ clients: {}, message: "No clients in DB" });
     }
-    convertedClients = clients.map((client) => client.get({ plain: true }));
-    latestStatuses = await clients.map(async (client) => {
-      let statusList = client.clientStatuses;
-      let latestStatusUpdate = new Date(
-        Math.max.apply(
-          null,
-          statusList.map(function (e) {
-            return new Date(e.creationDate);
-          })
-        )
+    let convertedClients = [];
+    for (let i = 0; i < clients.length; i++) {
+      const latestStatus = await models.Status.findByPk(
+        clients[i].clientStatuses[0].status_id
       );
-      let latestStatusDate = statusList.filter(
-        (status) =>
-          new Date(status.creationDate).getTime() ===
-          new Date(latestStatusUpdate).getTime()
-      );
-      let latestStatus = await models.Status.findByPk(
-        latestStatusDate[0].status_id
-      );
-      return {
-        id: latestStatus.id,
-        type: latestStatus.type
-      };
-    });
-
-    Promise.all(latestStatuses).then((values) => {
-      let convertedClients = [];
-      clients.forEach((client, index) => {
-        convertedClients.push(client.get({ plain: true }));
-        convertedClients[index].latestStatus = values[index];
-        delete convertedClients[index].clientStatuses;
-      });
-      res.status(200).json({ clients: convertedClients });
-    });
+      var convertedClient = clients[i].get({ plain: true });
+      convertedClient.latestStatus = latestStatus;
+      delete convertedClient.clientStatuses;
+      convertedClients.push(convertedClient);
+    }
+    res.status(200).json({ clients: convertedClients });
   } catch (err) {
     res.status(400).json({ error: err });
   }
@@ -61,7 +43,11 @@ const getClientById = async (req, res) => {
       include: [
         models.AdvancedSettingClient,
         models.AttributeMapping,
-        models.ClientStatus,
+        {
+          model: models.ClientStatus,
+          order: [["creationDate", "DESC"]],
+          limit: 1
+        },
         models.Metadata
       ]
     });
@@ -70,22 +56,8 @@ const getClientById = async (req, res) => {
         .status(400)
         .json({ client: {}, message: "Client does not exist" });
     }
-    let statusList = client.clientStatuses;
-    let latestStatusUpdate = new Date(
-      Math.max.apply(
-        null,
-        statusList.map(function (e) {
-          return new Date(e.creationDate);
-        })
-      )
-    );
-    let latestStatusDate = statusList.filter(
-      (status) =>
-        new Date(status.creationDate).getTime() ===
-        new Date(latestStatusUpdate).getTime()
-    );
-    let latestStatus = await models.Status.findByPk(
-      latestStatusDate[0].status_id
+    const latestStatus = await models.Status.findByPk(
+      client.clientStatuses[0].status_id
     );
     var convertedClient = client.get({ plain: true });
     delete convertedClient.clientStatuses;
@@ -229,11 +201,21 @@ const updateClient = async (req, res) => {
       include: [
         models.AdvancedSettingClient,
         models.AttributeMapping,
-        models.ClientStatus,
+        {
+          model: models.ClientStatus,
+          order: [["creationDate", "DESC"]],
+          limit: 1
+        },
         models.Metadata
       ]
     });
-    res.status(200).json({ client });
+    const latestStatus = await models.Status.findByPk(
+      client.clientStatuses[0].status_id
+    );
+    var convertedClient = client.get({ plain: true });
+    delete convertedClient.clientStatuses;
+    convertedClient.latestStatus = latestStatus;
+    res.status(200).json({ client: convertedClient });
   } catch (err) {
     res.status(400).json({ error: err });
   }
@@ -254,6 +236,7 @@ const deleteClient = async (req, res) => {
 
 const addStatus = async (req, res) => {
   const clientId = req.params.clientId;
+  const userId = req.body.user_id;
   const newStatus = req.body.status;
   let newStatusId;
   try {
@@ -265,7 +248,7 @@ const addStatus = async (req, res) => {
       }
     });
 
-    client = await models.Client.findByPk(clientId);
+    let client = await models.Client.findByPk(clientId);
     if (!client)
       return res.status(400).json({ error: [{ message: "Wrong client id" }] });
     const newEntry = {
@@ -274,6 +257,10 @@ const addStatus = async (req, res) => {
       creationDate: new Date().toISOString()
     };
     const newClientStatus = await models.ClientStatus.create(newEntry);
+    client.lastModified = new Date().toISOString();
+    client.lastModifiedBy = userId;
+    await client.save({ fields: ["lastModified", "lastModifiedBy"] });
+
     return res.status(200).json({ status: newClientStatus });
   } catch (err) {
     return res.status(400).json({ error: err });
