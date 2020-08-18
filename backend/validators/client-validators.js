@@ -1,7 +1,7 @@
 const { check } = require("express-validator");
 const models = require("../database/models");
 const { Op } = require("sequelize");
-const { clearCache } = require("ejs");
+const { param } = require("../routes/clients-routes");
 
 module.exports = {
   requireClientName: check("name")
@@ -16,16 +16,20 @@ module.exports = {
   requireUserId: check("user_id")
     .trim()
     .isUUID()
-    .withMessage("Group id is not UUID")
-    .custom(async (user_id) => {
+    .withMessage("User id is not UUID"),
+  requireExistingClientId: check("clientId")
+    .trim()
+    .isUUID()
+    .withMessage("User id is not UUID")
+    .custom(async (clientId) => {
+      let existingClient;
       try {
-        console.log("aici");
-        const existingUser = await models.User.findByPk({ user_id });
+        existingClient = await models.Client.findByPk(clientId);
       } catch (err) {
         console.log(err);
       }
-      if (!existingUser) {
-        return Promise.reject("User with this id does not exist");
+      if (!existingClient) {
+        return Promise.reject("Client with this id does not exist");
       }
     }),
   requireAdvanedSettingsClients: check("advancedSettingClients")
@@ -54,5 +58,10 @@ module.exports = {
     ),
   requireExistingStatus: check("status")
     .isIn(["REQUEST APPROVAL", "NEW", "WAIT FOR DEPLOYMENT", "DEPLOYED"])
-    .withMessage("Status not correct")
+    .withMessage("Status not correct"),
+  requireClientIdParam: check("clientId")
+    .exists()
+    .trim()
+    .isUUID()
+    .withMessage("ClientId params does not exists or is not UUID")
 };

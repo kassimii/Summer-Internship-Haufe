@@ -268,7 +268,38 @@ const addStatus = async (req, res) => {
 };
 
 const addMetadata = async (req, res) => {
-  res.status(400).json({ message: "added metadata for client" });
+  const clientId = req.params.clientId;
+  const metadata = req.body.metadata;
+  const type = req.body.type;
+  try {
+    let client = await models.Client.findByPk(clientId);
+    if (!client) {
+      return res.status(400).json({ error: [{ message: "Wrong client id" }] });
+    }
+    const newMetadata = { client_id: clientId, type: type, metadata: metadata };
+    const result = await models.Metadata.create(newMetadata);
+    client = await models.Client.findByPk(req.params.clientId, {
+      include: [
+        models.AdvancedSettingClient,
+        models.AttributeMapping,
+        {
+          model: models.ClientStatus,
+          order: [["creationDate", "DESC"]],
+          limit: 1
+        },
+        models.Metadata
+      ]
+    });
+    const latestStatus = await models.Status.findByPk(
+      client.clientStatuses[0].status_id
+    );
+    var convertedClient = client.get({ plain: true });
+    delete convertedClient.clientStatuses;
+    convertedClient.latestStatus = latestStatus;
+    return res.status(200).json({ client: convertedClient });
+  } catch (err) {
+    return res.status(404).json({ error: err });
+  }
 };
 
 const getAllMetadata = async (req, res) => {

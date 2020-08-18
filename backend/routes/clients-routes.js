@@ -8,7 +8,9 @@ const {
   requireUserId,
   requireAdvanedSettingsClients,
   requireAttributeMappings,
-  requireExistingStatus
+  requireExistingStatus,
+  requireClientIdParam,
+  requireExistingClientId
 } = require("../validators/client-validators");
 
 const { handleErrors } = require("../middleware/handle-errors");
@@ -34,17 +36,35 @@ router.post(
     requireClientName,
     requireGroupId,
     requireAdvanedSettingsClients,
-    requireAttributeMappings /*, requireUserId*/
+    requireAttributeMappings,
+    requireUserId
   ],
   handleErrors,
   createClient
 );
-router.get("/:clientId", getClientById);
-router.patch("/:clientId", updateClient);
-router.delete("/:clientId", deleteClient);
+router.get("/:clientId", [requireClientIdParam], handleErrors, getClientById);
+router.patch(
+  "/:clientId",
+  [
+    requireExistingClientId,
+    requireAdvanedSettingsClients,
+    requireAttributeMappings,
+    requireUserId,
+    requireClientName,
+    requireGroupId
+  ],
+  handleErrors,
+  updateClient
+);
+router.delete(
+  "/:clientId",
+  [requireExistingClientId],
+  handleErrors,
+  deleteClient
+);
 router.post(
   "/:clientId/status",
-  [requireExistingStatus],
+  [requireExistingStatus, requireUserId],
   handleErrors,
   addStatus
 );
