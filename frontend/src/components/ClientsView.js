@@ -6,7 +6,7 @@ import "./scrollbar.css";
 import ClientsList from "../components/ClientsList";
 import ClientDetails from "../components/ClientDetails";
 
-function ClientsView() {
+function ClientsView(props) {
   const scrollContainerStyle = { maxHeight: "650px" };
   return (
     <>
@@ -18,7 +18,7 @@ function ClientsView() {
                 className="scrollbar scrollbar-primary align-self-starts mr-3"
                 style={scrollContainerStyle}
               >
-                <ClientsList />
+                <ClientsList clients ={props.clients}/>
               </div>
             </MDBContainer>
           </Col>

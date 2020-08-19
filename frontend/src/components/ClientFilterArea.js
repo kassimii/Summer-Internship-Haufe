@@ -8,6 +8,8 @@ import {
   Button,
 } from "react-bootstrap";
 
+import CreateClientModal from "./ClientCreateModal";
+
 function ClientFilterArea(props) {
   return (
     <>
@@ -58,9 +60,7 @@ function ClientFilterArea(props) {
             </div>
             <div className="row d-flex justify-content-center form-inline">
               <div className="d-flex justify-content-center">
-                <Button type="submit" className="btn btn-success">
-                  Add client
-                </Button>
+              <CreateClientModal createClient={props.createClient} />
               </div>
             </div>
           </Col>
