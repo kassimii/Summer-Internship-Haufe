@@ -1,28 +1,9 @@
-import React, { useState, useEffect } from "react";
-
-import ClientCard from "./ClientCard";
-
+import React, { useEffect } from "react";
+import { ListGroup } from "react-bootstrap";
 import { connect } from "react-redux";
-import { getClients } from "../redux/actions";
-
-// const clients = ["1", "2", "3", "4", "5"];
-
-// const ClientsList = () => {
-//   return clients.map((client) => {
-//     return (
-//       <div key={client}>
-//         <div className="card mb-4 shadow-sm">
-//           <ClientCard id={client} />
-//         </div>
-//       </div>
-//     );
-//   });
-// };
-
-
+import { getClient, getClients } from "../redux/actions";
 
 const ClientsList = (props) => {
-
   useEffect(() => {
     getClients();
   }, [getClients]);
@@ -30,30 +11,31 @@ const ClientsList = (props) => {
   // console.log(props.clients);
 
   return (
-    <div className="album py-5 bg-light">
+    <div className="album py-5 ">
       <div className="container">
-        <div className="row">
+        <ListGroup>
           {props.clients.map((client) => {
             return (
-              <div key={client.id} className="col-md-4">
-                <div className="card mb-4 shadow-sm">
-                  <ClientCard client={client} />
-                </div>
-              </div>
+              <ListGroup.Item
+                action
+                variant="primary"
+                onClick={() => props.getClient(client.id)}
+                className="btn-block "
+              >
+                {client.name}
+              </ListGroup.Item>
             );
           })}
-        </div>
+        </ListGroup>
       </div>
     </div>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return { clients: state.clients };
 };
 
 export default connect(mapStateToProps, {
-  getClients
+  getClient,
 })(ClientsList);
-
-

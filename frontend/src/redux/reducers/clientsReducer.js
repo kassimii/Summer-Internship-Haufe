@@ -21,7 +21,7 @@
 //   }
 // };
 
-import {GET_CLIENTS, CREATE_CLIENT, EDIT_CLIENT} from "../actions/types";
+import { GET_CLIENTS, CREATE_CLIENT, EDIT_CLIENT } from "../actions/types";
 
 export let defaultState = [
   {
@@ -62,6 +62,30 @@ export let defaultState = [
       },
     ],
     attribute: [
+      {
+        key: "key7",
+        value: "val7",
+      },
+      {
+        key: "key8",
+        value: "val8",
+      },
+      {
+        key: "key7",
+        value: "val7",
+      },
+      {
+        key: "key8",
+        value: "val8",
+      },
+      {
+        key: "key7",
+        value: "val7",
+      },
+      {
+        key: "key8",
+        value: "val8",
+      },
       {
         key: "key7",
         value: "val7",

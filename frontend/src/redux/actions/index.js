@@ -79,7 +79,6 @@ export const createClient = (formValues, sendRequest) => async (dispatch) => {
 
   await new Promise((resolve) => setTimeout(resolve, 2000));
   dispatch({ type: CREATE_CLIENT, payload: formValues });
-
 };
 
 export const editClient = (formValues, sendRequest) => async (dispatch) => {
@@ -99,7 +98,6 @@ export const editClient = (formValues, sendRequest) => async (dispatch) => {
   // dispatch({ type: EDIT_CLIENT, payload: response });
   await new Promise((resolve) => setTimeout(resolve, 2000));
   dispatch({ type: EDIT_CLIENT, payload: formValues });
-
 };
 
 export const getClient = (id, sendRequest) => async (dispatch) => {

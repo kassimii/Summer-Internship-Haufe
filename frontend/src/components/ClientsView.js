@@ -1,5 +1,5 @@
 import React from "react";
-import { MDBContainer, MDBScrollbar } from "mdbreact";
+import { MDBContainer } from "mdbreact";
 import { Row, Col, Container } from "react-bootstrap";
 import "./scrollbar.css";
 
@@ -12,17 +12,17 @@ function ClientsView(props) {
     <>
       <Container>
         <Row>
-          <Col>
+          <Col xs={6} md={4} lg={4}>
             <MDBContainer>
               <div
                 className="scrollbar scrollbar-primary align-self-starts mr-3"
                 style={scrollContainerStyle}
               >
-                <ClientsList clients ={props.clients}/>
+                <ClientsList clients={props.clients} />
               </div>
             </MDBContainer>
           </Col>
-          <Col xs={10} md={6}>
+          <Col xs={6} md={8} lg={8}>
             <ClientDetails clientTitle="Client" />
           </Col>
         </Row>

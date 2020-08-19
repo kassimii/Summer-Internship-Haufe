@@ -1,9 +1,20 @@
 import React from "react";
-import { MDBContainer, MDBScrollbar } from "mdbreact";
+import { MDBContainer } from "mdbreact";
 import "./scrollbar.css";
+import { connect } from "react-redux";
+import { getClient } from "../redux/actions";
+import { ListGroup, Item } from "react-bootstrap";
 
-function ClientDetails(props) {
-  const scrollContainerStyle = { maxHeight: "650px" };
+function ClientDetails({ selectedClient }) {
+  const scrollContainerStyle = { maxHeight: "550px" };
+  if (!selectedClient) {
+    return (
+      <>
+        <h3>Please select a client</h3>
+      </>
+    );
+  }
+  console.log(selectedClient);
   return (
     <>
       <MDBContainer>
@@ -14,45 +25,31 @@ function ClientDetails(props) {
           <div className="card">
             <img src="" className="card-img-top" alt="" />
             <div className="card-body">
-              <h5 className="card-title">{props.clientTitle}</h5>
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.Cras sit amet nibh libero, in
-                gravida nulla. Nulla vel metus scelerisque ante sollicitudin
-                commodo. Cras purus odio, vestibulum in vulputate at, tempus
-                viverra turpis. Fusce condimentum nunc ac nisi vulputate
-                fringilla. Donec lacinia congue felis in faucibus.Cras sit amet
-                nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
-                sollicitudin commodo. Cras purus odio, vestibulum in vulputate
-                at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                vulputate fringilla. Donec lacinia congue felis in faucibus.Cras
-                sit amet nibh libero, in gravida nulla. Nulla vel metus
-                scelerisque ante sollicitudin commodo. Cras purus odio,
-                vestibulum in vulputate at, tempus viverra turpis. Fusce
-                condimentum nunc ac nisi vulputate fringilla. Donec lacinia
-                congue felis in faucibus.Cras sit amet nibh libero, in gravida
-                nulla. Nulla vel metus scelerisque ante sollicitudin commodo.
-                Cras purus odio, vestibulum in vulputate at, tempus viverra
-                turpis. Fusce condimentum nunc ac nisi vulputate fringilla.
-                Donec lacinia congue felis in faucibus.Cras sit amet nibh
-                libero, in gravida nulla. Nulla vel metus scelerisque ante
-                sollicitudin commodo. Cras purus odio, vestibulum in vulputate
-                at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                vulputate fringilla. Donec lacinia congue felis in faucibus.Cras
-                sit amet nibh libero, in gravida nulla. Nulla vel metus
-                scelerisque ante sollicitudin commodo. Cras purus odio,
-                vestibulum in vulputate at, tempus viverra turpis. Fusce
-                condimentum nunc ac nisi vulputate fringilla. Donec lacinia
-                congue felis in faucibus.Cras sit amet nibh libero, in gravida
-                nulla. Nulla vel metus scelerisque ante sollicitudin commodo.
-                Cras purus odio, vestibulum in vulputate at, tempus viverra
-                turpis. Fusce condimentum nunc ac nisi vulputate fringilla.
-                Donec lacinia congue felis in faucibus.Cras sit amet nibh
-                libero, in gravida nulla. Nulla vel metus scelerisque ante
-                sollicitudin commodo. Cras purus odio, vestibulum in vulputate
-                at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                vulputate fringilla. Donec lacinia congue felis in faucibus.
-              </p>
+              <h5 className="card-title">{selectedClient.name}</h5>
+
+              <ListGroup variant="flush">
+                <h6 className="card-text">Advanced settings: </h6>
+                {selectedClient.advancedSettings.map((setting) => {
+                  return (
+                    <ListGroup.Item>
+                      <p>Key: {setting.key}</p>
+                      <p>Value: {setting.value}</p>
+                    </ListGroup.Item>
+                  );
+                })}
+              </ListGroup>
+
+              <ListGroup variant="flush">
+                <h6 className="card-text">Attribute mapping: </h6>
+                {selectedClient.attribute.map((attribute) => {
+                  return (
+                    <ListGroup.Item>
+                      <p>Key: {attribute.key}</p>
+                      <p>Value: {attribute.value}</p>
+                    </ListGroup.Item>
+                  );
+                })}
+              </ListGroup>
             </div>
           </div>
         </div>
@@ -61,4 +58,10 @@ function ClientDetails(props) {
   );
 }
 
-export default ClientDetails;
+const mapStateToProps = (state) => {
+  return { selectedClient: state.selectedClient };
+};
+
+export default connect(mapStateToProps, {
+  getClient,
+})(ClientDetails);

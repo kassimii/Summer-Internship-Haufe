@@ -1,11 +1,10 @@
 import * as actions from "../actions/types";
 
-export default (state = null, action) => {
-  console.log(action);
+export default (selectedClient = null, action) => {
   switch (action.type) {
     case actions.GET_CLIENT:
       return action.payload;
     default:
-      return state;
+      return selectedClient;
   }
 };
