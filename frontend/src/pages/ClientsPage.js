@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import React, { useState } from "react";
 
 import ClientFilterArea from "../components/ClientFilterArea";
 import ClientsView from "../components/ClientsView";

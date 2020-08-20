@@ -1,97 +1,100 @@
-import React, {useState, useEffect} from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
+import { store } from "../redux/store";
 import {
-    Modal,
-    InputGroup,
-    FormControl,
-    Form, 
-    ListGroup,
-    Card,
-    Alert,
-    Button,
-    Accordion
+  Modal,
+  InputGroup,
+  FormControl,
+  Form,
+  ListGroup,
+  Card,
+  Alert,
+  Button,
+  Accordion,
 } from "react-bootstrap";
 
-import {store} from "../redux/store";
-//import {useHttpClient} from "../hooks/http-hook";
-
-import {
-    createClient
-} from "../redux/actions/index";
-
-//const { sendRequest } = useHttpClient();
+import { useHttpClient } from "../hooks/http-hook";
+import { createClient, getClients } from "../redux/actions/index";
 
 const initialClient = {
-    name: "",
-    group_id: "",
-    user_id: "",
-    advancedSettings: [],
-    attribute: []
+  name: "",
+  group_id: "1eaf6cce-bd0f-4765-aee2-cde7b7247c10",
+  user_id: "a261f996-7085-46ee-b8da-c46929bc5e7c",
+  advancedSettingClients: [],
+  attributeMappings: [],
 };
 
 const initialErrors = {
-    name: false,
-    setting: { empty: false, exists: false },
-    attribute: { empty: false, exists: false }
-}
+  name: false,
+  setting: { empty: false, exists: false },
+  attributeMappings: { empty: false, exists: false },
+};
 
-function CreateClientModal({
-    id,
-    createClient
-}) {
-const [modalShow, setModalShow] = useState(false);
-const [client, setClient] = useState(initialClient);
-const [errors, setErrors] = useState(initialErrors);
-const [currentSetting, setCurrentSetting] = useState({
+function CreateClientModal({ id, createClient, getClients }) {
+  const { sendRequest } = useHttpClient();
+
+  const [modalShow, setModalShow] = useState(false);
+  const [client, setClient] = useState(initialClient);
+  const [errors, setErrors] = useState(initialErrors);
+  const [currentSetting, setCurrentSetting] = useState({
     key: "",
-    value: ""
+    value: "",
   });
-const [currentAttribute, setCurrentAttribute] = useState({
+  const [currentAttribute, setCurrentAttribute] = useState({
     key: "",
-    value: ""
-});  
+    value: "",
+  });
 
-const handleClose = () => {
+  const handleClose = () => {
     setClient(initialClient);
+    setCurrentSetting({ key: "", value: "" });
+    setCurrentAttribute({ key: "", value: "" });
+    setErrors(initialErrors);
     setModalShow(false);
-};
+  };
 
-const handleShow = () => {
+  const handleShow = () => {
     setModalShow(true);
-};
+  };
 
-const handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    if(clientInformation.name == ""){
-        setErrors({ ...errors, name:true});
-        return;
+    if (clientInformation.name === "") {
+      setErrors({ ...errors, name: true });
+      return;
     }
-    if(!id){
-      createClient(client);
-    }else{
-        setErrors({ ...errors, id:true});
-        return;
+    if (!id) {
+      createClient(client, sendRequest);
+    } else {
+      setErrors({ ...errors, id: true });
+      return;
     }
-};
-function handleChange({ target }) {
+
+    const unsubscribe = store.subscribe(() => {
+      unsubscribe();
+      getClients(sendRequest);
+      handleClose();
+    });
+  };
+  function handleChange({ target }) {
     if (target.name === "name") {
       setErrors({ ...errors, name: false });
       setClient({ ...client, [target.name]: target.value });
     } else {
       setClient({
         ...client,
-        [target.name]: [...client[target.name], target.value]
+        [target.name]: [...client[target.name], target.value],
       });
     }
-};
+  }
 
-const handleSetting = () => {
+  const handleSetting = () => {
     let fieldExists = false;
     if (currentSetting.key === "" || currentSetting.value === "") {
       setErrors({ ...errors, setting: { empty: true, exists: false } });
       return;
     }
-    client.advancedSettings.forEach((setting) => {
+    client.advancedSettingClients.forEach((setting) => {
       if (currentSetting.key === setting.key) {
         fieldExists = true;
         return;
@@ -104,75 +107,79 @@ const handleSetting = () => {
     }
     setErrors({ ...errors, setting: { empty: false, exists: false } });
     handleChange({
-      target: { name: "advancedSettings", value: currentSetting }
+      target: { name: "advancedSettingClients", value: currentSetting },
     });
     setCurrentSetting({ key: "", value: "" });
   };
 
-const deleteSetting = (event) => {
-    let newSettings = client.advancedSettings.filter((setting) => {
+  const deleteSetting = (event) => {
+    let newSettings = client.advancedSettingClients.filter((setting) => {
       return setting.key !== event.target.value;
     });
-    setClient({ ...client, advancedSettings: newSettings });
+    setClient({ ...client, advancedSettingClients: newSettings });
   };
 
-const handleAttribute = () => {
+  const handleAttribute = () => {
     let fieldExists = false;
     if (currentAttribute.key === "" || currentAttribute.value === "") {
-      setErrors({ ...errors, attribute: { empty: true, exists: false } });
+      setErrors({
+        ...errors,
+        attributeMappings: { empty: true, exists: false },
+      });
       return;
     }
-    client.advancedSettings.forEach((att) => {
+    client.advancedSettingClients.forEach((att) => {
       if (currentAttribute.key === att.key) {
         fieldExists = true;
         return;
       }
     });
     if (fieldExists) {
-      setErrors({ ...errors, attribute: { empty: false, exists: true } });
+      setErrors({
+        ...errors,
+        attributeMappings: { empty: false, exists: true },
+      });
       setCurrentAttribute({ key: "", value: "" });
       return;
     }
-    setErrors({ ...errors, attribute: { empty: false, exists: false } });
+    setErrors({
+      ...errors,
+      attributeMappings: { empty: false, exists: false },
+    });
     handleChange({
-      target: { name: "attribute", value: currentAttribute }
+      target: { name: "attributeMappings", value: currentAttribute },
     });
     setCurrentAttribute({ key: "", value: "" });
   };
 
-
-const deleteAttribute = (event) => {
-    let newAttribute = client.attribute.filter((att) => {
+  const deleteAttribute = (event) => {
+    let newAttribute = client.attributeMappings.filter((att) => {
       return att.key !== event.target.value;
     });
-    setClient({ ...client, attribute: newAttribute });
+    setClient({ ...client, attributeMappings: newAttribute });
   };
 
-
-
-
-
-return(
+  return (
     <>
-    <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={handleShow}>
         Add Client
-    </Button>
+      </Button>
 
-    <Modal
-        onHide = {handleClose}
+      <Modal
+        onHide={handleClose}
         show={modalShow}
         aria-labelledby="contained-modal-title-vcenter"
         centered
-        >
+      >
         <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
+          <Modal.Title id="contained-modal-title-vcenter">
             Provide info for new Client
           </Modal.Title>
-        </Modal.Header>     
+        </Modal.Header>
 
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="name">
+            <Form.Group controlId="name">
               <Form.Label className="font-weight-bold">
                 <li>Name</li>
               </Form.Label>
@@ -189,16 +196,16 @@ return(
               </Form.Control.Feedback>
             </Form.Group>
             <Accordion>
-               {/* AdvancedSettings  */}
-            <Card>
+              {/* advancedSettingClients  */}
+              <Card>
                 <Card.Header>
-                  <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                  <Accordion.Toggle as={Button} variant="link" eventKey="0">
                     <li className="font-weight-bold">
                       Default settings and flags
                     </li>
                   </Accordion.Toggle>
                 </Card.Header>
-                <Accordion.Collapse eventKey="1">
+                <Accordion.Collapse eventKey="0">
                   <Card.Body>
                     <Form.Group>
                       <InputGroup className="mb-3">
@@ -210,7 +217,7 @@ return(
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
@@ -225,7 +232,7 @@ return(
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
@@ -234,7 +241,7 @@ return(
                         />
                         <InputGroup.Append>
                           <Button
-                            name="advancedSettings"
+                            name="advancedSettingClients"
                             variant="outline-success"
                             onClick={handleSetting}
                           >
@@ -251,13 +258,13 @@ return(
                       </InputGroup>
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-center">
-                      {client.advancedSettings.length === 0 ? (
+                      {client.advancedSettingClients.length === 0 ? (
                         <Alert variant="danger">
                           No setting or flags added yet
                         </Alert>
                       ) : (
                         <ListGroup>
-                          {client.advancedSettings.map((setting) => (
+                          {client.advancedSettingClients.map((setting) => (
                             <ListGroup.Item
                               key={setting.key}
                               className="d-flex"
@@ -282,13 +289,11 @@ return(
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>
-                {/* Attribute Mapping */}
+              {/* Attribute Mapping */}
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                    <li className="font-weight-bold">
-                      Attribute mapping
-                    </li>
+                    <li className="font-weight-bold">Attribute mapping</li>
                   </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
@@ -303,11 +308,12 @@ return(
                           onChange={(event) =>
                             setCurrentAttribute({
                               ...currentAttribute,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
-                            errors.attribute.empty || errors.attribute.exists
+                            errors.attributeMappings.empty ||
+                            errors.attributeMappings.exists
                           }
                         />
                         <FormControl
@@ -318,16 +324,17 @@ return(
                           onChange={(event) =>
                             setCurrentAttribute({
                               ...currentAttribute,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
-                            errors.attribute.empty || errors.attribute.exists
+                            errors.attributeMappings.empty ||
+                            errors.attributeMappings.exists
                           }
                         />
                         <InputGroup.Append>
                           <Button
-                            name="advancedSettings"
+                            name="advancedSettingClients"
                             variant="outline-success"
                             onClick={handleAttribute}
                           >
@@ -335,7 +342,7 @@ return(
                           </Button>
                         </InputGroup.Append>
                         <Form.Control.Feedback type="invalid">
-                          {errors.attribute.empty ? (
+                          {errors.attributeMappings.empty ? (
                             <span>Please provide a key and a value</span>
                           ) : (
                             <span>Atrribute with this key exists</span>
@@ -344,17 +351,14 @@ return(
                       </InputGroup>
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-center">
-                      {client.attribute.length === 0 ? (
+                      {client.attributeMappings.length === 0 ? (
                         <Alert variant="danger">
                           No setting or flags added yet
                         </Alert>
                       ) : (
                         <ListGroup>
-                          {client.attribute.map((att) => (
-                            <ListGroup.Item
-                              key={att.key}
-                              className="d-flex"
-                            >
+                          {client.attributeMappings.map((att) => (
+                            <ListGroup.Item key={att.key} className="d-flex">
                               <span className="p-2">
                                 {att.key} - {att.value}
                               </span>
@@ -375,25 +379,24 @@ return(
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>
-            </Accordion>   
+            </Accordion>
             <Modal.Footer>
-            <Button type="submit" className="btn btn-primary">
+              <Button type="submit" className="btn btn-primary">
                 CREATE
-             </Button>
-            </Modal.Footer>     
-          </Form>    
+              </Button>
+            </Modal.Footer>
+          </Form>
         </Modal.Body>
-      </Modal>  
+      </Modal>
     </>
-);
-
+  );
 }
 
 const mapStateToProps = (state) => {
-    return { currentCleint: state.client };
+  return { currentCleint: state.client };
 };
-  
 
 export default connect(mapStateToProps, {
-    createClient
+  createClient,
+  getClients,
 })(CreateClientModal);

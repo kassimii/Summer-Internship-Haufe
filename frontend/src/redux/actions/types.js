@@ -10,3 +10,4 @@ export const EDIT_CLIENT = "EDIT_CLIENT";
 export const GET_CLIENT = "GET_CLIENT";
 export const GET_CLIENTS = "GET_CLIENTS";
 export const DELETE_CLIENT = "DELETE_CLIENT";
+export const CLEAR_CLIENT = "CLEAR_CLIENT";

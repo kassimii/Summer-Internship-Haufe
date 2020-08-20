@@ -3,7 +3,7 @@ import { MDBContainer } from "mdbreact";
 import "./scrollbar.css";
 import { connect } from "react-redux";
 import { getClient } from "../redux/actions";
-import { ListGroup, Item } from "react-bootstrap";
+import { ListGroup } from "react-bootstrap";
 
 function ClientDetails({ selectedClient }) {
   const scrollContainerStyle = { maxHeight: "550px" };
@@ -14,7 +14,7 @@ function ClientDetails({ selectedClient }) {
       </>
     );
   }
-  console.log(selectedClient);
+
   return (
     <>
       <MDBContainer>
@@ -29,9 +29,9 @@ function ClientDetails({ selectedClient }) {
 
               <ListGroup variant="flush">
                 <h6 className="card-text">Advanced settings: </h6>
-                {selectedClient.advancedSettings.map((setting) => {
+                {selectedClient.advancedSettingClients.map((setting) => {
                   return (
-                    <ListGroup.Item>
+                    <ListGroup.Item key={setting.key}>
                       <p>Key: {setting.key}</p>
                       <p>Value: {setting.value}</p>
                     </ListGroup.Item>
@@ -41,9 +41,9 @@ function ClientDetails({ selectedClient }) {
 
               <ListGroup variant="flush">
                 <h6 className="card-text">Attribute mapping: </h6>
-                {selectedClient.attribute.map((attribute) => {
+                {selectedClient.attributeMappings.map((attribute) => {
                   return (
-                    <ListGroup.Item>
+                    <ListGroup.Item key={attribute.key}>
                       <p>Key: {attribute.key}</p>
                       <p>Value: {attribute.value}</p>
                     </ListGroup.Item>

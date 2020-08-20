@@ -8,7 +8,7 @@ module.exports = {
     .isEmpty()
     .trim()
     .withMessage("Group name must not be empty."),
-  requireUserId: check("user_id")
+  requireUserId: check("createdBy")
     .trim()
     .isUUID()
     .withMessage("Creator id is not UUID"),
@@ -17,8 +17,6 @@ module.exports = {
     .custom((arr) => {
       return arr.every((e) => {
         if (e === "") return false;
-        if (typeof e.key !== "string" || typeof e.value !== "string")
-          return false;
         return true;
       });
     }),
@@ -50,5 +48,5 @@ module.exports = {
       if (!existingGroup) {
         return Promise.reject("Group with this id does not exist");
       }
-    })
+    }),
 };

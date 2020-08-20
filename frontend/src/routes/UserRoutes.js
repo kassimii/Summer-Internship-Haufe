@@ -13,7 +13,7 @@ const UserRoutes = () => {
       <Header />
       <Switch class="container vh-100 d-flex justify-content-center">
         <Route path="/" exact component={ClientsPage} />
-        <Route path="/groups" exact component={TestRoute} />
+        <Route path="/groups" exact component={GroupsPage} />
         <Route path="/groups/:groupId" exact component={GroupPage} />
         <Route path="/groups/new/:groupId" exact component={TestRoute} />
         <Route path="/groups/:groupId/:clientId" exact component={TestRoute} />

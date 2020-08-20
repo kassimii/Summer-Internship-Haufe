@@ -9,7 +9,7 @@ import {
   ListGroup,
   Card,
   Accordion,
-  Alert
+  Alert,
 } from "react-bootstrap";
 
 import { store } from "../redux/store";
@@ -20,18 +20,19 @@ import {
   editGroup,
   clearGroup,
   createGroup,
-  deleteGroup
+  deleteGroup,
 } from "../redux/actions/index";
 
 const initialGroup = {
   name: "",
+  createdBy: "123e4567-e89b-12d3-a456-426614174000",
   claims: [],
-  advancedSettings: []
+  advancedSettings: [],
 };
 const initialErrors = {
   name: false,
   claim: { empty: false, exists: false },
-  setting: { empty: false, exists: false }
+  setting: { empty: false, exists: false },
 };
 
 function CreateEditGroupModal({
@@ -42,13 +43,13 @@ function CreateEditGroupModal({
   clearGroup,
   createGroup,
   currentGroup,
-  deleteGroup
+  deleteGroup,
 }) {
   const [modalShow, setModalShow] = useState(false);
   const [currentClaim, setCurrentClaim] = useState("");
   const [currentSetting, setCurrentSetting] = useState({
     key: "",
-    value: ""
+    value: "",
   });
   const [group, setGroup] = useState(initialGroup);
   const [errors, setErrors] = useState(initialErrors);
@@ -57,7 +58,7 @@ function CreateEditGroupModal({
     : {
         header: "Provide information for the new group",
         button1: "Create group",
-        button2: "Create"
+        button2: "Create",
       };
 
   const { sendRequest } = useHttpClient();
@@ -114,7 +115,7 @@ function CreateEditGroupModal({
     }
     setErrors({ ...errors, claim: { empty: false, exists: false } });
     handleChange({
-      target: { name: "claims", value: currentClaim }
+      target: { name: "claims", value: currentClaim },
     });
     setCurrentClaim("");
   };
@@ -138,7 +139,7 @@ function CreateEditGroupModal({
     }
     setErrors({ ...errors, setting: { empty: false, exists: false } });
     handleChange({
-      target: { name: "advancedSettings", value: currentSetting }
+      target: { name: "advancedSettings", value: currentSetting },
     });
     setCurrentSetting({ key: "", value: "" });
   };
@@ -169,7 +170,7 @@ function CreateEditGroupModal({
     } else {
       setGroup({
         ...group,
-        [target.name]: [...group[target.name], target.value]
+        [target.name]: [...group[target.name], target.value],
       });
     }
   }
@@ -181,7 +182,6 @@ function CreateEditGroupModal({
       return;
     }
     if (!id) {
-      console.log(group);
       createGroup(group, sendRequest);
     } else {
       let parsedGroup = group;
@@ -336,7 +336,7 @@ function CreateEditGroupModal({
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
@@ -351,7 +351,7 @@ function CreateEditGroupModal({
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
@@ -445,5 +445,5 @@ export default connect(mapStateToProps, {
   editGroup,
   clearGroup,
   createGroup,
-  deleteGroup
+  deleteGroup,
 })(CreateEditGroupModal);

@@ -7,7 +7,7 @@ const {
   requireUserId,
   requireClaims,
   requireAdvanedSettings,
-  requireExistingGroupId
+  requireExistingGroupId,
 } = require("../validators/group-validators");
 
 const { handleErrors } = require("../middleware/handle-errors");
@@ -17,7 +17,7 @@ const {
   deleteGroup,
   getGroups,
   getGroupsById,
-  updateGroup
+  updateGroup,
 } = require("../controllers/groups-controllers");
 
 // CREATE GROUP
@@ -44,7 +44,7 @@ router.patch(
     requireExistingGroupId,
     requireAdvanedSettings,
     requireClaims,
-    requireGroupName
+    requireGroupName,
   ],
   handleErrors,
   updateGroup

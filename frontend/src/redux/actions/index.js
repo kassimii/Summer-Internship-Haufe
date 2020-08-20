@@ -1,5 +1,3 @@
-import { store } from "../store";
-
 import {
   GET_GROUPS,
   GET_GROUP,
@@ -12,6 +10,7 @@ import {
   GET_CLIENT,
   GET_CLIENTS,
   DELETE_CLIENT,
+  CLEAR_CLIENT,
 } from "./types";
 
 export const getGroups = (sendRequest) => async (dispatch) => {
@@ -46,15 +45,20 @@ export const editGroup = (formValues, sendRequest) => async (dispatch) => {
 };
 
 export const createGroup = (formValues, sendRequest) => async (dispatch) => {
-  const response = await sendRequest(
-    `/groups`,
-    "POST",
-    JSON.stringify(formValues),
-    {
-      "Content-Type": "application/json",
-    }
-  );
-  dispatch({ type: CREATE_GROUP, payload: response });
+  let response;
+  try {
+    response = await sendRequest(
+      `/groups`,
+      "POST",
+      JSON.stringify(formValues),
+      {
+        "Content-Type": "application/json",
+      }
+    );
+    dispatch({ type: CREATE_GROUP, payload: response });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const deleteGroup = (id, sendRequest) => async (dispatch) => {
@@ -69,16 +73,15 @@ export const clearGroup = () => {
 };
 
 export const createClient = (formValues, sendRequest) => async (dispatch) => {
-  // const response = await sendRequest(
-  //   `/clients`,
-  //   "POST",
-  //   JSON.stringify(formValues),
-  //   { "Content-Type": "application/json" }
-  // );
-  // dispatch({ type: CREATE_CLIENT, payload: response });
-
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  dispatch({ type: CREATE_CLIENT, payload: formValues });
+  const js = JSON.stringify(formValues);
+  console.log(js);
+  const response = await sendRequest(
+    `/clients`,
+    "POST",
+    JSON.stringify(formValues),
+    { "Content-Type": "application/json" }
+  );
+  dispatch({ type: CREATE_CLIENT, payload: response });
 };
 
 export const editClient = (formValues, sendRequest) => async (dispatch) => {
@@ -101,24 +104,22 @@ export const editClient = (formValues, sendRequest) => async (dispatch) => {
 };
 
 export const getClient = (id, sendRequest) => async (dispatch) => {
-  // const response = await sendRequest(`/clients/${id}`, "GET", null, {
-  //   "Content-Type": "application/json",
-  // });
-  // dispatch({ type: GET_CLIENT, payload: response });
-  const currentState = store.getState();
-  const client = currentState.clients.find((client) => client.id === id);
+  const response = await sendRequest(`/clients/${id}`, "GET", null, {
+    "Content-Type": "application/json",
+  });
+  dispatch({ type: GET_CLIENT, payload: response });
+  // const currentState = store.getState();
+  // const client = currentState.clients.find((client) => client.id === id);
 
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  dispatch({ type: GET_CLIENT, payload: client });
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
+  // dispatch({ type: GET_CLIENT, payload: client });
 };
 
 export const getClients = (sendRequest) => async (dispatch) => {
-  // const response = await sendRequest("/clients", "GET", null, {
-  //   "Content-Type": "application/json",
-  // });
-  // dispatch({ type: GET_CLIENTS, payload: response });
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  dispatch({ type: GET_CLIENTS, payload: "clients" });
+  const response = await sendRequest("/clients", "GET", null, {
+    "Content-Type": "application/json",
+  });
+  dispatch({ type: GET_CLIENTS, payload: response });
 };
 
 export const deleteClient = (id, sendRequest) => async (dispatch) => {
@@ -126,4 +127,8 @@ export const deleteClient = (id, sendRequest) => async (dispatch) => {
     "Content-Type": "application/json",
   });
   dispatch({ type: DELETE_CLIENT, payload: response });
+};
+
+export const clearClient = () => {
+  return { type: CLEAR_CLIENT };
 };
