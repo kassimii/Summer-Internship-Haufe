@@ -107,12 +107,8 @@ export const getClient = (id, sendRequest) => async (dispatch) => {
   const response = await sendRequest(`/clients/${id}`, "GET", null, {
     "Content-Type": "application/json",
   });
-  dispatch({ type: GET_CLIENT, payload: response });
-  // const currentState = store.getState();
-  // const client = currentState.clients.find((client) => client.id === id);
 
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
-  // dispatch({ type: GET_CLIENT, payload: client });
+  dispatch({ type: GET_CLIENT, payload: response });
 };
 
 export const getClients = (sendRequest) => async (dispatch) => {
