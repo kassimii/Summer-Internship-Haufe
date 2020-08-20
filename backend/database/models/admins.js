@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+const { Sequelize } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   const Admin = sequelize.define("admin", {

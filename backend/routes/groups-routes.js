@@ -2,7 +2,13 @@ const express = require("express");
 
 const router = express.Router();
 
-const { requireGroupName } = require("../validators/group-validators");
+const {
+  requireGroupName,
+  requireUserId,
+  requireClaims,
+  requireAdvanedSettings,
+  requireExistingGroupId
+} = require("../validators/group-validators");
 
 const { handleErrors } = require("../middleware/handle-errors");
 
@@ -14,10 +20,34 @@ const {
   updateGroup
 } = require("../controllers/groups-controllers");
 
-router.post("/", [requireGroupName], handleErrors, createGroup);
-router.delete("/:groupId", deleteGroup);
+// CREATE GROUP
+router.post(
+  "/",
+  [requireGroupName, requireUserId, requireClaims, requireAdvanedSettings],
+  handleErrors,
+  createGroup
+);
+
+// DELETE GROUP
+router.delete("/:groupId", [requireExistingGroupId], handleErrors, deleteGroup);
+
+// GET GROUPS
 router.get("/", getGroups);
-router.get("/:groupId", getGroupsById);
-router.patch("/:groupId", updateGroup);
+
+// GET GROUP BY ID
+router.get("/:groupId", [requireExistingGroupId], handleErrors, getGroupsById);
+
+// EDIT GROUP
+router.patch(
+  "/:groupId",
+  [
+    requireExistingGroupId,
+    requireAdvanedSettings,
+    requireClaims,
+    requireGroupName
+  ],
+  handleErrors,
+  updateGroup
+);
 
 module.exports = router;

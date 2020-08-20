@@ -26,7 +26,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  // AdvancedSetting.removeAttribute("id");
-
   return AdvancedSetting;
 };

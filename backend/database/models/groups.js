@@ -29,14 +29,12 @@ module.exports = (sequelize, DataTypes) => {
   Group.associate = function (models) {
     Group.hasMany(models.Claim, {
       foreignKey: "group_id",
-      // as: "claims",
       onDelete: "CASCADE",
       hooks: true
     });
 
     Group.hasMany(models.AdvancedSetting, {
       foreignKey: "group_id",
-      // as: "advancedSettings",
       onDelete: "CASCADE",
       hooks: true
     });

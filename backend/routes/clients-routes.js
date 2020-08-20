@@ -9,7 +9,6 @@ const {
   requireAdvanedSettingsClients,
   requireAttributeMappings,
   requireExistingStatus,
-  requireClientIdParam,
   requireExistingClientId
 } = require("../validators/client-validators");
 
@@ -29,7 +28,10 @@ const {
   deleteMetadata
 } = require("../controllers/clients-controllers");
 
+// GET CLIENTS
 router.get("/", getClients);
+
+// CREATE CLIENT
 router.post(
   "/",
   [
@@ -42,7 +44,16 @@ router.post(
   handleErrors,
   createClient
 );
-router.get("/:clientId", [requireClientIdParam], handleErrors, getClientById);
+
+// GET CLIENT BY ID
+router.get(
+  "/:clientId",
+  [requireExistingClientId],
+  handleErrors,
+  getClientById
+);
+
+// EDIT CLIENT
 router.patch(
   "/:clientId",
   [
@@ -56,22 +67,36 @@ router.patch(
   handleErrors,
   updateClient
 );
+
+// DELETE  CLIENT
 router.delete(
   "/:clientId",
   [requireExistingClientId],
   handleErrors,
   deleteClient
 );
+
+// ADD STATUS
 router.post(
   "/:clientId/status",
   [requireExistingStatus, requireUserId],
   handleErrors,
   addStatus
 );
+
+// ADD METADATA
 router.post("/:clientId/metadata", addMetadata);
+
+// GET METADATA FOR A CLIENT
 router.get("/:clientId/metadata", getAllMetadata);
+
+// GET METADATA FOR A CLIENT BY METADATA ID
 router.get("/:clientId/metadata/:metadataId", getMetadata);
+
+// EDIT METADATA
 router.patch("/:clientId/metadata/:metadataId", updateMetadata);
+
+// DELETE METADATA
 router.delete("/:clientId/metadata/:metadataId", deleteMetadata);
 
 module.exports = router;

@@ -3,7 +3,6 @@ const { Op } = require("sequelize");
 const models = require("../database/models");
 
 const createGroup = async (req, res) => {
-  console.log(req.body);
   const newGroup = {
     ...req.body,
     claims: req.body.claims.map((claim) => {
@@ -78,10 +77,10 @@ const getGroupsById = async (req, res) => {
 
 const updateGroup = async (req, res) => {
   const { groupId } = req.params;
-  const claimsNew = req.body.claims.map((claim) => {
+  const incomingClaims = req.body.claims.map((claim) => {
     return { group_id: req.params.groupId, claim: claim };
   });
-  const advancedSettingsNew = req.body.advancedSettings.map((setting) => {
+  const incomingAdvancedSettings = req.body.advancedSettings.map((setting) => {
     return {
       group_id: req.params.groupId,
       key: setting.key,
@@ -90,103 +89,76 @@ const updateGroup = async (req, res) => {
   });
 
   try {
-    let group = await models.Group.findOne({
-      include: [models.Claim, models.AdvancedSetting],
-
-      where: {
-        id: {
-          [Op.eq]: groupId
-        }
-      }
+    let group = await models.Group.findByPk(groupId, {
+      include: [models.Claim, models.AdvancedSetting]
     });
 
-    if (group) {
-      const groupClaims = group.claims;
-      const groupAdvancedSettings = group.advancedSettings;
-
-      group.update(req.body);
-      group.save();
-
-      groupClaims.forEach((claim) => {
-        if (
-          claimsNew.map((claim) => claim.claim).includes(claim.dataValues.claim)
-        ) {
-          console.log("deja este");
-        } else {
-          models.Claim.destroy({
-            where: { claim: claim.dataValues.claim }
-          });
-        }
-      });
-
-      console.log(groupClaims);
-      console.log(claimsNew);
-      claimsNew.forEach((newClaim) => {
-        if (
-          groupClaims.map((gc) => gc.dataValues.claim).includes(newClaim.claim)
-        ) {
-          console.log("deja este ma");
-        } else {
-          models.Claim.create(newClaim);
-          console.log("created");
-        }
-      });
-
-      // groupAdvancedSettings.forEach( (setting, flag) => {
-      //   advancedSettingsNew.forEach((newSetting => {
-      //     if(newSetting.key === setting.key){
-
-      //   }));
-
-      // });
-
-      const existingAdvancedSettingsKeys = groupAdvancedSettings.map(
-        (setting) => setting.key
-      );
-      const newAdvancedSettingsKeys = advancedSettingsNew.map(
-        (setting) => setting.key
-      );
-
-      existingAdvancedSettingsKeys.forEach((existing_key) => {
-        if (newAdvancedSettingsKeys.includes(existing_key)) {
-          console.log("exists");
-        } else {
-          models.AdvancedSetting.destroy({
-            where: {
-              key: existing_key
-            }
-          });
-        }
-      });
-      // advancedSettingsNew.forEach((newSetting) => {
-      //   groupAdvancedSettings.forEach( (setting) => {
-      //     if(setting.key === newSetting.key) {
-
-      //     }
-
-      //   });
-
-      // if(flag !==2){
-      //   models.AdvancedSetting.create(newSetting);
-      // }
-
-      advancedSettingsNew.forEach((newSetting) => {
-        if (existingAdvancedSettingsKeys.includes(newSetting.key)) {
-          models.AdvancedSetting.update(
-            { value: newSetting.value },
-            {
-              where: {
-                key: newSetting.key
-              }
-            }
-          );
-        } else {
-          models.AdvancedSetting.create(newSetting);
-        }
-      });
-      console.log(group);
-      return res.status(201).json({ group });
+    if (!group) {
+      return res
+        .status(400)
+        .json({ group: {}, message: "Group does not exist" });
     }
+    // checking claims for update
+    for (let i = 0; i < group.claims.length; i++) {
+      let claim = group.claims[i];
+      // if stored claims are no longer in incoming claims
+      if (!incomingClaims.find((inClaim) => claim === inClaim)) {
+        // they are deleted
+        await models.Claim.destroy({
+          where: { group_id: groupId, claim: claim }
+        });
+      }
+    }
+    for (let i = 0; i < incomingClaims.length; i++) {
+      let inClaim = incomingClaims[i];
+      // if there are new claims
+      let currentExistingClaim = group.claims.find(
+        (claim) => claim === inClaim
+      );
+      if (!currentExistingClaim) {
+        // they are created
+        await models.Claim.create({ group_id: groupId, claim: inClaim });
+      }
+    }
+    // checking advanced settings for update
+    for (let i = 0; i < group.advancedSettings.length; i++) {
+      let setting = group.advancedSettings[i];
+      // if stored advanced settings are no longer in incoming claims
+      if (
+        !incomingAdvancedSettings.find(
+          (inSetting) => inSetting.key === setting.key
+        )
+      ) {
+        // they are deleted
+        await models.AdvancedSetting.destroy({
+          where: { group_id: groupId, key: setting.key }
+        });
+      }
+    }
+    for (let i = 0; i < incomingAdvancedSettings.length; i++) {
+      let inSetting = incomingAdvancedSettings[i];
+      let currentExistingAdvancedSetting = group.advancedSettings.find(
+        (setting) => setting.key === inSetting.key
+      );
+      // if the incoming advanced settings has a new key it is created
+      if (!currentExistingAdvancedSetting) {
+        await models.AdvancedSetting.create({
+          group_id: groupId,
+          ...inSetting
+        });
+      } else {
+        // if we have the same key but different value
+        if (inSetting.value !== currentExistingAdvancedSetting.value) {
+          currentExistingAdvancedSetting.value = inSetting.value;
+          // the setting gets updated
+          await currentExistingAdvancedSetting.save({ fields: ["value"] });
+        }
+      }
+    }
+    group = await models.Group.findByPk(groupId, {
+      include: [models.Claim, models.AdvancedSetting]
+    });
+    res.status(200).json({ group });
   } catch (err) {
     console.log("Error: " + err);
     res.status(400).json({ error: err });
