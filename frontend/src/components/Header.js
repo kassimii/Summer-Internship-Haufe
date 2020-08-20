@@ -22,6 +22,9 @@ const renderCollapsiblePart = () => {
           <Link className="nav-link" to="/groups">
             Groups
           </Link>
+          <Link className="nav-link" to="/clients">
+            Clients
+          </Link>
         </div>
 
         <div className="navbar-nav w-100 justify-content-end">
