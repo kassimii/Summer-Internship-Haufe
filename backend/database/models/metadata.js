@@ -1,26 +1,29 @@
 const { Sequelize } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  const Claim = sequelize.define(
-    "claim",
+  const Metadata = sequelize.define(
+    "metadata",
     {
       id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
       },
-      group_id: {
+      client_id: {
         type: DataTypes.UUID
       },
-      claim: {
+      type: {
         type: DataTypes.STRING(32)
+      },
+      content: {
+        type: DataTypes.TEXT
       }
     },
     {
       freezeTableName: true,
       timestamps: false,
-      tableName: "group_claims"
+      tableName: "metadata"
     }
   );
 
-  return Claim;
+  return Metadata;
 };

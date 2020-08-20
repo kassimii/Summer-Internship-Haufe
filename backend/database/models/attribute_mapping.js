@@ -1,26 +1,29 @@
 const { Sequelize } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  const Claim = sequelize.define(
-    "claim",
+  const AttributeMapping = sequelize.define(
+    "attributeMapping",
     {
       id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
       },
-      group_id: {
+      client_id: {
         type: DataTypes.UUID
       },
-      claim: {
+      key: {
+        type: DataTypes.STRING(32)
+      },
+      value: {
         type: DataTypes.STRING(32)
       }
     },
     {
       freezeTableName: true,
       timestamps: false,
-      tableName: "group_claims"
+      tableName: "attribute_mapping"
     }
   );
 
-  return Claim;
+  return AttributeMapping;
 };

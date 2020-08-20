@@ -7,24 +7,48 @@ module.exports = {
     .not()
     .isEmpty()
     .trim()
-    .withMessage("Group name must not be empty.")
-    .custom(async (group_name) => {
+    .withMessage("Group name must not be empty."),
+  requireUserId: check("user_id")
+    .trim()
+    .isUUID()
+    .withMessage("Creator id is not UUID"),
+  requireClaims: check("claims")
+    .isArray()
+    .custom((arr) => {
+      return arr.every((e) => {
+        if (e === "") return false;
+        if (typeof e.key !== "string" || typeof e.value !== "string")
+          return false;
+        return true;
+      });
+    }),
+  requireAdvanedSettings: check("advancedSettings")
+    .isArray()
+    .custom((arr) => {
+      return arr.every((e) => {
+        if (!e.key || !e.value) return false;
+        if (e.key === "" || e.value === "") return false;
+        if (typeof e.key !== "string" || typeof e.value !== "string")
+          return false;
+        return true;
+      });
+    })
+    .withMessage(
+      "Advanced settings must be an array and key - value pairs, the pairs must be non-empty strings"
+    ),
+  requireExistingGroupId: check("groupId")
+    .trim()
+    .isUUID()
+    .withMessage("Group id is not UUID")
+    .custom(async (groupId) => {
       let existingGroup;
       try {
-        existingGroup = await models.Group.findOne({
-          where: {
-            name: {
-              [Op.eq]: group_name,
-            },
-          },
-        });
-      } catch (error) {
-        console.log(error);
+        existingGroup = await models.Group.findByPk(groupId);
+      } catch (err) {
+        console.log(err);
       }
-
-      if (existingGroup) {
-        return Promise.reject("Group already exists");
+      if (!existingGroup) {
+        return Promise.reject("Group with this id does not exist");
       }
-      return true;
-    }),
+    })
 };

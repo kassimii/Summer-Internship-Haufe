@@ -181,6 +181,7 @@ function CreateEditGroupModal({
       return;
     }
     if (!id) {
+      console.log(group);
       createGroup(group, sendRequest);
     } else {
       let parsedGroup = group;

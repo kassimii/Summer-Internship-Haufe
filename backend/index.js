@@ -1,14 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const app = express();
 const cors = require("cors");
+const groupsRoutes = require("./routes/groups-routes");
+const clientsRoutes = require("./routes/clients-routes");
+
+const app = express();
+
 const PORT = process.env.PORT || 5000;
-const groupRoutes = require("./routes/groups-routes");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use("/api/groups/", groupRoutes);
+app.use("/api/groups/", groupsRoutes);
+app.use("/api/clients/", clientsRoutes);
 
 app.use(cors);
 app.listen(PORT, () => {

@@ -1,26 +1,31 @@
 const { Sequelize } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  const Claim = sequelize.define(
-    "claim",
+  const Status = sequelize.define(
+    "status",
     {
       id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
       },
-      group_id: {
-        type: DataTypes.UUID
-      },
-      claim: {
+      type: {
         type: DataTypes.STRING(32)
       }
     },
     {
       freezeTableName: true,
       timestamps: false,
-      tableName: "group_claims"
+      tableName: "status"
     }
   );
 
-  return Claim;
+  Status.associate = function (models) {
+    Status.hasMany(models.ClientStatus, {
+      foreignKey: "status_id",
+      onDelete: "CASCADE",
+      hooks: true
+    });
+  };
+
+  return Status;
 };

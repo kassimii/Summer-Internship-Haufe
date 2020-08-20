@@ -1,25 +1,20 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable("groups", {
+    return queryInterface.createTable("admins", {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
       },
-      name: {
+      emailAddress: {
         type: Sequelize.STRING(32),
-        unique: true
-      },
-      creationDate: {
-        type: Sequelize.DATE
-      },
-      createdBy: {
-        type: Sequelize.UUID
+        isUnique: true,
+        allowNull: false
       }
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("groups");
+    return queryInterface.dropTable("admins");
   }
 };

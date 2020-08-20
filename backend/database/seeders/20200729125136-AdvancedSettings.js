@@ -1,23 +1,26 @@
+const { v4: uuidv4 } = require("uuid");
 module.exports = {
   up: async (queryInterface, Sequelize) =>
     queryInterface.bulkInsert(
-      "AdvancedSettings",
+      "advanced_settings",
       [
         {
-          group_id: "123e4567-e89b-12d3-a456-426614174000",
+          id: uuidv4(),
+          group_id: "97af767d-55ab-4c45-9020-3096e49a19bf",
           key: "key1",
-          value: "value1",
+          value: "value1"
         },
         {
-          group_id: "123e4567-e89b-12d3-a456-426614174001",
+          id: uuidv4(),
+          group_id: "337b9242-2aac-442e-a353-b1290f3eb1bc",
           key: "key2",
-          value: "value2",
-        },
+          value: "value2"
+        }
       ],
       {}
     ),
 
   down: async (queryInterface, Sequelize) => {
-    queryInterface.bulkDelete("AdvancedSettings", null, {});
-  },
+    queryInterface.bulkDelete("advanced_settings", null, {});
+  }
 };
