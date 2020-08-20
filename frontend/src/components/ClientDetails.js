@@ -14,7 +14,6 @@ function ClientDetails({ selectedClient }) {
       </>
     );
   }
-
   return (
     <>
       <MDBContainer>
@@ -63,5 +62,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  getClient,
+  getClient
 })(ClientDetails);

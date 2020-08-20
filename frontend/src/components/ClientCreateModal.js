@@ -10,7 +10,7 @@ import {
   Card,
   Alert,
   Button,
-  Accordion,
+  Accordion
 } from "react-bootstrap";
 
 import { useHttpClient } from "../hooks/http-hook";
@@ -21,13 +21,13 @@ const initialClient = {
   group_id: "1eaf6cce-bd0f-4765-aee2-cde7b7247c10",
   user_id: "a261f996-7085-46ee-b8da-c46929bc5e7c",
   advancedSettingClients: [],
-  attributeMappings: [],
+  attributeMappings: []
 };
 
 const initialErrors = {
   name: false,
   setting: { empty: false, exists: false },
-  attributeMappings: { empty: false, exists: false },
+  attributeMappings: { empty: false, exists: false }
 };
 
 function CreateClientModal({ id, createClient, getClients }) {
@@ -38,11 +38,11 @@ function CreateClientModal({ id, createClient, getClients }) {
   const [errors, setErrors] = useState(initialErrors);
   const [currentSetting, setCurrentSetting] = useState({
     key: "",
-    value: "",
+    value: ""
   });
   const [currentAttribute, setCurrentAttribute] = useState({
     key: "",
-    value: "",
+    value: ""
   });
 
   const handleClose = () => {
@@ -83,7 +83,7 @@ function CreateClientModal({ id, createClient, getClients }) {
     } else {
       setClient({
         ...client,
-        [target.name]: [...client[target.name], target.value],
+        [target.name]: [...client[target.name], target.value]
       });
     }
   }
@@ -107,7 +107,7 @@ function CreateClientModal({ id, createClient, getClients }) {
     }
     setErrors({ ...errors, setting: { empty: false, exists: false } });
     handleChange({
-      target: { name: "advancedSettingClients", value: currentSetting },
+      target: { name: "advancedSettingClients", value: currentSetting }
     });
     setCurrentSetting({ key: "", value: "" });
   };
@@ -124,11 +124,11 @@ function CreateClientModal({ id, createClient, getClients }) {
     if (currentAttribute.key === "" || currentAttribute.value === "") {
       setErrors({
         ...errors,
-        attributeMappings: { empty: true, exists: false },
+        attributeMappings: { empty: true, exists: false }
       });
       return;
     }
-    client.advancedSettingClients.forEach((att) => {
+    client.attributeMappings.forEach((att) => {
       if (currentAttribute.key === att.key) {
         fieldExists = true;
         return;
@@ -137,17 +137,17 @@ function CreateClientModal({ id, createClient, getClients }) {
     if (fieldExists) {
       setErrors({
         ...errors,
-        attributeMappings: { empty: false, exists: true },
+        attributeMappings: { empty: false, exists: true }
       });
       setCurrentAttribute({ key: "", value: "" });
       return;
     }
     setErrors({
       ...errors,
-      attributeMappings: { empty: false, exists: false },
+      attributeMappings: { empty: false, exists: false }
     });
     handleChange({
-      target: { name: "attributeMappings", value: currentAttribute },
+      target: { name: "attributeMappings", value: currentAttribute }
     });
     setCurrentAttribute({ key: "", value: "" });
   };
@@ -217,7 +217,7 @@ function CreateClientModal({ id, createClient, getClients }) {
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim(),
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
                           isInvalid={
@@ -232,7 +232,7 @@ function CreateClientModal({ id, createClient, getClients }) {
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim(),
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
                           isInvalid={
@@ -308,7 +308,7 @@ function CreateClientModal({ id, createClient, getClients }) {
                           onChange={(event) =>
                             setCurrentAttribute({
                               ...currentAttribute,
-                              [event.target.name]: event.target.value.trim(),
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
                           isInvalid={
@@ -324,7 +324,7 @@ function CreateClientModal({ id, createClient, getClients }) {
                           onChange={(event) =>
                             setCurrentAttribute({
                               ...currentAttribute,
-                              [event.target.name]: event.target.value.trim(),
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
                           isInvalid={
@@ -398,5 +398,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   createClient,
-  getClients,
+  getClients
 })(CreateClientModal);
