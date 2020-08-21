@@ -2,6 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
+const upload = require("../middleware/uploadMetadatas");
+
 const {
   requireClientName,
   requireGroupId,
@@ -85,7 +87,7 @@ router.post(
 );
 
 // ADD METADATA
-router.post("/:clientId/metadata", addMetadata);
+router.post("/:clientId/metadata", upload.single("file"), addMetadata);
 
 // GET METADATA FOR A CLIENT
 router.get("/:clientId/metadata", getAllMetadata);

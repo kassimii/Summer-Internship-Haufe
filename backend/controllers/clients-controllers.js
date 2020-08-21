@@ -1,6 +1,7 @@
 const express = require("express");
 const { Op } = require("sequelize");
 const models = require("../database/models");
+const fs = require("fs");
 
 const getClients = async (req, res) => {
   let clients;
@@ -12,10 +13,10 @@ const getClients = async (req, res) => {
         {
           model: models.ClientStatus,
           order: [["creationDate", "DESC"]],
-          limit: 1,
+          limit: 1
         },
-        models.Metadata,
-      ],
+        models.Metadata
+      ]
     });
 
     if (!clients) {
@@ -46,10 +47,10 @@ const getClientById = async (req, res) => {
         {
           model: models.ClientStatus,
           order: [["creationDate", "DESC"]],
-          limit: 1,
+          limit: 1
         },
-        models.Metadata,
-      ],
+        models.Metadata
+      ]
     });
     if (!client) {
       return res
@@ -75,9 +76,9 @@ const createClient = async (req, res) => {
     newStatusId = await models.Status.findOne({
       where: {
         type: {
-          [Op.eq]: "NEW",
-        },
-      },
+          [Op.eq]: "NEW"
+        }
+      }
     });
   } catch (err) {
     return res.status(400).json({ error: err });
@@ -89,8 +90,8 @@ const createClient = async (req, res) => {
     lastModified: new Date().toISOString(),
     lastModifiedBy: req.body.user_id,
     clientStatuses: [
-      { creationDate: new Date().toISOString(), status_id: newStatusId.id },
-    ],
+      { creationDate: new Date().toISOString(), status_id: newStatusId.id }
+    ]
   };
 
   try {
@@ -98,9 +99,9 @@ const createClient = async (req, res) => {
       include: [
         models.AdvancedSettingClient,
         models.AttributeMapping,
-        models.ClientStatus,
+        models.ClientStatus
         // models.Metadata
-      ],
+      ]
     });
     return res.status(200).json({ client: result });
   } catch (err) {
@@ -120,8 +121,8 @@ const updateClient = async (req, res) => {
         models.AdvancedSettingClient,
         models.AttributeMapping,
         models.ClientStatus,
-        models.Metadata,
-      ],
+        models.Metadata
+      ]
     });
     if (!client) {
       return res
@@ -150,12 +151,12 @@ const updateClient = async (req, res) => {
           // if so we delete them from the DB
           if (decider === "settings") {
             await models.AdvancedSettingClient.destroy({
-              where: { client_id: clientId, key: setting.key },
+              where: { client_id: clientId, key: setting.key }
             });
           }
           if (decider === "attributes") {
             await models.AttributeMapping.destroy({
-              where: { client_id: clientId, key: setting.key },
+              where: { client_id: clientId, key: setting.key }
             });
           }
         }
@@ -172,13 +173,13 @@ const updateClient = async (req, res) => {
           if (decider === "settings") {
             await models.AdvancedSettingClient.create({
               client_id: clientId,
-              ...inSetting,
+              ...inSetting
             });
           }
           if (decider === "attributes") {
             await models.AttributeMapping.create({
               client_id: clientId,
-              ...inSetting,
+              ...inSetting
             });
           }
         } else {
@@ -205,10 +206,10 @@ const updateClient = async (req, res) => {
         {
           model: models.ClientStatus,
           order: [["creationDate", "DESC"]],
-          limit: 1,
+          limit: 1
         },
-        models.Metadata,
-      ],
+        models.Metadata
+      ]
     });
     const latestStatus = await models.Status.findByPk(
       client.clientStatuses[0].status_id
@@ -244,9 +245,9 @@ const addStatus = async (req, res) => {
     newStatusId = await models.Status.findOne({
       where: {
         type: {
-          [Op.eq]: newStatus,
-        },
-      },
+          [Op.eq]: newStatus
+        }
+      }
     });
 
     let client = await models.Client.findByPk(clientId);
@@ -255,7 +256,7 @@ const addStatus = async (req, res) => {
     const newEntry = {
       client_id: clientId,
       status_id: newStatusId.id,
-      creationDate: new Date().toISOString(),
+      creationDate: new Date().toISOString()
     };
     const newClientStatus = await models.ClientStatus.create(newEntry);
     client.lastModified = new Date().toISOString();
@@ -270,15 +271,24 @@ const addStatus = async (req, res) => {
 
 const addMetadata = async (req, res) => {
   const clientId = req.params.clientId;
-  const metadata = req.body.metadata;
+  const metadata = req.body.content;
   const type = req.body.type;
   try {
+    if (req.body.content == undefined) {
+      return res.status(400).json({ error: [{ message: "File undefined" }] });
+    }
     let client = await models.Client.findByPk(clientId);
     if (!client) {
       return res.status(400).json({ error: [{ message: "Wrong client id" }] });
     }
-    const newMetadata = { client_id: clientId, type: type, metadata: metadata };
-    const result = await models.Metadata.create(newMetadata);
+    const newMetadata = {
+      client_id: clientId,
+      type: type,
+      content: fs.readFileSync(
+        __basedir + "/resources/static/assets/uploads/" + req.file.filename
+      )
+    };
+    await models.Metadata.create(newMetadata);
     client = await models.Client.findByPk(req.params.clientId, {
       include: [
         models.AdvancedSettingClient,
@@ -286,10 +296,10 @@ const addMetadata = async (req, res) => {
         {
           model: models.ClientStatus,
           order: [["creationDate", "DESC"]],
-          limit: 1,
+          limit: 1
         },
-        models.Metadata,
-      ],
+        models.Metadata
+      ]
     });
     const latestStatus = await models.Status.findByPk(
       client.clientStatuses[0].status_id
