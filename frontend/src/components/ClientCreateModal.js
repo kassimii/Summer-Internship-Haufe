@@ -18,7 +18,7 @@ import { createClient, getClients } from "../redux/actions/index";
 
 const initialClient = {
   name: "",
-  group_id: "1eaf6cce-bd0f-4765-aee2-cde7b7247c10",
+  group_id: "7da27e15-0f58-4346-9e3e-c15eea578994",
   user_id: "a261f996-7085-46ee-b8da-c46929bc5e7c",
   advancedSettingClients: [],
   attributeMappings: []
@@ -59,7 +59,7 @@ function CreateClientModal({ id, createClient, getClients }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (clientInformation.name === "") {
+    if (client.name === "") {
       setErrors({ ...errors, name: true });
       return;
     }
@@ -72,7 +72,7 @@ function CreateClientModal({ id, createClient, getClients }) {
 
     const unsubscribe = store.subscribe(() => {
       unsubscribe();
-      getClients(sendRequest);
+      getClients(sendRequest, "");
       handleClose();
     });
   };

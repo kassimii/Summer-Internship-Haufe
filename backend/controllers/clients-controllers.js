@@ -4,6 +4,8 @@ const models = require("../database/models");
 const fs = require("fs");
 
 const getClients = async (req, res) => {
+  console.log(req.query);
+  console.log("======");
   let clients;
   try {
     clients = await models.Client.findAll({
@@ -60,9 +62,11 @@ const getClientById = async (req, res) => {
     const latestStatus = await models.Status.findByPk(
       client.clientStatuses[0].status_id
     );
+    const group = await models.Group.findByPk(client.group_id);
     var convertedClient = client.get({ plain: true });
     delete convertedClient.clientStatuses;
     convertedClient.latestStatus = latestStatus;
+    convertedClient.group = group;
     return res.status(200).json({ client: convertedClient });
   } catch (err) {
     return res.status(404).json({ error: err });
