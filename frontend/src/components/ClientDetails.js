@@ -1,17 +1,21 @@
 import React from "react";
 import { MDBContainer } from "mdbreact";
 import { connect } from "react-redux";
-import { getClient, getGroup } from "../redux/actions";
-import { ListGroup, Row, Col, Container, Button, Card } from "react-bootstrap";
+import { getClient } from "../redux/actions";
+import {
+  ListGroup,
+  Row,
+  Col,
+  Container,
+  Button,
+  Card,
+  Accordion,
+} from "react-bootstrap";
 
 import "./scrollbar.css";
-import { useHttpClient } from "../hooks/http-hook";
 
-function ClientDetails({ selectedClient, group }) {
+function ClientDetails({ selectedClient }) {
   const scrollContainerStyle = { maxHeight: "550px" };
-  const { sendRequest } = useHttpClient();
-
-  // console.log(group);
 
   if (!selectedClient) {
     return (
@@ -24,17 +28,28 @@ function ClientDetails({ selectedClient, group }) {
   const renderAdvancedSettings = () => {
     if (selectedClient.advancedSettingClients.length !== 0) {
       return (
-        <ListGroup variant="flush">
-          <h6 className="card-text ">Advanced settings: </h6>
-          {selectedClient.advancedSettingClients.map((setting) => {
-            return (
-              <ListGroup.Item key={setting.key}>
-                <p>Key: {setting.key}</p>
-                <p>Value: {setting.value}</p>
-              </ListGroup.Item>
-            );
-          })}
-        </ListGroup>
+        <Accordion defaultActiveKey="0">
+          <Card>
+            <Card.Header>
+              <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                Advanced settings
+              </Accordion.Toggle>
+            </Card.Header>
+            <Accordion.Collapse eventKey="1">
+              <Card.Body>
+                {selectedClient.advancedSettingClients.map((setting) => {
+                  return (
+                    <ListGroup.Item key={setting.key}>
+                      <p>
+                        {setting.key} - {setting.value}{" "}
+                      </p>
+                    </ListGroup.Item>
+                  );
+                })}
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+        </Accordion>
       );
     }
   };
@@ -42,17 +57,28 @@ function ClientDetails({ selectedClient, group }) {
   const renderAttributeMapping = () => {
     if (selectedClient.attributeMappings.length !== 0) {
       return (
-        <ListGroup variant="flush">
-          <h6 className="card-text  ">Attribute mapping: </h6>
-          {selectedClient.attributeMappings.map((attribute) => {
-            return (
-              <ListGroup.Item key={attribute.key}>
-                <p>Key: {attribute.key}</p>
-                <p>Value: {attribute.value}</p>
-              </ListGroup.Item>
-            );
-          })}
-        </ListGroup>
+        <Accordion defaultActiveKey="0">
+          <Card>
+            <Card.Header>
+              <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                Attribute mapping
+              </Accordion.Toggle>
+            </Card.Header>
+            <Accordion.Collapse eventKey="1">
+              <Card.Body>
+                {selectedClient.attributeMappings.map((attribute) => {
+                  return (
+                    <ListGroup.Item key={attribute.key}>
+                      <p>
+                        {attribute.key} - {attribute.value}
+                      </p>
+                    </ListGroup.Item>
+                  );
+                })}
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+        </Accordion>
       );
     }
   };
@@ -60,10 +86,13 @@ function ClientDetails({ selectedClient, group }) {
   const renderLastDeployed = () => {
     if (selectedClient.lastDeployed !== null) {
       return (
-        <h6>Last deployed: {selectedClient.lastDeployed.substring(0, 10)}</h6>
+        <Card.Body>
+          Last deployed: {selectedClient.lastDeployed.substring(0, 10)}
+        </Card.Body>
       );
     }
   };
+
   return (
     <>
       <MDBContainer>
@@ -79,7 +108,9 @@ function ClientDetails({ selectedClient, group }) {
                   <Row>
                     <Col xs={12} md={8} lg={8}>
                       <div className="d-flex float-left m-2 col-mb-6">
-                        <h3 className="card-title">{selectedClient.name}</h3>
+                        <h3 className="card-title font-weight-bold">
+                          {selectedClient.name}
+                        </h3>
                       </div>
                     </Col>
                     <Col xs={6} md={4} lg={4}>
@@ -88,11 +119,24 @@ function ClientDetails({ selectedClient, group }) {
                       </div>
                     </Col>
                   </Row>
+                  <Row>
+                    <Col xs={12} md={8} lg={8}>
+                      <div className="d-flex float-left m-2 col-mb-6">
+                        <h5 className="card-title">
+                          STATUS: {selectedClient.latestStatus.type}
+                        </h5>
+                      </div>
+                    </Col>
+                    <Col xs={6} md={4} lg={4}>
+                      <div className="d-flex float-right m-2 col-mb-6">
+                        <Button variant="danger">Delete client</Button>
+                      </div>
+                    </Col>
+                  </Row>
                 </Container>
               </Card.Header>
               <br />
-              <h6>Status: {selectedClient.latestStatus.type}</h6>
-              <h6>Group: {selectedClient.group_id}</h6>
+              <Card.Body>Group: {selectedClient.group.name}</Card.Body>
               {renderLastDeployed()}
               {renderAdvancedSettings()}
               {renderAttributeMapping()}
@@ -110,5 +154,4 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   getClient,
-  getGroup,
 })(ClientDetails);

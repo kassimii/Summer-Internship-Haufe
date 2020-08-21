@@ -56,9 +56,6 @@ function ClientFilterArea(props) {
               </div>
             </Col>
             <Col xs={6} md={4}>
-              <div className="d-flex justify-content-center m-2 col-mb-6">
-                <h4 className="font-weight-bold my-4">Add new client</h4>
-              </div>
               <div className="row d-flex justify-content-center form-inline">
                 <div className="d-flex justify-content-center">
                   <CreateClientModal createClient={props.createClient} />

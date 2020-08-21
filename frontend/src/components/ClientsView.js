@@ -5,6 +5,7 @@ import "./scrollbar.css";
 
 import ClientsList from "../components/ClientsList";
 import ClientDetails from "../components/ClientDetails";
+import CreateClientModal from "./ClientCreateModal";
 
 function ClientsView(props) {
   const scrollContainerStyle = { maxHeight: "550px" };
@@ -12,7 +13,21 @@ function ClientsView(props) {
     <>
       <Container>
         <Row>
+          <Col>
+            <div className="row d-flex justify-content-left form-inline">
+              <div className="d-flex justify-content-center">
+                <CreateClientModal createClient={props.createClient} />
+              </div>
+            </div>
+          </Col>
+        </Row>
+        <Row>
           <Col xs={6} md={4} lg={4}>
+            <div className="row d-flex justify-content-left form-inline">
+              <div className="d-flex justify-content-center">
+                <CreateClientModal createClient={props.createClient} />
+              </div>
+            </div>
             <MDBContainer>
               <div
                 className="scrollbar scrollbar-primary align-self-starts mr-3"

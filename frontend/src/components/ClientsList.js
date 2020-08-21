@@ -8,7 +8,7 @@ const ClientsList = ({ getClient, getClients, clients }) => {
   const { sendRequest } = useHttpClient();
 
   useEffect(() => {
-    getClients(sendRequest, "/?name=alala");
+    getClients(sendRequest, "");
   }, [getClients, sendRequest]);
 
   return (
@@ -40,5 +40,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   getClients,
-  getClient
+  getClient,
 })(ClientsList);
