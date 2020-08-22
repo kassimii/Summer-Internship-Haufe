@@ -10,9 +10,6 @@ module.exports = {
         group_id: {
           type: Sequelize.UUID
         },
-        user_id: {
-          type: Sequelize.UUID
-        },
         name: {
           type: Sequelize.STRING(32),
           unique: true

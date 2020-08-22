@@ -11,9 +11,6 @@ module.exports = (sequelize, DataTypes) => {
       group_id: {
         type: DataTypes.UUID
       },
-      user_id: {
-        type: DataTypes.UUID
-      },
       name: {
         type: DataTypes.STRING(32),
         unique: true

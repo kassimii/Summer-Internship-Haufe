@@ -9,7 +9,7 @@ import {
   Container,
   Button,
   Card,
-  Accordion,
+  Accordion
 } from "react-bootstrap";
 
 import "./scrollbar.css";
@@ -28,28 +28,26 @@ function ClientDetails({ selectedClient }) {
   const renderAdvancedSettings = () => {
     if (selectedClient.advancedSettingClients.length !== 0) {
       return (
-        <Accordion defaultActiveKey="0">
-          <Card>
-            <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                Advanced settings
-              </Accordion.Toggle>
-            </Card.Header>
-            <Accordion.Collapse eventKey="1">
-              <Card.Body>
-                {selectedClient.advancedSettingClients.map((setting) => {
-                  return (
-                    <ListGroup.Item key={setting.key}>
-                      <p>
-                        {setting.key} - {setting.value}{" "}
-                      </p>
-                    </ListGroup.Item>
-                  );
-                })}
-              </Card.Body>
-            </Accordion.Collapse>
-          </Card>
-        </Accordion>
+        <Card>
+          <Card.Header>
+            <Accordion.Toggle as={Button} variant="link" eventKey="1">
+              Advanced settings
+            </Accordion.Toggle>
+          </Card.Header>
+          <Accordion.Collapse eventKey="1">
+            <Card.Body>
+              {selectedClient.advancedSettingClients.map((setting) => {
+                return (
+                  <ListGroup.Item key={setting.key}>
+                    <p>
+                      {setting.key} - {setting.value}{" "}
+                    </p>
+                  </ListGroup.Item>
+                );
+              })}
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
       );
     }
   };
@@ -57,28 +55,26 @@ function ClientDetails({ selectedClient }) {
   const renderAttributeMapping = () => {
     if (selectedClient.attributeMappings.length !== 0) {
       return (
-        <Accordion defaultActiveKey="0">
-          <Card>
-            <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                Attribute mapping
-              </Accordion.Toggle>
-            </Card.Header>
-            <Accordion.Collapse eventKey="1">
-              <Card.Body>
-                {selectedClient.attributeMappings.map((attribute) => {
-                  return (
-                    <ListGroup.Item key={attribute.key}>
-                      <p>
-                        {attribute.key} - {attribute.value}
-                      </p>
-                    </ListGroup.Item>
-                  );
-                })}
-              </Card.Body>
-            </Accordion.Collapse>
-          </Card>
-        </Accordion>
+        <Card>
+          <Card.Header>
+            <Accordion.Toggle as={Button} variant="link" eventKey="0">
+              Attribute mapping
+            </Accordion.Toggle>
+          </Card.Header>
+          <Accordion.Collapse eventKey="0">
+            <Card.Body>
+              {selectedClient.attributeMappings.map((attribute) => {
+                return (
+                  <ListGroup.Item key={attribute.key}>
+                    <p>
+                      {attribute.key} - {attribute.value}
+                    </p>
+                  </ListGroup.Item>
+                );
+              })}
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
       );
     }
   };
@@ -138,8 +134,10 @@ function ClientDetails({ selectedClient }) {
               <br />
               <Card.Body>Group: {selectedClient.group.name}</Card.Body>
               {renderLastDeployed()}
-              {renderAdvancedSettings()}
-              {renderAttributeMapping()}
+              <Accordion>
+                {renderAdvancedSettings()}
+                {renderAttributeMapping()}
+              </Accordion>
             </div>
           </div>
         </div>
@@ -153,5 +151,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  getClient,
+  getClient
 })(ClientDetails);

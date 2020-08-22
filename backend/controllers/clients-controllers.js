@@ -4,8 +4,6 @@ const models = require("../database/models");
 const fs = require("fs");
 
 const getClients = async (req, res) => {
-  console.log(req.query);
-  console.log("======");
   let clients;
   try {
     clients = await models.Client.findAll({
