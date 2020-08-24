@@ -13,17 +13,8 @@ function ClientsView(props) {
     <>
       <Container>
         <Row>
-          <Col>
-            <div className="row d-flex justify-content-left form-inline">
-              <div className="d-flex justify-content-center">
-                <CreateClientModal createClient={props.createClient} />
-              </div>
-            </div>
-          </Col>
-        </Row>
-        <Row>
           <Col xs={6} md={4} lg={4}>
-            <div className="row d-flex justify-content-left form-inline">
+            <div className="row d-flex justify-content-center form-inline">
               <div className="d-flex justify-content-center">
                 <CreateClientModal createClient={props.createClient} />
               </div>

@@ -9,7 +9,7 @@ import {
   Container,
   Button,
   Card,
-  Accordion
+  Accordion,
 } from "react-bootstrap";
 
 import "./scrollbar.css";
@@ -125,7 +125,17 @@ function ClientDetails({ selectedClient }) {
                     </Col>
                     <Col xs={6} md={4} lg={4}>
                       <div className="d-flex float-right m-2 col-mb-6">
-                        <Button variant="danger">Delete client</Button>
+                        <Button variant="success">Publish client</Button>
+                      </div>
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col xs={6} md={4} lg={4}></Col>
+                    <Col xs={6} md={4} lg={4}></Col>
+                    <Col xs={6} md={4} lg={4}>
+                      <div className="d-flex float-right m-2 col-mb-6">
+                        <Button variant="danger"> Delete client </Button>
                       </div>
                     </Col>
                   </Row>
@@ -151,5 +161,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  getClient
+  getClient,
 })(ClientDetails);

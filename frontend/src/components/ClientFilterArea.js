@@ -13,13 +13,10 @@ import CreateClientModal from "./ClientCreateModal";
 function ClientFilterArea(props) {
   return (
     <>
-      <Card className="mt-3 mb-3 pt-3 pb-5">
+      <Card className="mt-3 mb-3 pt-5 pb-5">
         <Container>
           <Row>
             <Col xs={6} md={4}>
-              <div className="d-flex justify-content-center m-2 col-mb-6">
-                <h4 className="font-weight-bold my-4">Search for clients</h4>
-              </div>
               <div className="row d-flex justify-content-center form-inline">
                 <div className="d-flex justify-content-center">
                   <form className="md-form form-sm px-3">
@@ -29,7 +26,7 @@ function ClientFilterArea(props) {
                       type="text"
                       name="name"
                       id="name"
-                      placeholder="Search groups"
+                      placeholder="Search client..."
                       onChange={props.onSearchChange}
                       value={props.searchValue}
                     />
@@ -38,15 +35,12 @@ function ClientFilterArea(props) {
               </div>
             </Col>
             <Col xs={6} md={4}>
-              <div className="d-flex justify-content-center m-2 col-mb-6">
-                <h4 className="font-weight-bold my-4">Filter by group</h4>
-              </div>
               <div className="row d-flex justify-content-center form-inline">
                 <div className="d-flex justify-content-center">
                   <DropdownButton
                     id="dropdown-basic-button"
-                    title="Dropdown button"
-                    variant="warning"
+                    title="Filter by group"
+                    variant="success"
                   >
                     <Dropdown.Item href="#/action-1">Group 1</Dropdown.Item>
                     <Dropdown.Item href="#/action-2">Group 2</Dropdown.Item>
@@ -58,7 +52,15 @@ function ClientFilterArea(props) {
             <Col xs={6} md={4}>
               <div className="row d-flex justify-content-center form-inline">
                 <div className="d-flex justify-content-center">
-                  <CreateClientModal createClient={props.createClient} />
+                  <DropdownButton
+                    id="dropdown-basic-button"
+                    title="Filter by status"
+                    variant="success"
+                  >
+                    <Dropdown.Item href="#/action-1">Group 1</Dropdown.Item>
+                    <Dropdown.Item href="#/action-2">Group 2</Dropdown.Item>
+                    <Dropdown.Item href="#/action-3">Group 3 </Dropdown.Item>
+                  </DropdownButton>
                 </div>
               </div>
             </Col>
