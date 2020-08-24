@@ -2,11 +2,14 @@ const express = require("express");
 const { Op } = require("sequelize");
 const models = require("../database/models");
 const fs = require("fs");
-const { filter } = require("lodash");
 
 const getClients = async (req, res) => {
   let clients;
   let filters = [];
+  const size = 10;
+  const page = parseInt(req.query.page);
+  const pageNum = page ? page - 1 : 0;
+  console.log(pageNum);
   if (req.query.name) {
     filters.push({ name: { [Op.substring]: req.query.name } });
   }
@@ -14,7 +17,10 @@ const getClients = async (req, res) => {
     filters.push({ group_id: { [Op.eq]: req.query.group } });
   }
   try {
-    clients = await models.Client.findAll({
+    clients = await models.Client.findAndCountAll({
+      distinct: true,
+      limit: size,
+      offset: pageNum * size,
       include: [
         models.AdvancedSettingClient,
         models.AttributeMapping,
@@ -29,7 +35,8 @@ const getClients = async (req, res) => {
         [Op.and]: filters
       }
     });
-
+    let clientCount = clients.count;
+    clients = clients.rows;
     if (!clients) {
       return res.status(200).json({ clients: {}, message: "No clients in DB" });
     }
@@ -49,7 +56,13 @@ const getClients = async (req, res) => {
         return client.latestStatus.type === req.query.status;
       });
     }
-    res.status(200).json({ clients: convertedClients });
+    res.status(200).json({
+      totalClients: clientCount,
+      totalPages: Math.ceil(clientCount / size),
+      currentPage: pageNum + 1,
+      clientsLength: convertedClients.length,
+      clients: convertedClients
+    });
   } catch (err) {
     res.status(400).json({ error: err });
   }
