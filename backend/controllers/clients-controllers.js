@@ -2,9 +2,17 @@ const express = require("express");
 const { Op } = require("sequelize");
 const models = require("../database/models");
 const fs = require("fs");
+const { filter } = require("lodash");
 
 const getClients = async (req, res) => {
   let clients;
+  let filters = [];
+  if (req.query.name) {
+    filters.push({ name: { [Op.substring]: req.query.name } });
+  }
+  if (req.query.group) {
+    filters.push({ group_id: { [Op.eq]: req.query.group } });
+  }
   try {
     clients = await models.Client.findAll({
       include: [
@@ -16,7 +24,10 @@ const getClients = async (req, res) => {
           limit: 1
         },
         models.Metadata
-      ]
+      ],
+      where: {
+        [Op.and]: filters
+      }
     });
 
     if (!clients) {
@@ -31,6 +42,12 @@ const getClients = async (req, res) => {
       convertedClient.latestStatus = latestStatus;
       delete convertedClient.clientStatuses;
       convertedClients.push(convertedClient);
+    }
+    if (req.query.status) {
+      convertedClients = convertedClients.filter((client) => {
+        console.log(client.latestStatus.type);
+        return client.latestStatus.type === req.query.status;
+      });
     }
     res.status(200).json({ clients: convertedClients });
   } catch (err) {
