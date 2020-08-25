@@ -6,9 +6,10 @@ const fs = require("fs");
 const getClients = async (req, res) => {
   let clients;
   let filters = [];
-  const size = 10;
+  const limit = parseInt(req.query.limit);
   const page = parseInt(req.query.page);
   const pageNum = page ? page - 1 : 0;
+  const size = limit ? limit : 10;
   console.log(pageNum);
   if (req.query.name) {
     filters.push({ name: { [Op.substring]: req.query.name } });
@@ -273,7 +274,34 @@ const addStatus = async (req, res) => {
   const userId = req.body.user_id;
   const newStatus = req.body.status;
   let newStatusId;
+  const statusValidation = (latestStatus, newStatus) => {
+    switch (latestStatus) {
+      case "NEW":
+        if (newStatus !== "REQUEST APPROVAL") return false;
+        break;
+      case "REQUEST APPROVAL":
+        if (newStatus !== "WAIT FOR DEPLOYMENT") return false;
+        break;
+      case "WAIT FOR DEPLOYMENT":
+        if (newStatus !== "DEPLOYED") return false;
+        break;
+      case "DEPLOYED":
+        if (newStatus !== "WAIT FOR DEPLOYMENT") return false;
+        break;
+    }
+    return true;
+  };
   try {
+    oldStatus = await models.ClientStatus.findAll({
+      order: [["creationDate", "DESC"]]
+    });
+    oldStatus = oldStatus[0];
+    oldStatus = await models.Status.findByPk(oldStatus.status_id);
+    if (!statusValidation(oldStatus.type, newStatus)) {
+      return res
+        .status(400)
+        .json({ error: [{ message: "Incorrect status order" }] });
+    }
     newStatusId = await models.Status.findOne({
       where: {
         type: {
