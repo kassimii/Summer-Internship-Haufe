@@ -8,8 +8,6 @@ import {
   Card,
 } from "react-bootstrap";
 
-import CreateClientModal from "./ClientCreateModal";
-
 function ClientFilterArea(props) {
   return (
     <>

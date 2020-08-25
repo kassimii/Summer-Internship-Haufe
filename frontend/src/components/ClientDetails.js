@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MDBContainer } from "mdbreact";
 import { connect } from "react-redux";
 import { getClient } from "../redux/actions";
@@ -9,13 +9,16 @@ import {
   Container,
   Button,
   Card,
-  Accordion,
+  Dropdown,
+  Tabs,
+  Tab,
 } from "react-bootstrap";
 
 import "./scrollbar.css";
 
 function ClientDetails({ selectedClient }) {
-  const scrollContainerStyle = { maxHeight: "550px" };
+  const [selectedAction, setSelectedAction] = useState("");
+  const scrollContainerStyle = { maxHeight: "500px" };
 
   if (!selectedClient) {
     return (
@@ -25,28 +28,31 @@ function ClientDetails({ selectedClient }) {
     );
   }
 
+  const renderLastDeployed = () => {
+    if (selectedClient.lastDeployed !== null) {
+      return (
+        <Card.Body>
+          Last deployed: {selectedClient.lastDeployed.substring(0, 10)}
+        </Card.Body>
+      );
+    }
+  };
+
   const renderAdvancedSettings = () => {
     if (selectedClient.advancedSettingClients.length !== 0) {
       return (
         <Card>
-          <Card.Header>
-            <Accordion.Toggle as={Button} variant="link" eventKey="1">
-              Advanced settings
-            </Accordion.Toggle>
-          </Card.Header>
-          <Accordion.Collapse eventKey="1">
-            <Card.Body>
-              {selectedClient.advancedSettingClients.map((setting) => {
-                return (
-                  <ListGroup.Item key={setting.key}>
-                    <p>
-                      {setting.key} - {setting.value}{" "}
-                    </p>
-                  </ListGroup.Item>
-                );
-              })}
-            </Card.Body>
-          </Accordion.Collapse>
+          <Card.Body>
+            {selectedClient.advancedSettingClients.map((setting) => {
+              return (
+                <ListGroup.Item key={setting.key}>
+                  <p>
+                    {setting.key} - {setting.value}{" "}
+                  </p>
+                </ListGroup.Item>
+              );
+            })}
+          </Card.Body>
         </Card>
       );
     }
@@ -56,36 +62,65 @@ function ClientDetails({ selectedClient }) {
     if (selectedClient.attributeMappings.length !== 0) {
       return (
         <Card>
-          <Card.Header>
-            <Accordion.Toggle as={Button} variant="link" eventKey="0">
-              Attribute mapping
-            </Accordion.Toggle>
-          </Card.Header>
-          <Accordion.Collapse eventKey="0">
-            <Card.Body>
-              {selectedClient.attributeMappings.map((attribute) => {
-                return (
-                  <ListGroup.Item key={attribute.key}>
-                    <p>
-                      {attribute.key} - {attribute.value}
-                    </p>
-                  </ListGroup.Item>
-                );
-              })}
-            </Card.Body>
-          </Accordion.Collapse>
+          <Card.Body>
+            {selectedClient.attributeMappings.map((attribute) => {
+              return (
+                <ListGroup.Item key={attribute.key}>
+                  <p>
+                    {attribute.key} - {attribute.value}
+                  </p>
+                </ListGroup.Item>
+              );
+            })}
+          </Card.Body>
         </Card>
       );
     }
   };
 
-  const renderLastDeployed = () => {
-    if (selectedClient.lastDeployed !== null) {
+  const renderMetadataDownload = () => {
+    // if (selectedClient.metadata !== 0)
+    {
       return (
-        <Card.Body>
-          Last deployed: {selectedClient.lastDeployed.substring(0, 10)}
-        </Card.Body>
+        <Card>
+          <Card.Body>
+            <Row>
+              <Col xs={6}>
+                <div className="d-flex float-centre m-2 col-mb-6">
+                  <Button variant="success"> Download SP</Button>
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={6}>
+                <div className="d-flex float-centre m-2 col-mb-6">
+                  <Button variant="success"> Download IDP </Button>
+                </div>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
       );
+    }
+  };
+
+  const handleChange = ({ target }) => {
+    setSelectedAction(target.value);
+    switch (target.value) {
+      case "edit":
+        console.log("edit");
+        return;
+      case "publish":
+        console.log("publish");
+        return;
+      case "deploy":
+        console.log("deploy");
+        return;
+      case "delete":
+        console.log("delete");
+        return;
+      default:
+        return;
     }
   };
 
@@ -111,7 +146,12 @@ function ClientDetails({ selectedClient }) {
                     </Col>
                     <Col xs={6} md={4} lg={4}>
                       <div className="d-flex float-right m-2 col-mb-6">
-                        <Button variant="primary">Update client</Button>
+                        <select onChange={handleChange}>
+                          <option value="edit">Edit Client</option>
+                          <option value="publish">Publish client</option>
+                          <option value="deploy">Deploy client</option>
+                          <option value="delete">Delete client</option>
+                        </select>
                       </div>
                     </Col>
                   </Row>
@@ -123,31 +163,24 @@ function ClientDetails({ selectedClient }) {
                         </h5>
                       </div>
                     </Col>
-                    <Col xs={6} md={4} lg={4}>
-                      <div className="d-flex float-right m-2 col-mb-6">
-                        <Button variant="success">Publish client</Button>
-                      </div>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col xs={6} md={4} lg={4}></Col>
-                    <Col xs={6} md={4} lg={4}></Col>
-                    <Col xs={6} md={4} lg={4}>
-                      <div className="d-flex float-right m-2 col-mb-6">
-                        <Button variant="danger"> Delete client </Button>
-                      </div>
-                    </Col>
                   </Row>
                 </Container>
               </Card.Header>
               <br />
               <Card.Body>Group: {selectedClient.group.name}</Card.Body>
               {renderLastDeployed()}
-              <Accordion>
-                {renderAdvancedSettings()}
-                {renderAttributeMapping()}
-              </Accordion>
+
+              <Tabs defaultActiveKey="advancedSetings" id="details">
+                <Tab eventKey="advancedSetings" title="Advanced Settings">
+                  {renderAdvancedSettings()}
+                </Tab>
+                <Tab eventKey="attributemapping" title="Attribute Mapping">
+                  {renderAttributeMapping()}
+                </Tab>
+                <Tab eventKey="metadata" title="Metadata">
+                  {renderMetadataDownload()}
+                </Tab>
+              </Tabs>
             </div>
           </div>
         </div>
