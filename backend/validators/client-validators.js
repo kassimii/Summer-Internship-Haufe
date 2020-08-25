@@ -1,7 +1,6 @@
 const { check } = require("express-validator");
 const models = require("../database/models");
 const { Op } = require("sequelize");
-const { param } = require("../routes/clients-routes");
 
 module.exports = {
   requireClientName: check("name")

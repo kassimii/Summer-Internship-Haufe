@@ -81,7 +81,7 @@ router.delete(
 // ADD STATUS
 router.post(
   "/:clientId/status",
-  [requireExistingStatus, requireUserId],
+  [requireExistingStatus, requireUserId, requireExistingClientId],
   handleErrors,
   addStatus
 );
