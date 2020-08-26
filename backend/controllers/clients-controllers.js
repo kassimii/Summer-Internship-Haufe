@@ -9,8 +9,7 @@ const getClients = async (req, res) => {
   const limit = parseInt(req.query.limit);
   const page = parseInt(req.query.page);
   const pageNum = page ? page - 1 : 0;
-  const size = limit ? limit : 10;
-  console.log(pageNum);
+  const size = limit ? limit : 15;
   if (req.query.name) {
     filters.push({ name: { [Op.substring]: req.query.name } });
   }
@@ -53,7 +52,6 @@ const getClients = async (req, res) => {
     }
     if (req.query.status) {
       convertedClients = convertedClients.filter((client) => {
-        console.log(client.latestStatus.type);
         return client.latestStatus.type === req.query.status;
       });
     }
@@ -104,7 +102,6 @@ const getClientById = async (req, res) => {
 
 const createClient = async (req, res) => {
   let newStatusId;
-  console.log(req.body);
   try {
     newStatusId = await models.Status.findOne({
       where: {

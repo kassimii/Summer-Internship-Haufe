@@ -72,7 +72,7 @@ function CreateClientModal({ id, createClient, getClients }) {
 
     const unsubscribe = store.subscribe(() => {
       unsubscribe();
-      getClients(sendRequest, "");
+      getClients(sendRequest, "", 1, 15);
       handleClose();
     });
   };

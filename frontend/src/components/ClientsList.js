@@ -1,35 +1,64 @@
-import React, { useEffect } from "react";
-import { ListGroup } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { ListGroup, Pagination } from "react-bootstrap";
 import { connect } from "react-redux";
 import { getClient, getClients } from "../redux/actions";
 import { useHttpClient } from "../hooks/http-hook";
+import "./scrollbar.css";
 
 const ClientsList = ({ getClient, getClients, clients }) => {
   const { sendRequest } = useHttpClient();
-
+  const [activePage, setActivePage] = useState(1);
+  const pageLength = 15;
   useEffect(() => {
-    getClients(sendRequest, "");
-  }, [getClients, sendRequest]);
-
+    getClients(sendRequest, "", activePage, pageLength);
+  }, [getClients, sendRequest, activePage, pageLength]);
+  useEffect(() => {
+    setActivePage(clients.currentPage);
+  }, [clients.currentPage]);
+  const renderPageNums = () => {
+    let pages = [];
+    for (let index = 1; index <= clients.totalPages; index++) {
+      pages.push(
+        <Pagination.Item
+          key={index}
+          active={index === activePage}
+          onClick={() => setActivePage(index)}
+        >
+          {index}
+        </Pagination.Item>
+      );
+    }
+    return pages;
+  };
   return (
-    <div className="album py-5 ">
+    <div className="album py-2">
       <div className="container">
-        <ListGroup>
-          {clients.map((client) => {
-            return (
-              <ListGroup.Item
-                key={client.id}
-                action
-                variant="primary"
-                onClick={() => getClient(client.id, sendRequest)}
-                className="btn-block "
-              >
-                {client.name}
-              </ListGroup.Item>
-            );
-          })}
+        <ListGroup
+          className="scrollbar scrollbar-primary align-self-starts mr-3"
+          style={{ height: "49.9vh" }}
+        >
+          {clients.clients ? (
+            clients.clients.map((client) => {
+              return (
+                <ListGroup.Item
+                  key={client.id}
+                  action
+                  variant="primary"
+                  onClick={() => getClient(client.id, sendRequest)}
+                  className="btn-block "
+                >
+                  {client.name}
+                </ListGroup.Item>
+              );
+            })
+          ) : (
+            <div>Loading..</div>
+          )}
         </ListGroup>
       </div>
+      <Pagination className="mt-5 justify-content-center">
+        {renderPageNums()}
+      </Pagination>
     </div>
   );
 };
@@ -40,5 +69,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   getClients,
-  getClient,
+  getClient
 })(ClientsList);
