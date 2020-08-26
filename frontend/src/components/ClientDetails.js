@@ -18,6 +18,7 @@ import "./scrollbar.css";
 
 function ClientDetails({ selectedClient }) {
   const [selectedAction, setSelectedAction] = useState("");
+
   const scrollContainerStyle = { maxHeight: "500px" };
 
   if (!selectedClient) {
@@ -104,7 +105,7 @@ function ClientDetails({ selectedClient }) {
     }
   };
 
-  const handleChange = ({ target }) => {
+  const handleActionChange = ({ target }) => {
     setSelectedAction(target.value);
     switch (target.value) {
       case "edit":
@@ -146,7 +147,7 @@ function ClientDetails({ selectedClient }) {
                     </Col>
                     <Col xs={6} md={4} lg={4}>
                       <div className="d-flex float-right m-2 col-mb-6">
-                        <select onChange={handleChange}>
+                        <select onChange={handleActionChange}>
                           <option value="edit">Edit Client</option>
                           <option value="publish">Publish client</option>
                           <option value="deploy">Deploy client</option>

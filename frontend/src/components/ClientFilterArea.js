@@ -1,72 +1,112 @@
-import React from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Dropdown,
-  DropdownButton,
-  Card,
-} from "react-bootstrap";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 
-function ClientFilterArea(props) {
+import { getClients } from "../redux/actions";
+import { useHttpClient } from "../hooks/http-hook";
+
+function ClientFilterArea({ getClients }) {
+  const [searchedClients, setSearchedClients] = useState("");
+  const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+
+  const { sendRequest } = useHttpClient();
+
+  const handleSearchChange = ({ target }) => {
+    setSearchedClients(target.value);
+  };
+
+  const handleGroupFilterChange = ({ target }) => {
+    setSelectedGroup(target.value);
+  };
+
+  const handleStatusFilterChange = ({ target }) => {
+    setSelectedStatus(target.value);
+  };
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    getClients(
+      sendRequest,
+      `?name=${searchedClients}&group=&status=${selectedStatus}`
+    );
+  };
+
   return (
     <>
-      <Card className="mt-3 mb-3 pt-5 pb-5">
-        <Container>
-          <Row>
-            <Col xs={6} md={4}>
-              <div className="row d-flex justify-content-center form-inline">
-                <div className="d-flex justify-content-center">
-                  <form className="md-form form-sm px-3">
-                    <i className="fas fa-search" area-hidden="true"></i>
-                    <input
-                      className="form-control"
+      <Form onSubmit={handleSearch}>
+        <Card className="mt-3 mb-3 pt-5 pb-5">
+          <Container>
+            <Row>
+              <Col xs={6} md={4}>
+                <div className="row d-flex justify-content-center form-inline">
+                  <div className="d-flex justify-content-center">
+                    <Form.Control
                       type="text"
-                      name="name"
-                      id="name"
                       placeholder="Search client..."
-                      onChange={props.onSearchChange}
-                      value={props.searchValue}
+                      onChange={handleSearchChange}
+                      value={searchedClients}
                     />
-                  </form>
+                  </div>
                 </div>
-              </div>
-            </Col>
-            <Col xs={6} md={4}>
-              <div className="row d-flex justify-content-center form-inline">
-                <div className="d-flex justify-content-center">
-                  <DropdownButton
-                    id="dropdown-basic-button"
-                    title="Filter by group"
-                    variant="success"
-                  >
-                    <Dropdown.Item href="#/action-1">Group 1</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">Group 2</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Group 3 </Dropdown.Item>
-                  </DropdownButton>
+              </Col>
+              <Col xs={6} md={4}>
+                <div className="row d-flex justify-content-center form-inline">
+                  <div className="d-flex justify-content-center">
+                    <Form.Control
+                      as="select"
+                      className="my-1 mr-sm-2"
+                      id="inlineFormCustomSelectPref"
+                      custom
+                      onChange={handleGroupFilterChange}
+                    >
+                      <option value="0">Choose...</option>
+                      <option value="group1">Group 1</option>
+                      <option value="group2">Group 2</option>
+                      <option value="group3">Group 3</option>
+                    </Form.Control>
+                  </div>
                 </div>
-              </div>
-            </Col>
-            <Col xs={6} md={4}>
-              <div className="row d-flex justify-content-center form-inline">
-                <div className="d-flex justify-content-center">
-                  <DropdownButton
-                    id="dropdown-basic-button"
-                    title="Filter by status"
-                    variant="success"
-                  >
-                    <Dropdown.Item href="#/action-1">Group 1</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">Group 2</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Group 3 </Dropdown.Item>
-                  </DropdownButton>
+              </Col>
+              <Col xs={6} md={4}>
+                <div className="row d-flex justify-content-center form-inline">
+                  <div className="d-flex justify-content-center">
+                    <Form.Control
+                      as="select"
+                      className="my-1 mr-sm-2"
+                      id="inlineFormCustomSelectPref"
+                      custom
+                      onChange={handleStatusFilterChange}
+                    >
+                      <option value="0">Choose...</option>
+                      <option value="NEW">New</option>
+                      <option value="REQUEST APPROVAL">Request approval</option>
+                      <option value="WAIT FOR DEPLOYMENT">
+                        Wait for deployment
+                      </option>
+                      <option value="DEPLOYED">Deployed</option>
+                    </Form.Control>
+                  </div>
                 </div>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </Card>
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col xs={6} md={4}></Col>
+              <Col xs={6} md={4}>
+                <div className="row d-flex justify-content-center form-inline ">
+                  <Button variant="primary" type="submit">
+                    Search
+                  </Button>
+                </div>
+              </Col>
+              <Col xs={6} md={4}></Col>
+            </Row>
+          </Container>
+        </Card>
+      </Form>
     </>
   );
 }
 
-export default ClientFilterArea;
+export default connect(null, { getClients })(ClientFilterArea);

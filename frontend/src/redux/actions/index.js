@@ -111,6 +111,7 @@ export const getClient = (id, sendRequest) => async (dispatch) => {
 };
 
 export const getClients = (sendRequest, query) => async (dispatch) => {
+  console.log(query);
   const response = await sendRequest("/clients" + query, "GET", null, {
     "Content-Type": "application/json",
   });
