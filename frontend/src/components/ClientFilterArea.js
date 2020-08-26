@@ -28,7 +28,9 @@ function ClientFilterArea({ getClients }) {
     event.preventDefault();
     getClients(
       sendRequest,
-      `?name=${searchedClients}&group=&status=${selectedStatus}`
+      `&name=${searchedClients}&group=${selectedGroup}&status=${selectedStatus}`,
+      1,
+      15
     );
   };
 
@@ -56,14 +58,22 @@ function ClientFilterArea({ getClients }) {
                     <Form.Control
                       as="select"
                       className="my-1 mr-sm-2"
-                      id="inlineFormCustomSelectPref"
+                      id="groupSelect"
                       custom
                       onChange={handleGroupFilterChange}
                     >
-                      <option value="0">Choose...</option>
-                      <option value="group1">Group 1</option>
-                      <option value="group2">Group 2</option>
-                      <option value="group3">Group 3</option>
+                      <option id="default" value="">
+                        Choose...
+                      </option>
+                      <option id="group1" value="group1">
+                        Group 1
+                      </option>
+                      <option id="group2" value="group2">
+                        Group 2
+                      </option>
+                      <option id="group3" value="group3">
+                        Group 3
+                      </option>
                     </Form.Control>
                   </div>
                 </div>
@@ -74,7 +84,7 @@ function ClientFilterArea({ getClients }) {
                     <Form.Control
                       as="select"
                       className="my-1 mr-sm-2"
-                      id="inlineFormCustomSelectPref"
+                      id="statusSelect"
                       custom
                       onChange={handleStatusFilterChange}
                     >

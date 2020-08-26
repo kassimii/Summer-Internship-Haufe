@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MDBContainer } from "mdbreact";
 import { connect } from "react-redux";
 import { getClient } from "../redux/actions";
@@ -9,18 +9,17 @@ import {
   Container,
   Button,
   Card,
-  Dropdown,
   Tabs,
-  Tab,
+  Tab
 } from "react-bootstrap";
 
 import "./scrollbar.css";
 
 function ClientDetails({ selectedClient }) {
-  const [selectedAction, setSelectedAction] = useState("");
-
-  const scrollContainerStyle = { maxHeight: "500px" };
-
+  useEffect(() => {
+    setKey("advancedSetings");
+  }, [selectedClient]);
+  const [activeKey, setKey] = useState("advancedSetings");
   if (!selectedClient) {
     return (
       <>
@@ -81,32 +80,31 @@ function ClientDetails({ selectedClient }) {
 
   const renderMetadataDownload = () => {
     // if (selectedClient.metadata !== 0)
-    {
-      return (
-        <Card>
-          <Card.Body>
-            <Row>
-              <Col xs={6}>
-                <div className="d-flex float-centre m-2 col-mb-6">
-                  <Button variant="success"> Download SP</Button>
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={6}>
-                <div className="d-flex float-centre m-2 col-mb-6">
-                  <Button variant="success"> Download IDP </Button>
-                </div>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
-      );
-    }
+    // {
+    return (
+      <Card>
+        <Card.Body>
+          <Row>
+            <Col xs={6}>
+              <div className="d-flex float-centre m-2 col-mb-6">
+                <Button variant="success"> Download SP</Button>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={6}>
+              <div className="d-flex float-centre m-2 col-mb-6">
+                <Button variant="success"> Download IDP </Button>
+              </div>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+    );
+    // }
   };
 
   const handleActionChange = ({ target }) => {
-    setSelectedAction(target.value);
     switch (target.value) {
       case "edit":
         console.log("edit");
@@ -130,7 +128,7 @@ function ClientDetails({ selectedClient }) {
       <MDBContainer>
         <div
           className="scrollbar scrollbar-primary align-self-start mr-3"
-          style={scrollContainerStyle}
+          style={{ height: "49.9vh" }}
         >
           <div className="card pl-3">
             <img src="" className="card-img-top" alt="" />
@@ -171,7 +169,11 @@ function ClientDetails({ selectedClient }) {
               <Card.Body>Group: {selectedClient.group.name}</Card.Body>
               {renderLastDeployed()}
 
-              <Tabs defaultActiveKey="advancedSetings" id="details">
+              <Tabs
+                activeKey={activeKey}
+                id="details"
+                onSelect={(k) => setKey(k)}
+              >
                 <Tab eventKey="advancedSetings" title="Advanced Settings">
                   {renderAdvancedSettings()}
                 </Tab>
@@ -195,5 +197,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  getClient,
+  getClient
 })(ClientDetails);
