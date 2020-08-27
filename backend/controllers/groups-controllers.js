@@ -77,6 +77,7 @@ const getGroupsById = async (req, res) => {
 
 const updateGroup = async (req, res) => {
   const { groupId } = req.params;
+  console.log(req.body);
   const incomingClaims = req.body.claims.map((claim) => {
     return { group_id: req.params.groupId, claim: claim };
   });
@@ -102,10 +103,10 @@ const updateGroup = async (req, res) => {
     for (let i = 0; i < group.claims.length; i++) {
       let claim = group.claims[i];
       // if stored claims are no longer in incoming claims
-      if (!incomingClaims.find((inClaim) => claim === inClaim)) {
+      if (!incomingClaims.find((inClaim) => claim.claim === inClaim.claim)) {
         // they are deleted
         await models.Claim.destroy({
-          where: { group_id: groupId, claim: claim },
+          where: { group_id: groupId, claim: claim.claim },
         });
       }
     }
@@ -113,11 +114,11 @@ const updateGroup = async (req, res) => {
       let inClaim = incomingClaims[i];
       // if there are new claims
       let currentExistingClaim = group.claims.find(
-        (claim) => claim === inClaim
+        (claim) => claim.claim === inClaim.claim
       );
       if (!currentExistingClaim) {
         // they are created
-        await models.Claim.create({ group_id: groupId, claim: inClaim });
+        await models.Claim.create({ group_id: groupId, claim: inClaim.claim });
       }
     }
     // checking advanced settings for update
