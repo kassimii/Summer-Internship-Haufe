@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../index");
 const group_id = "8f31fdba-2768-4734-81a4-37457a224df8";
-const client_id = "1c8dd5c2-aee7-4d77-9539-159fe2c5ee95";
+const client_id = "d205f720-c06e-4f99-8df3-3f0ee4261e46";
 
 // describe("Post Group", () => {
 //   it("should create a new group", async () => {
@@ -61,19 +61,19 @@ const client_id = "1c8dd5c2-aee7-4d77-9539-159fe2c5ee95";
 //   });
 // });
 
-describe("Update Group", () => {
-  it("should update a group", async () => {
-    jest.setTimeout(100000);
-    const res = await request(app)
-      .patch(`/api/groups/${group_id}`)
-      .send({
-        name: "group33",
-        claims: ["claim1", "claim2"],
-        advancedSettings: [{ key: "key", value: "value" }],
-      });
-    expect(res.statusCode).toEqual(200);
-  });
-});
+// describe("Update Group", () => {
+//   it("should update a group", async () => {
+//     jest.setTimeout(100000);
+//     const res = await request(app)
+//       .patch(`/api/groups/${group_id}`)
+//       .send({
+//         name: "group33",
+//         claims: ["claim1", "claim2"],
+//         advancedSettings: [{ key: "key", value: "value" }],
+//       });
+//     expect(res.statusCode).toEqual(200);
+//   });
+// });
 
 // describe("Delete Group", () => {
 //   it("should delete a group", async () => {
@@ -142,33 +142,35 @@ describe("Update Group", () => {
 //   });
 // });
 
-// describe("Update Client", () => {
-//   it("should update a client", async () => {
-//     jest.setTimeout(100000);
-//     const res = await request(app)
-//       .patch(`/api/cliens/${client_id}`)
-//       .send({
-//         name: "client99",
-//         group_id: "123e4567-e89b-12d3-a456-426614175000",
-//         user_id: "123e4567-e89b-12d3-a456-426614174000",
-//         advancedSettingClients: [
-//           { key: "key2", value: "value2" },
-//           { key: "key3", value: "value3" },
-//           { key: "key4", value: "value4" },
-//         ],
-//         attributeMappings: [
-//           { key: "attribute1", value: "mapping1" },
-//           { key: "attribute2", value: "mapping2" },
-//         ],
-//       });
-//     expect(res.statusCode).toEqual(200);
-//   });
-// });
+describe("Update Client", () => {
+  it("should update a client", async (done) => {
+    jest.setTimeout(30000);
+    const res = await request(app)
+      .patch(`/api/clients/${client_id}`)
+      .send({
+        name: "client99",
+        group_id: "123e4567-e89b-12d3-a456-426614175000",
+        user_id: "123e4567-e89b-12d3-a456-426614174000",
+        advancedSettingClients: [
+          { key: "key2", value: "value2" },
+          { key: "key3", value: "value3" },
+          { key: "key4", value: "value4" },
+        ],
+        attributeMappings: [
+          { key: "attribute1", value: "mapping1" },
+          { key: "attribute2", value: "mapping2" },
+        ],
+      });
+
+    expect(res.statusCode).toEqual(200);
+    done();
+  });
+});
 
 // describe("Delete Client", () => {
 //   it("should delete a client", async () => {
 //     const res = await request(app).delete(
-//       `/api/clients/0efd2690-c290-4ba2-a6ea-36a82e2ba3f6`
+//       `/api/clients/1c8dd5c2-aee7-4d77-9539-159fe2c5ee95`
 //     );
 //     expect(res.statusCode).toEqual(200);
 //   });
