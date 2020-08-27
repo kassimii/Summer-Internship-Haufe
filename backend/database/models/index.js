@@ -4,7 +4,7 @@ const basename = path.basename(__filename);
 const db = {};
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
-  "postgres://postgres:1234@localhost:5432/haufetest",
+  "postgres://postgres:1234@localhost:5432/haufe",
   {
     dialect: "postgres",
   }

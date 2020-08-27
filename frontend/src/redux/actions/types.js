@@ -11,3 +11,5 @@ export const GET_CLIENT = "GET_CLIENT";
 export const GET_CLIENTS = "GET_CLIENTS";
 export const DELETE_CLIENT = "DELETE_CLIENT";
 export const CLEAR_CLIENT = "CLEAR_CLIENT";
+
+export const STORE_TOKEN = "STORE_TOKEN";

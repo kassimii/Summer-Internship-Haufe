@@ -5,7 +5,9 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { getClients } from "../redux/actions";
 import { useHttpClient } from "../hooks/http-hook";
 
-function ClientFilterArea({ getClients }) {
+const jwt = require("jsonwebtoken");
+
+function ClientFilterArea({ getClients, token }) {
   const [searchedClients, setSearchedClients] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -32,6 +34,18 @@ function ClientFilterArea({ getClients }) {
       1,
       15
     );
+  };
+
+  const renderGroups = () => {
+    const decoded = jwt.decode(token, { complete: true });
+    const groups = decoded.payload.groups;
+    return groups.map((group) => {
+      return (
+        <option id={group} value={group}>
+          {group}
+        </option>
+      );
+    });
   };
 
   return (
@@ -65,15 +79,7 @@ function ClientFilterArea({ getClients }) {
                       <option id="default" value="">
                         Choose...
                       </option>
-                      <option id="group1" value="group1">
-                        Group 1
-                      </option>
-                      <option id="group2" value="group2">
-                        Group 2
-                      </option>
-                      <option id="group3" value="group3">
-                        Group 3
-                      </option>
+                      {renderGroups()}
                     </Form.Control>
                   </div>
                 </div>
@@ -119,4 +125,8 @@ function ClientFilterArea({ getClients }) {
   );
 }
 
-export default connect(null, { getClients })(ClientFilterArea);
+const mapStateToProps = (state) => {
+  return { token: state.token };
+};
+
+export default connect(mapStateToProps, { getClients })(ClientFilterArea);
