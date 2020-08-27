@@ -1,7 +1,7 @@
 const request = require("supertest");
-const app = require("../index");
+const app = require("../app");
 const group_id = "8f31fdba-2768-4734-81a4-37457a224df8";
-const client_id = "d205f720-c06e-4f99-8df3-3f0ee4261e46";
+const client_id = "337b9242-2aac-442e-a353-b1290f3eb1bc";
 
 // describe("Post Group", () => {
 //   it("should create a new group", async () => {
@@ -84,27 +84,28 @@ const client_id = "d205f720-c06e-4f99-8df3-3f0ee4261e46";
 //   });
 // });
 
-// describe("Post Client", () => {
-//   it("should create a new client", async () => {
-//     const res = await request(app)
-//       .post("/api/clients")
-//       .send({
-//         name: "client9",
-//         group_id: "123e4567-e89b-12d3-a456-426614175000",
-//         user_id: "123e4567-e89b-12d3-a456-426614174000",
-//         advancedSettingClients: [
-//           { key: "key2", value: "value2" },
-//           { key: "key3", value: "value3" },
-//           { key: "key4", value: "value4" },
-//         ],
-//         attributeMappings: [
-//           { key: "attribute1", value: "mapping1" },
-//           { key: "attribute2", value: "mapping2" },
-//         ],
-//       });
-//     expect(res.statusCode).toEqual(400);
-//   });
-// });
+describe("Post Client", () => {
+  it("should create a new client", async (done) => {
+    const res = await request(app)
+      .post("/api/clients")
+      .send({
+        name: "clientulacela",
+        group_id: "123e4567-e89b-12d3-a456-426614175000",
+        user_id: "123e4567-e89b-12d3-a456-426614174000",
+        advancedSettingClients: [
+          { key: "key2", value: "value2" },
+          { key: "key3", value: "value3" },
+          { key: "key4", value: "value4" },
+        ],
+        attributeMappings: [
+          { key: "attribute1", value: "mapping1" },
+          { key: "attribute2", value: "mapping2" },
+        ],
+      });
+    expect(res.statusCode).toEqual(200);
+    done();
+  });
+});
 
 // describe("Post Client", () => {
 //   it("should throw an error if client name is empty", async () => {
@@ -142,30 +143,28 @@ const client_id = "d205f720-c06e-4f99-8df3-3f0ee4261e46";
 //   });
 // });
 
-describe("Update Client", () => {
-  it("should update a client", async (done) => {
-    jest.setTimeout(30000);
-    const res = await request(app)
-      .patch(`/api/clients/${client_id}`)
-      .send({
-        name: "client99",
-        group_id: "123e4567-e89b-12d3-a456-426614175000",
-        user_id: "123e4567-e89b-12d3-a456-426614174000",
-        advancedSettingClients: [
-          { key: "key2", value: "value2" },
-          { key: "key3", value: "value3" },
-          { key: "key4", value: "value4" },
-        ],
-        attributeMappings: [
-          { key: "attribute1", value: "mapping1" },
-          { key: "attribute2", value: "mapping2" },
-        ],
-      });
+// describe("Update Client", () => {
+//   it("should update a client", async () => {
+//     const res = await request(app)
+//       .patch(`/api/clients/${client_id}`)
+//       .send({
+//         name: "client99",
+//         group_id: "123e4567-e89b-12d3-a456-426614175000",
+//         user_id: "123e4567-e89b-12d3-a456-426614174000",
+//         advancedSettingClients: [
+//           { key: "key2", value: "value2" },
+//           { key: "key3", value: "value3" },
+//           { key: "key4", value: "value4" },
+//         ],
+//         attributeMappings: [
+//           { key: "attribute1", value: "mapping1" },
+//           { key: "attribute2", value: "mapping2" },
+//         ],
+//       });
 
-    expect(res.statusCode).toEqual(200);
-    done();
-  });
-});
+//     expect(res.statusCode).toEqual(200);
+//   });
+// });
 
 // describe("Delete Client", () => {
 //   it("should delete a client", async () => {
