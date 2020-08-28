@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 
-import { getClients } from "../redux/actions";
+import { getClients, clearClient } from "../redux/actions";
 import { useHttpClient } from "../hooks/http-hook";
 
 const jwt = require("jsonwebtoken");
 
-function ClientFilterArea({ getClients, token }) {
+function ClientFilterArea({ getClients, clearClient, token }) {
   const [searchedClients, setSearchedClients] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -28,6 +28,7 @@ function ClientFilterArea({ getClients, token }) {
 
   const handleSearch = (event) => {
     event.preventDefault();
+    clearClient();
     getClients(
       sendRequest,
       `&name=${searchedClients}&group=${selectedGroup}&status=${selectedStatus}`,
@@ -41,7 +42,7 @@ function ClientFilterArea({ getClients, token }) {
     const groups = decoded.payload.groups;
     return groups.map((group) => {
       return (
-        <option id={group} value={group}>
+        <option id={group} value={group} key={group}>
           {group}
         </option>
       );
@@ -129,4 +130,6 @@ const mapStateToProps = (state) => {
   return { token: state.token };
 };
 
-export default connect(mapStateToProps, { getClients })(ClientFilterArea);
+export default connect(mapStateToProps, { clearClient, getClients })(
+  ClientFilterArea
+);
