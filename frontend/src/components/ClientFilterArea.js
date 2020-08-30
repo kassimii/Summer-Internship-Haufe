@@ -95,7 +95,7 @@ function ClientFilterArea({ getClients, clearClient, token }) {
                       custom
                       onChange={handleStatusFilterChange}
                     >
-                      <option value="0">Choose...</option>
+                      <option value="">Choose...</option>
                       <option value="NEW">New</option>
                       <option value="REQUEST APPROVAL">Request approval</option>
                       <option value="WAIT FOR DEPLOYMENT">
