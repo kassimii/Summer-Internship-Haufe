@@ -12,8 +12,6 @@ app.use(bodyParser.json());
 
 app.use("/api/groups/", groupsRoutes);
 app.use("/api/clients/", clientsRoutes);
-app.use("/api/admin", rolesRoutes);
-
+app.use("/api/", rolesRoutes);
 app.use(cors);
-
 module.exports = app;

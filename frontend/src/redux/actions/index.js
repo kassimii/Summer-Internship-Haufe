@@ -1,31 +1,19 @@
-import {
-  GET_GROUPS,
-  GET_GROUP,
-  CREATE_GROUP,
-  EDIT_GROUP,
-  DELETE_GROUP,
-  CLEAR_GROUP,
-  CREATE_CLIENT,
-  EDIT_CLIENT,
-  GET_CLIENT,
-  GET_CLIENTS,
-  DELETE_CLIENT,
-  CLEAR_CLIENT,
-  STORE_TOKEN,
-} from "./types";
+import Cookie from "js-cookie";
+
+import * as actions from "./types";
 
 export const getGroups = (sendRequest) => async (dispatch) => {
   const response = await sendRequest("/groups", "GET", null, {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json"
   });
-  dispatch({ type: GET_GROUPS, payload: response });
+  dispatch({ type: actions.GET_GROUPS, payload: response });
 };
 
 export const getGroup = (id, sendRequest) => async (dispatch) => {
   const response = await sendRequest(`/groups/${id}`, "GET", null, {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json"
   });
-  dispatch({ type: GET_GROUP, payload: response });
+  dispatch({ type: actions.GET_GROUP, payload: response });
 };
 
 export const editGroup = (formValues, sendRequest) => async (dispatch) => {
@@ -36,13 +24,13 @@ export const editGroup = (formValues, sendRequest) => async (dispatch) => {
       "PATCH",
       JSON.stringify(formValues),
       {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       }
     );
   } catch (err) {
     response = err;
   }
-  dispatch({ type: EDIT_GROUP, payload: response });
+  dispatch({ type: actions.EDIT_GROUP, payload: response });
 };
 
 export const createGroup = (formValues, sendRequest) => async (dispatch) => {
@@ -53,10 +41,10 @@ export const createGroup = (formValues, sendRequest) => async (dispatch) => {
       "POST",
       JSON.stringify(formValues),
       {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       }
     );
-    dispatch({ type: CREATE_GROUP, payload: response });
+    dispatch({ type: actions.CREATE_GROUP, payload: response });
   } catch (err) {
     console.log(err);
   }
@@ -64,13 +52,13 @@ export const createGroup = (formValues, sendRequest) => async (dispatch) => {
 
 export const deleteGroup = (id, sendRequest) => async (dispatch) => {
   const response = await sendRequest(`/groups/${id}`, "DELETE", null, {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json"
   });
-  dispatch({ type: DELETE_GROUP, payload: response });
+  dispatch({ type: actions.DELETE_GROUP, payload: response });
 };
 
 export const clearGroup = () => {
-  return { type: CLEAR_GROUP };
+  return { type: actions.CLEAR_GROUP };
 };
 
 export const createClient = (formValues, sendRequest) => async (dispatch) => {
@@ -80,7 +68,7 @@ export const createClient = (formValues, sendRequest) => async (dispatch) => {
     JSON.stringify(formValues),
     { "Content-Type": "application/json" }
   );
-  dispatch({ type: CREATE_CLIENT, payload: response });
+  dispatch({ type: actions.CREATE_CLIENT, payload: response });
 };
 
 export const editClient = (formValues, sendRequest) => async (dispatch) => {
@@ -99,14 +87,14 @@ export const editClient = (formValues, sendRequest) => async (dispatch) => {
   // }
   // dispatch({ type: EDIT_CLIENT, payload: response });
   await new Promise((resolve) => setTimeout(resolve, 2000));
-  dispatch({ type: EDIT_CLIENT, payload: formValues });
+  dispatch({ type: actions.EDIT_CLIENT, payload: formValues });
 };
 
 export const getClient = (id, sendRequest) => async (dispatch) => {
   const response = await sendRequest(`/clients/${id}`, "GET", null, {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json"
   });
-  dispatch({ type: GET_CLIENT, payload: response });
+  dispatch({ type: actions.GET_CLIENT, payload: response });
 };
 
 export const getClients = (sendRequest, query, page, limit) => async (
@@ -117,23 +105,38 @@ export const getClients = (sendRequest, query, page, limit) => async (
     "GET",
     null,
     {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     }
   );
-  dispatch({ type: GET_CLIENTS, payload: response });
+  dispatch({ type: actions.GET_CLIENTS, payload: response });
 };
 
 export const deleteClient = (id, sendRequest) => async (dispatch) => {
   const response = await sendRequest(`/clients/${id}`, "DELETE", null, {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json"
   });
-  dispatch({ type: DELETE_CLIENT, payload: response });
+  dispatch({ type: actions.DELETE_CLIENT, payload: response });
 };
 
 export const clearClient = () => {
-  return { type: CLEAR_CLIENT };
+  return { type: actions.CLEAR_CLIENT };
 };
 
-export const storeToken = (token) => async (dispatch) => {
-  dispatch({ type: STORE_TOKEN, payload: token });
+export const signin = (email, sendRequest) => async (dispatch) => {
+  dispatch({ type: actions.USER_SIGNIN_REQUEST, payload: { email } });
+  try {
+    const { user } = await sendRequest(
+      "/signin",
+      "POST",
+      JSON.stringify({ email: email }),
+      {
+        "Content-Type": "application/json"
+      }
+    );
+    dispatch({ type: actions.USER_SIGNIN_SUCCESS, payload: user });
+    Cookie.set("userInfo", JSON.stringify(user));
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: actions.USER_SIGNIN_FAIL, payload: error.message });
+  }
 };

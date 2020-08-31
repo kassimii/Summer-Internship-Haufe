@@ -1,26 +1,58 @@
-import React from "react";
-import { storeToken } from "../redux/actions";
+import React, { useEffect, useState } from "react";
+import { signin } from "../redux/actions";
 import { connect } from "react-redux";
+import { useHttpClient } from "../hooks/http-hook";
 
-const jwt = require("jsonwebtoken");
+function AuthPage(props) {
+  const { user, signin } = props;
+  const [email, setEmail] = useState("bocpatricia@gmail.com");
+  const { sendRequest } = useHttpClient();
 
-const user = {
-  name: "user1",
-  groups: ["group1", "group2"],
-};
-const ACCESS_TOKEN_SECRET =
-  "ced812925907d148d88a4dc774f2798943903d0bb8e8f1117cb01f588863d42a1d2fdaf55032fcc7cd686b02324327b6f12ced461b1072b3c6f4732ce1403d3d";
+  useEffect(() => {
+    if (user && user.userInfo) {
+      props.history.push("/clients");
+    }
+  }, [user, props.history]);
 
-function AuthPage({ storeToken, token }) {
-  const accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET);
-  storeToken(accessToken);
-  return <div>Auth</div>;
+  const submitHandler = (e) => {
+    e.preventDefault();
+    signin(email, sendRequest);
+  };
+
+  return (
+    <div className="d-flex justify-content-center m-4">
+      <form className="d-flex align-items-center" onSubmit={submitHandler}>
+        {/* <li>
+            {loading && <div>Loading...</div>}
+            {error && <div>{error}</div>}
+          </li> */}
+        <div>
+          <label className="m-2" htmlFor="email">
+            Email
+          </label>
+          <input
+            className="m-2"
+            type="email"
+            name="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></input>
+        </div>
+        <div>
+          <button type="submit" className="btn btn-primary m-2">
+            Signin
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {
-  return { token: state.token };
+  return { user: state.userSignIn };
 };
 
 export default connect(mapStateToProps, {
-  storeToken,
+  signin
 })(AuthPage);

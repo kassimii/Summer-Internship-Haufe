@@ -2,8 +2,10 @@ const express = require("express");
 
 const router = express.Router();
 
-const { getAdminByEmail } = require("../controllers/roles-controllers");
+const { getAdminByEmail, signin } = require("../controllers/roles-controllers");
 
-router.get("/", getAdminByEmail);
+router.get("/admin", getAdminByEmail);
+
+router.post("/signin", signin);
 
 module.exports = router;
