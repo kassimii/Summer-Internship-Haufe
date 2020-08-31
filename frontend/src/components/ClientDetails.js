@@ -129,7 +129,7 @@ function ClientDetails({ selectedClient }) {
       <MDBContainer>
         <div
           className="scrollbar scrollbar-primary align-self-start mr-3"
-          style={{ height: "49.9vh" }}
+          style={{ height: "70vh" }}
         >
           <div className="card pl-3">
             <img src="" className="card-img-top" alt="" />
