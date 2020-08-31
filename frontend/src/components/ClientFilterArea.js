@@ -5,8 +5,6 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { getClients, clearClient } from "../redux/actions";
 import { useHttpClient } from "../hooks/http-hook";
 
-const jwt = require("jsonwebtoken");
-
 function ClientFilterArea({ getClients, clearClient, token }) {
   const [searchedClients, setSearchedClients] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
@@ -38,15 +36,15 @@ function ClientFilterArea({ getClients, clearClient, token }) {
   };
 
   const renderGroups = () => {
-    const decoded = jwt.decode(token, { complete: true });
-    const groups = decoded.payload.groups;
-    return groups.map((group) => {
-      return (
-        <option id={group} value={group} key={group}>
-          {group}
-        </option>
-      );
-    });
+    // const decoded = jwt.decode(token, { complete: true });
+    // const groups = decoded.payload.groups;
+    // return groups.map((group) => {
+    //   return (
+    //     <option id={group} value={group} key={group}>
+    //       {group}
+    //     </option>
+    //   );
+    // });
   };
 
   return (
