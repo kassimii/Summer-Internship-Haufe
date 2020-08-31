@@ -52,10 +52,10 @@ function ClientFilterArea({ getClients, clearClient, token }) {
   return (
     <>
       <Form onSubmit={handleSearch}>
-        <Card className="mt-3 mb-3 pt-5 pb-5">
+        <Card className="mt-3 mb-3 pt-3 pb-3">
           <Container>
             <Row>
-              <Col xs={6} md={4}>
+              <Col>
                 <div className="row d-flex justify-content-center form-inline">
                   <div className="d-flex justify-content-center">
                     <Form.Control
@@ -67,7 +67,7 @@ function ClientFilterArea({ getClients, clearClient, token }) {
                   </div>
                 </div>
               </Col>
-              <Col xs={6} md={4}>
+              <Col>
                 <div className="row d-flex justify-content-center form-inline">
                   <div className="d-flex justify-content-center">
                     <Form.Control
@@ -85,7 +85,7 @@ function ClientFilterArea({ getClients, clearClient, token }) {
                   </div>
                 </div>
               </Col>
-              <Col xs={6} md={4}>
+              <Col>
                 <div className="row d-flex justify-content-center form-inline">
                   <div className="d-flex justify-content-center">
                     <Form.Control
@@ -106,18 +106,13 @@ function ClientFilterArea({ getClients, clearClient, token }) {
                   </div>
                 </div>
               </Col>
-            </Row>
-            <br />
-            <Row>
-              <Col xs={6} md={4}></Col>
-              <Col xs={6} md={4}>
+              <Col>
                 <div className="row d-flex justify-content-center form-inline ">
                   <Button variant="primary" type="submit">
                     Search
                   </Button>
                 </div>
               </Col>
-              <Col xs={6} md={4}></Col>
             </Row>
           </Container>
         </Card>
