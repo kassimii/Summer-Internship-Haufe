@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const groupsRoutes = require("./routes/groups-routes");
 const clientsRoutes = require("./routes/clients-routes");
+const rolesRoutes = require("./routes/roles-routes");
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(bodyParser.json());
 
 app.use("/api/groups/", groupsRoutes);
 app.use("/api/clients/", clientsRoutes);
+app.use("/api/admin", rolesRoutes);
 
 app.use(cors);
 
