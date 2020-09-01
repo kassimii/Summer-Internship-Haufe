@@ -155,9 +155,9 @@ function ClientDetails({ selectedClient }) {
                   <Row>
                     <div className="d-flex float-left m-2 col-mb-6">
                       <ButtonGroup aria-label="Basic example">
-                        <Button variant="primary">Edit</Button>
-                        <Button variant="success">Publish</Button>
-                        <Button variant="warning">Deploy</Button>
+                        <Button variant="secondary">Edit</Button>
+                        <Button variant="secondary">Publish</Button>
+                        <Button variant="secondary">Deploy</Button>
                         <Button variant="danger">Delete</Button>
                       </ButtonGroup>
                     </div>
