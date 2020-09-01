@@ -9,7 +9,7 @@ const composeEnhanvers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const userInfo = Cookie.getJSON("userInfo") || null;
 
 const initialState = {
-  userSignIn: userInfo
+  userSignIn: { loading: false, userInfo }
 };
 
 export const store = createStore(

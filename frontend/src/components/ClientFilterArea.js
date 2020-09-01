@@ -5,7 +5,7 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { getClients, clearClient } from "../redux/actions";
 import { useHttpClient } from "../hooks/http-hook";
 
-function ClientFilterArea({ getClients, clearClient, token }) {
+function ClientFilterArea({ getClients, clearClient, user }) {
   const [searchedClients, setSearchedClients] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -36,15 +36,15 @@ function ClientFilterArea({ getClients, clearClient, token }) {
   };
 
   const renderGroups = () => {
-    // const decoded = jwt.decode(token, { complete: true });
-    // const groups = decoded.payload.groups;
-    // return groups.map((group) => {
-    //   return (
-    //     <option id={group} value={group} key={group}>
-    //       {group}
-    //     </option>
-    //   );
-    // });
+    return user
+      ? user.claims.map((group) => {
+          return (
+            <option id={group} value={group} key={group}>
+              {group}
+            </option>
+          );
+        })
+      : null;
   };
 
   return (
@@ -120,7 +120,9 @@ function ClientFilterArea({ getClients, clearClient, token }) {
 }
 
 const mapStateToProps = (state) => {
-  return { token: state.token };
+  return {
+    user: state.userSignIn.userInfo
+  };
 };
 
 export default connect(mapStateToProps, { clearClient, getClients })(

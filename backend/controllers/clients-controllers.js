@@ -4,7 +4,6 @@ const models = require("../database/models");
 const fs = require("fs");
 
 const getClients = async (req, res) => {
-  console.log("aii");
   let clients;
   let filters = [];
   const limit = parseInt(req.query.limit);
