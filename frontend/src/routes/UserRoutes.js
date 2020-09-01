@@ -8,7 +8,7 @@ import GroupPage from "../pages/GroupPage";
 import ClientsPage from "../pages/ClientsPage";
 import AuthPage from "../pages/AuthPage";
 
-const UserRoutes = () => {
+const UserRoutes = (props) => {
   return (
     <div>
       <Header />

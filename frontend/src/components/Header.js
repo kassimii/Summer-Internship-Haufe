@@ -1,9 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
+import history from "../history";
 import home from "../icons/Home.svg";
+import { logout } from "../redux/actions";
 
-const renderCollapsiblePart = () => {
+const renderCollapsiblePart = (user, handleLogout) => {
   return (
     <>
       <button
@@ -19,18 +22,28 @@ const renderCollapsiblePart = () => {
       </button>
       <div className="collapse navbar-collapse" id="navbarText">
         <div className="navbar-nav w-100 justify-content-left">
-          <Link className="nav-link" to="/groups">
-            Groups
-          </Link>
-          <Link className="nav-link" to="/clients">
-            Clients
-          </Link>
+          {user ? (
+            <>
+              <Link className="nav-link" to="/groups">
+                Groups
+              </Link>
+              <Link className="nav-link" to="/clients">
+                Clients
+              </Link>
+            </>
+          ) : null}
         </div>
 
         <div className="navbar-nav w-100 justify-content-end">
-          <Link className="nav-link" to="/">
-            Log in
-          </Link>
+          {user ? (
+            <Link to="" className="nav-link" onClick={handleLogout}>
+              Log out
+            </Link>
+          ) : (
+            <Link className="nav-link" to="/">
+              Log in
+            </Link>
+          )}
         </div>
       </div>
     </>
@@ -38,6 +51,10 @@ const renderCollapsiblePart = () => {
 };
 
 const Header = (props) => {
+  const handleLogout = () => {
+    props.logout();
+    history.push("/");
+  };
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <Link className="navbar-brand" to="/">
@@ -50,9 +67,13 @@ const Header = (props) => {
         />
         Home
       </Link>
-      {renderCollapsiblePart()}
+      {renderCollapsiblePart(props.user, handleLogout)}
     </nav>
   );
 };
 
-export default Header;
+const mapStateToProps = (state) => {
+  return { user: state.userSignIn.userInfo };
+};
+
+export default connect(mapStateToProps, { logout })(Header);

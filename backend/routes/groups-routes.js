@@ -7,7 +7,7 @@ const {
   requireUserId,
   requireClaims,
   requireAdvanedSettings,
-  requireExistingGroupId,
+  requireExistingGroupId
 } = require("../validators/group-validators");
 
 const { handleErrors } = require("../middleware/handle-errors");
@@ -17,8 +17,9 @@ const {
   deleteGroup,
   getGroups,
   getGroupsById,
-  updateGroup,
+  updateGroup
 } = require("../controllers/groups-controllers");
+const { isAuth } = require("../util");
 
 // CREATE GROUP
 router.post(
@@ -32,7 +33,7 @@ router.post(
 router.delete("/:groupId", [requireExistingGroupId], handleErrors, deleteGroup);
 
 // GET GROUPS
-router.get("/", getGroups);
+router.get("/", isAuth, getGroups);
 
 // GET GROUP BY ID
 router.get("/:groupId", [requireExistingGroupId], handleErrors, getGroupsById);
@@ -44,7 +45,7 @@ router.patch(
     requireExistingGroupId,
     requireAdvanedSettings,
     requireClaims,
-    requireGroupName,
+    requireGroupName
   ],
   handleErrors,
   updateGroup

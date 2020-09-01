@@ -5,18 +5,24 @@ import { useHttpClient } from "../hooks/http-hook";
 
 function AuthPage(props) {
   const { user, signin } = props;
-  const [email, setEmail] = useState("bocpatricia@gmail.com");
+  const [jwtKey, setJwtKey] = useState(
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJvY3BhdHJpY2lhQGdtYWlsLmNvbSIsImNsYWltcyI6WyJncm91cDEiLCJncm91cDMiXX0.f_xDaKgIxlRQ8K0f25jsI1Xn0WdeiGW4JQdFQJHzf6Q"
+  );
+  // {
+  // 	"email": "bocpatricia@gmail.com",
+  // 		"claims": ["group1", "group3"]
+  // }
   const { sendRequest } = useHttpClient();
 
   useEffect(() => {
-    if (user && user.userInfo) {
+    if (user && user.userInfo && !user.loading) {
       props.history.push("/clients");
     }
   }, [user, props.history]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    signin(email, sendRequest);
+    signin(jwtKey, sendRequest);
   };
 
   return (
@@ -27,16 +33,16 @@ function AuthPage(props) {
             {error && <div>{error}</div>}
           </li> */}
         <div>
-          <label className="m-2" htmlFor="email">
+          <label className="m-2" htmlFor="jwtKey">
             Email
           </label>
           <input
             className="m-2"
-            type="email"
-            name="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            name="jwt"
+            id="jwt"
+            value={jwtKey}
+            onChange={(e) => setJwtKey(e.target.value)}
           ></input>
         </div>
         <div>
