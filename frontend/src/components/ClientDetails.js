@@ -10,7 +10,9 @@ import {
   Button,
   Card,
   Tabs,
-  Tab
+  Tab,
+  ButtonGroup,
+  Table,
 } from "react-bootstrap";
 
 import "./scrollbar.css";
@@ -43,15 +45,24 @@ function ClientDetails({ selectedClient }) {
       return (
         <Card>
           <Card.Body>
-            {selectedClient.advancedSettingClients.map((setting) => {
-              return (
-                <ListGroup.Item key={setting.key}>
-                  <p>
-                    {setting.key} - {setting.value}{" "}
-                  </p>
-                </ListGroup.Item>
-              );
-            })}
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedClient.advancedSettingClients.map((setting) => {
+                  return (
+                    <tr>
+                      <td>{setting.key}</td>
+                      <td>{setting.value}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
           </Card.Body>
         </Card>
       );
@@ -63,15 +74,24 @@ function ClientDetails({ selectedClient }) {
       return (
         <Card>
           <Card.Body>
-            {selectedClient.attributeMappings.map((attribute) => {
-              return (
-                <ListGroup.Item key={attribute.key}>
-                  <p>
-                    {attribute.key} - {attribute.value}
-                  </p>
-                </ListGroup.Item>
-              );
-            })}
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedClient.attributeMappings.map((attribute) => {
+                  return (
+                    <tr>
+                      <td>{attribute.key}</td>
+                      <td>{attribute.value}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
           </Card.Body>
         </Card>
       );
@@ -104,31 +124,12 @@ function ClientDetails({ selectedClient }) {
     // }
   };
 
-  const handleActionChange = ({ target }) => {
-    switch (target.value) {
-      case "edit":
-        console.log("edit");
-        return;
-      case "publish":
-        console.log("publish");
-        return;
-      case "deploy":
-        console.log("deploy");
-        return;
-      case "delete":
-        console.log("delete");
-        return;
-      default:
-        return;
-    }
-  };
-
   return (
     <>
       <MDBContainer>
         <div
           className="scrollbar scrollbar-primary align-self-start mr-3"
-          style={{ height: "49.9vh" }}
+          style={{ height: "70vh" }}
         >
           <div className="card pl-3">
             <img src="" className="card-img-top" alt="" />
@@ -136,32 +137,30 @@ function ClientDetails({ selectedClient }) {
               <Card.Header>
                 <Container>
                   <Row>
-                    <Col xs={12} md={8} lg={8}>
+                    <Col>
                       <div className="d-flex float-left m-2 col-mb-6">
                         <h3 className="card-title font-weight-bold">
                           {selectedClient.name}
                         </h3>
                       </div>
                     </Col>
-                    <Col xs={6} md={4} lg={4}>
-                      <div className="d-flex float-right m-2 col-mb-6">
-                        <select onChange={handleActionChange}>
-                          <option value="edit">Edit Client</option>
-                          <option value="publish">Publish client</option>
-                          <option value="deploy">Deploy client</option>
-                          <option value="delete">Delete client</option>
-                        </select>
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs={12} md={8} lg={8}>
+                    <Col>
                       <div className="d-flex float-left m-2 col-mb-6">
                         <h5 className="card-title">
                           STATUS: {selectedClient.latestStatus.type}
                         </h5>
                       </div>
                     </Col>
+                  </Row>
+                  <Row>
+                    <div className="d-flex float-left m-2 col-mb-6">
+                      <ButtonGroup aria-label="Basic example">
+                        <Button variant="primary">Edit</Button>
+                        <Button variant="success">Publish</Button>
+                        <Button variant="warning">Deploy</Button>
+                        <Button variant="danger">Delete</Button>
+                      </ButtonGroup>
+                    </div>
                   </Row>
                 </Container>
               </Card.Header>
@@ -197,5 +196,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  getClient
+  getClient,
 })(ClientDetails);
