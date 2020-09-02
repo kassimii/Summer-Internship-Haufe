@@ -23,6 +23,7 @@ const {
   updateClient,
   deleteClient,
   addStatus,
+  getStatus,
   addMetadata,
   getAllMetadata,
   getMetadata,
@@ -90,6 +91,15 @@ router.post(
   isAuth,
   handleErrors,
   addStatus
+);
+
+// GET STATUS
+router.get(
+  "/:clientId/status",
+  [requireExistingClientId],
+  isAuth,
+  handleErrors,
+  getStatus
 );
 
 // ADD METADATA

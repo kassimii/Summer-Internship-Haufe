@@ -46,7 +46,6 @@ const deleteGroup = async (req, res) => {
         .json({ message: "group does not exist", id: req.params.groupId });
     }
   } catch (err) {
-    console.log("Error: " + err);
     res.status(400).json({ error: err });
   }
 };
@@ -60,7 +59,7 @@ const getGroups = async (req, res) => {
 
     return res.status(200).json({ groups });
   } catch (err) {
-    console.log(err);
+    return res.status(404).json({ error: err });
   }
 };
 
@@ -71,13 +70,12 @@ const getGroupsById = async (req, res) => {
     });
     return res.status(200).json({ group });
   } catch (err) {
-    return res.status(404).json({ error: err });
+    return res.status(400).json({ error: err });
   }
 };
 
 const updateGroup = async (req, res) => {
   const { groupId } = req.params;
-  console.log(req.body);
   const incomingClaims = req.body.claims.map((claim) => {
     return { group_id: req.params.groupId, claim: claim };
   });
@@ -162,7 +160,6 @@ const updateGroup = async (req, res) => {
 
     res.status(200).json({ group });
   } catch (err) {
-    console.log("Error: " + err);
     res.status(400).json({ error: err });
   }
 };

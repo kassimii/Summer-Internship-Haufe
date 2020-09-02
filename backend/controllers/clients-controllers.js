@@ -297,8 +297,11 @@ const addStatus = async (req, res) => {
     return true;
   };
   try {
-    oldStatus = await models.ClientStatus.findAll({
-      order: [["creationDate", "DESC"]]
+    let oldStatus = await models.ClientStatus.findAll({
+      order: [["creationDate", "DESC"]],
+      where: {
+        client_id: { [Op.eq]: clientId }
+      }
     });
     oldStatus = oldStatus[0];
     oldStatus = await models.Status.findByPk(oldStatus.status_id);
@@ -329,6 +332,24 @@ const addStatus = async (req, res) => {
     await client.save({ fields: ["lastModified", "lastModifiedBy"] });
 
     return res.status(200).json({ status: newClientStatus });
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
+};
+
+const getStatus = async (req, res) => {
+  const clientId = req.params.clientId;
+  let status;
+  try {
+    const client_status = await models.ClientStatus.findAll({
+      order: [["creationDate", "DESC"]],
+      where: {
+        client_id: { [Op.eq]: clientId }
+      }
+    });
+    status = await models.Status.findByPk(client_status[0].status_id);
+
+    return res.status(200).json({ status: status });
   } catch (err) {
     return res.status(400).json({ error: err });
   }
@@ -400,6 +421,7 @@ exports.getClientById = getClientById;
 exports.updateClient = updateClient;
 exports.deleteClient = deleteClient;
 exports.addStatus = addStatus;
+exports.getStatus = getStatus;
 exports.addMetadata = addMetadata;
 exports.getAllMetadata = getAllMetadata;
 exports.getMetadata = getMetadata;

@@ -37,10 +37,10 @@ function ClientFilterArea({ getClients, clearClient, user }) {
 
   const renderGroups = () => {
     return user
-      ? user.claims.map((group) => {
+      ? user.groups.map((group) => {
           return (
-            <option id={group} value={group} key={group}>
-              {group}
+            <option id={group.id} key={group.name}>
+              {group.name}
             </option>
           );
         })

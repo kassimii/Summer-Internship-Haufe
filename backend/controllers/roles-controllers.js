@@ -20,15 +20,33 @@ const signin = async (req, res) => {
   var decoded;
   try {
     decoded = jwt.verify(req.body.jwtKey, config.JWT_SECRET);
-    console.log(decoded);
-    const signinUser = await models.User.findOne({
+    let accesibileClaims = await models.Claim.findAll({
+      where: { claim: { [Op.in]: decoded.claims } }
+    });
+    accesibileClaims = accesibileClaims.map((claim) => claim.group_id);
+    if (accesibileClaims.length === 0) {
+      res.status(401).json({ message: "Bad Claims" });
+    }
+    const accesibileGroups = await models.Group.findAll({
+      where: { id: { [Op.in]: accesibileClaims } }
+    });
+    let signinUser = await models.User.findOne({
       where: {
         emailAddress: {
           [Op.eq]: decoded.email
         }
       }
     });
+    if (accesibileGroups && !signinUser) {
+      signinUser = await models.User.create({
+        emailAddress: decoded.email,
+        firstName: decoded.firstName,
+        lastName: decoded.lastName
+      });
+    }
     if (signinUser) {
+      signinUser.lastLoginDate = new Date().toISOString();
+      await signinUser.save({ fields: ["lastLoginDate"] });
       const admin = await models.Admin.findOne({
         where: { emailAddress: { [Op.eq]: decoded.email } }
       });
@@ -39,7 +57,7 @@ const signin = async (req, res) => {
           lastName: signinUser.lastName,
           email: signinUser.emailAddress,
           isAdmin: admin ? true : false,
-          claims: decoded.claims,
+          groups: accesibileGroups,
           token: req.body.jwtKey
         }
       });
@@ -47,7 +65,7 @@ const signin = async (req, res) => {
       res.status(401).json({ message: "Invalid email" });
     }
   } catch (err) {
-    return res.status(404).json({ error: err });
+    return res.status(400).json({ error: err });
   }
 };
 

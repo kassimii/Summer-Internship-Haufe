@@ -6,12 +6,8 @@ import { useHttpClient } from "../hooks/http-hook";
 function AuthPage(props) {
   const { user, signin } = props;
   const [jwtKey, setJwtKey] = useState(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJvY3BhdHJpY2lhQGdtYWlsLmNvbSIsImNsYWltcyI6WyJncm91cDEiLCJncm91cDMiXX0.f_xDaKgIxlRQ8K0f25jsI1Xn0WdeiGW4JQdFQJHzf6Q"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJBbGV4YW5kcnUiLCJsYXN0TmFtZSI6IlJvdGFyaXUiLCJlbWFpbCI6InJvdGFyaXVhbGV4MTBAZ21haWwuY29tIiwiY2xhaW1zIjpbImNsYWltMyIsImNsYWltNCJdfQ.il4F2Qbe8IFOX7agBqQ6Y1_Vgs-xEEiJ4Zbu6c35-G4"
   );
-  // {
-  // 	"email": "bocpatricia@gmail.com",
-  // 		"claims": ["group1", "group3"]
-  // }
   const { sendRequest } = useHttpClient();
 
   useEffect(() => {
