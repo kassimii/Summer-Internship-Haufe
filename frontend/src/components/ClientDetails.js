@@ -3,7 +3,6 @@ import { MDBContainer } from "mdbreact";
 import { connect } from "react-redux";
 import { getClient } from "../redux/actions";
 import {
-  ListGroup,
   Row,
   Col,
   Container,
@@ -12,7 +11,7 @@ import {
   Tabs,
   Tab,
   ButtonGroup,
-  Table,
+  Table
 } from "react-bootstrap";
 
 import "./scrollbar.css";
@@ -55,7 +54,7 @@ function ClientDetails({ selectedClient }) {
               <tbody>
                 {selectedClient.advancedSettingClients.map((setting) => {
                   return (
-                    <tr>
+                    <tr key={setting.key}>
                       <td>{setting.key}</td>
                       <td>{setting.value}</td>
                     </tr>
@@ -84,7 +83,7 @@ function ClientDetails({ selectedClient }) {
               <tbody>
                 {selectedClient.attributeMappings.map((attribute) => {
                   return (
-                    <tr>
+                    <tr key={attribute.key}>
                       <td>{attribute.key}</td>
                       <td>{attribute.value}</td>
                     </tr>
@@ -196,5 +195,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  getClient,
+  getClient
 })(ClientDetails);
