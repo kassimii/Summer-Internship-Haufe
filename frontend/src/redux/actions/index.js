@@ -228,7 +228,7 @@ export const addStatus = (userId, status, sendRequest) => async (
   try {
     const {
       userSignIn: { userInfo },
-      selectedClient: selectedClient,
+      selectedClient,
     } = getState();
     const data = { userId, status };
     const response = await sendRequest(
@@ -240,8 +240,31 @@ export const addStatus = (userId, status, sendRequest) => async (
         Authorization: "Bearer " + userInfo.token,
       }
     );
-    console.log(response);
+
     dispatch({ type: actions.ADD_STATUS, payload: response });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getStatus = (sendRequest) => async (dispatch, getState) => {
+  try {
+    const {
+      userSignIn: { userInfo },
+      selectedClient,
+    } = getState();
+    const response = await sendRequest(
+      `/clients/${selectedClient.id}`,
+      "GET",
+      null,
+      {
+        Authorization: "Bearer " + userInfo.token,
+      }
+    );
+    dispatch({
+      type: actions.ADD_STATUS,
+      payload: response,
+    });
   } catch (err) {
     console.log(err);
   }

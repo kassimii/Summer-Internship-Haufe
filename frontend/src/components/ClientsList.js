@@ -5,7 +5,7 @@ import { getClient, getClients } from "../redux/actions";
 import { useHttpClient } from "../hooks/http-hook";
 import "./scrollbar.css";
 
-const ClientsList = ({ getClient, getClients, clients }) => {
+const ClientsList = ({ getClient, getClients, clients, selectedClient }) => {
   const { sendRequest } = useHttpClient();
   const [activePage, setActivePage] = useState(1);
   const pageLength = 15;
@@ -64,10 +64,10 @@ const ClientsList = ({ getClient, getClients, clients }) => {
 };
 
 const mapStateToProps = (state) => {
-  return { clients: state.clients };
+  return { clients: state.clients, selectedClient: state.selectedClient };
 };
 
 export default connect(mapStateToProps, {
   getClients,
-  getClient
+  getClient,
 })(ClientsList);

@@ -24,7 +24,7 @@ export const useHttpClient = () => {
         const response = await fetch(url, {
           method,
           body,
-          headers
+          headers,
         });
         const responseData = await response.json();
 

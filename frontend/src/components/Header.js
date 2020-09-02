@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 
 import history from "../history";
@@ -9,7 +9,6 @@ import CreateClientModal from "./ClientCreateModal";
 
 const renderCollapsiblePart = (user, handleLogout) => {
   const renderAddClientButton = () => {
-    console.log(window.location.pathname);
     if (window.location.pathname === "/clients") {
       return <CreateClientModal />;
     }
@@ -71,6 +70,7 @@ const renderCollapsiblePart = (user, handleLogout) => {
 };
 
 const Header = (props) => {
+  useLocation();
   const handleLogout = () => {
     props.logout();
     history.push("/");

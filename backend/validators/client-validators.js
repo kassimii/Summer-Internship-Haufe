@@ -12,7 +12,7 @@ module.exports = {
     .trim()
     .isUUID()
     .withMessage("Group id is not UUID"),
-  requireUserId: check("user_id")
+  requireUserId: check("userId")
     .trim()
     .isUUID()
     .withMessage("User id is not UUID"),
@@ -59,5 +59,5 @@ module.exports = {
     ),
   requireExistingStatus: check("status")
     .isIn(["REQUEST APPROVAL", "NEW", "WAIT FOR DEPLOYMENT", "DEPLOYED"])
-    .withMessage("Status not correct")
+    .withMessage("Status not correct"),
 };

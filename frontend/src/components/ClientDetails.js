@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MDBContainer } from "mdbreact";
 import { connect } from "react-redux";
-import { addStatus } from "../redux/actions";
+import { addStatus, getStatus } from "../redux/actions";
 import {
   Row,
   Col,
@@ -13,6 +13,7 @@ import {
   ButtonGroup,
   Table,
 } from "react-bootstrap";
+import { store } from "../redux/store";
 
 import "./scrollbar.css";
 import { useHttpClient } from "../hooks/http-hook";
@@ -22,6 +23,7 @@ function ClientDetails({
   userSignIn,
   currentStatus,
   addStatus,
+  getStatus,
 }) {
   const { sendRequest } = useHttpClient();
 
@@ -135,7 +137,9 @@ function ClientDetails({
     if (userSignIn.userInfo.isAdmin) {
       return (
         <>
-          <Button variant="secondary">Deploy</Button>
+          <Button variant="secondary" onClick={handleDeployClick}>
+            Deploy
+          </Button>
           <Button variant="danger">Delete</Button>
         </>
       );
@@ -144,6 +148,18 @@ function ClientDetails({
 
   const handlePublishClick = () => {
     addStatus(userSignIn.userInfo.id, "REQUEST APPROVAL", sendRequest);
+    const unsubscribe = store.subscribe(() => {
+      unsubscribe();
+      getStatus(sendRequest);
+    });
+  };
+
+  const handleDeployClick = () => {
+    addStatus(userSignIn.userInfo.id, "WAIT FOR DEPLOYMENT", sendRequest);
+    const unsubscribe = store.subscribe(() => {
+      unsubscribe();
+      getStatus(sendRequest);
+    });
   };
 
   return (
@@ -227,4 +243,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   addStatus,
+  getStatus,
 })(ClientDetails);
