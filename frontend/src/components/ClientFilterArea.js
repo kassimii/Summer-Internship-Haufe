@@ -58,6 +58,7 @@ function ClientFilterArea({ getClients, clearClient, user }) {
                   <div className="d-flex justify-content-center">
                     <Form.Control
                       type="text"
+                      className="my-1 mr-sm-2"
                       placeholder="Search client..."
                       onChange={handleSearchChange}
                       value={searchedClients}
@@ -76,7 +77,7 @@ function ClientFilterArea({ getClients, clearClient, user }) {
                       onChange={handleGroupFilterChange}
                     >
                       <option id="default" value="">
-                        Choose...
+                        Filter by group...
                       </option>
                       {renderGroups()}
                     </Form.Control>
@@ -93,7 +94,7 @@ function ClientFilterArea({ getClients, clearClient, user }) {
                       custom
                       onChange={handleStatusFilterChange}
                     >
-                      <option value="">Choose...</option>
+                      <option value="">Filter by status...</option>
                       <option value="NEW">New</option>
                       <option value="REQUEST APPROVAL">Request approval</option>
                       <option value="WAIT FOR DEPLOYMENT">
@@ -121,7 +122,7 @@ function ClientFilterArea({ getClients, clearClient, user }) {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.userSignIn.userInfo
+    user: state.userSignIn.userInfo,
   };
 };
 

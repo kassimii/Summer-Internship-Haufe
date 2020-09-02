@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { MDBContainer } from "mdbreact";
 import { connect } from "react-redux";
-import { getClient } from "../redux/actions";
+import { addStatus } from "../redux/actions";
 import {
-  ListGroup,
   Row,
   Col,
   Container,
@@ -16,8 +15,16 @@ import {
 } from "react-bootstrap";
 
 import "./scrollbar.css";
+import { useHttpClient } from "../hooks/http-hook";
 
-function ClientDetails({ selectedClient }) {
+function ClientDetails({
+  selectedClient,
+  userSignIn,
+  currentStatus,
+  addStatus,
+}) {
+  const { sendRequest } = useHttpClient();
+
   useEffect(() => {
     setKey("advancedSetings");
   }, [selectedClient]);
@@ -55,7 +62,7 @@ function ClientDetails({ selectedClient }) {
               <tbody>
                 {selectedClient.advancedSettingClients.map((setting) => {
                   return (
-                    <tr>
+                    <tr key={setting.key}>
                       <td>{setting.key}</td>
                       <td>{setting.value}</td>
                     </tr>
@@ -84,7 +91,7 @@ function ClientDetails({ selectedClient }) {
               <tbody>
                 {selectedClient.attributeMappings.map((attribute) => {
                   return (
-                    <tr>
+                    <tr key={attribute.key}>
                       <td>{attribute.key}</td>
                       <td>{attribute.value}</td>
                     </tr>
@@ -124,6 +131,21 @@ function ClientDetails({ selectedClient }) {
     // }
   };
 
+  const renderAdminButtons = () => {
+    if (userSignIn.userInfo.isAdmin) {
+      return (
+        <>
+          <Button variant="secondary">Deploy</Button>
+          <Button variant="danger">Delete</Button>
+        </>
+      );
+    }
+  };
+
+  const handlePublishClick = () => {
+    addStatus(userSignIn.userInfo.id, "REQUEST APPROVAL", sendRequest);
+  };
+
   return (
     <>
       <MDBContainer>
@@ -154,11 +176,15 @@ function ClientDetails({ selectedClient }) {
                   </Row>
                   <Row>
                     <div className="d-flex float-left m-2 col-mb-6">
-                      <ButtonGroup aria-label="Basic example">
+                      <ButtonGroup aria-label="Client actions">
                         <Button variant="secondary">Edit</Button>
-                        <Button variant="secondary">Publish</Button>
-                        <Button variant="secondary">Deploy</Button>
-                        <Button variant="danger">Delete</Button>
+                        <Button
+                          variant="secondary"
+                          onClick={handlePublishClick}
+                        >
+                          Publish
+                        </Button>
+                        {renderAdminButtons()}
                       </ButtonGroup>
                     </div>
                   </Row>
@@ -192,9 +218,13 @@ function ClientDetails({ selectedClient }) {
 }
 
 const mapStateToProps = (state) => {
-  return { selectedClient: state.selectedClient };
+  return {
+    selectedClient: state.selectedClient,
+    userSignIn: state.userSignIn,
+    currentStatus: state.currentStatus,
+  };
 };
 
 export default connect(mapStateToProps, {
-  getClient,
+  addStatus,
 })(ClientDetails);

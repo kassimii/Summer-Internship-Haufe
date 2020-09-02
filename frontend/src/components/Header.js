@@ -5,8 +5,25 @@ import { connect } from "react-redux";
 import history from "../history";
 import home from "../icons/Home.svg";
 import { logout } from "../redux/actions";
+import CreateClientModal from "./ClientCreateModal";
 
 const renderCollapsiblePart = (user, handleLogout) => {
+  const renderAddClientButton = () => {
+    console.log(window.location.pathname);
+    if (window.location.pathname === "/clients") {
+      return <CreateClientModal />;
+    }
+  };
+  const renderClientRequestSection = () => {
+    if (user.isAdmin) {
+      return (
+        <Link className="nav-link" to="/clients/requests">
+          Requests
+        </Link>
+      );
+    }
+  };
+
   return (
     <>
       <button
@@ -30,6 +47,9 @@ const renderCollapsiblePart = (user, handleLogout) => {
               <Link className="nav-link" to="/clients">
                 Clients
               </Link>
+
+              {renderClientRequestSection()}
+              {renderAddClientButton()}
             </>
           ) : null}
         </div>
