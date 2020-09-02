@@ -231,6 +231,7 @@ export const addStatus = (userId, status, sendRequest) => async (
       selectedClient,
     } = getState();
     const data = { userId, status };
+
     const response = await sendRequest(
       `/clients/${selectedClient.id}/status`,
       "POST",
@@ -261,10 +262,7 @@ export const getStatus = (sendRequest) => async (dispatch, getState) => {
         Authorization: "Bearer " + userInfo.token,
       }
     );
-    dispatch({
-      type: actions.ADD_STATUS,
-      payload: response,
-    });
+    dispatch({ type: actions.GET_CLIENT, payload: response });
   } catch (err) {
     console.log(err);
   }

@@ -1,10 +1,10 @@
 import * as actions from "../actions/types";
 
-export default (state = null, action) => {
+export default (currentStatus = null, action) => {
   switch (action.type) {
-    // case actions.GET_STATUS:
-    //   return action.payload;
+    case actions.GET_STATUS:
+      return action.payload.client;
     default:
-      return state;
+      return currentStatus;
   }
 };
