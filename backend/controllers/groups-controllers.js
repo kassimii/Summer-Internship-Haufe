@@ -8,12 +8,12 @@ const createGroup = async (req, res) => {
     claims: req.body.claims.map((claim) => {
       return { claim: claim };
     }),
-    creationDate: new Date().toISOString(),
+    creationDate: new Date().toISOString()
   };
 
   try {
     const result = await models.Group.create(newGroup, {
-      include: [models.AdvancedSetting, models.Claim],
+      include: [models.AdvancedSetting, models.Claim]
     });
 
     return res.status(200).json({ group: result });
@@ -29,9 +29,9 @@ const deleteGroup = async (req, res) => {
     const group = await models.Group.findOne({
       where: {
         id: {
-          [Op.eq]: groupId,
-        },
-      },
+          [Op.eq]: groupId
+        }
+      }
     });
 
     if (group) {
@@ -46,7 +46,6 @@ const deleteGroup = async (req, res) => {
         .json({ message: "group does not exist", id: req.params.groupId });
     }
   } catch (err) {
-    console.log("Error: " + err);
     res.status(400).json({ error: err });
   }
 };
@@ -54,30 +53,43 @@ const deleteGroup = async (req, res) => {
 const getGroups = async (req, res) => {
   let groups;
   try {
+    let accesibileClaims = await models.Claim.findAll({
+      where: { claim: { [Op.in]: req.user.claims } }
+    });
+    accesibileClaims = accesibileClaims.map((claim) => claim.group_id);
+    if (accesibileClaims.length === 0) {
+      res.status(401).json({ message: "Bad Claims" });
+    }
+    let accesibileGroupsIds = await models.Group.findAll({
+      where: { id: { [Op.in]: accesibileClaims } }
+    });
+    accesibileGroupsIds = accesibileGroupsIds.map((group) => group.id);
     groups = await models.Group.findAll({
       include: [models.Claim, models.AdvancedSetting],
+      where: {
+        id: { [Op.in]: accesibileGroupsIds }
+      }
     });
 
     return res.status(200).json({ groups });
   } catch (err) {
-    console.log(err);
+    return res.status(404).json({ error: err });
   }
 };
 
 const getGroupsById = async (req, res) => {
   try {
     const group = await models.Group.findByPk(req.params.groupId, {
-      include: [models.Claim, models.AdvancedSetting],
+      include: [models.Claim, models.AdvancedSetting]
     });
     return res.status(200).json({ group });
   } catch (err) {
-    return res.status(404).json({ error: err });
+    return res.status(400).json({ error: err });
   }
 };
 
 const updateGroup = async (req, res) => {
   const { groupId } = req.params;
-  console.log(req.body);
   const incomingClaims = req.body.claims.map((claim) => {
     return { group_id: req.params.groupId, claim: claim };
   });
@@ -85,13 +97,13 @@ const updateGroup = async (req, res) => {
     return {
       group_id: req.params.groupId,
       key: setting.key,
-      value: setting.value,
+      value: setting.value
     };
   });
 
   try {
     let group = await models.Group.findByPk(groupId, {
-      include: [models.Claim, models.AdvancedSetting],
+      include: [models.Claim, models.AdvancedSetting]
     });
 
     if (!group) {
@@ -106,7 +118,7 @@ const updateGroup = async (req, res) => {
       if (!incomingClaims.find((inClaim) => claim.claim === inClaim.claim)) {
         // they are deleted
         await models.Claim.destroy({
-          where: { group_id: groupId, claim: claim.claim },
+          where: { group_id: groupId, claim: claim.claim }
         });
       }
     }
@@ -132,7 +144,7 @@ const updateGroup = async (req, res) => {
       ) {
         // they are deleted
         await models.AdvancedSetting.destroy({
-          where: { group_id: groupId, key: setting.key },
+          where: { group_id: groupId, key: setting.key }
         });
       }
     }
@@ -145,7 +157,7 @@ const updateGroup = async (req, res) => {
       if (!currentExistingAdvancedSetting) {
         await models.AdvancedSetting.create({
           group_id: groupId,
-          ...inSetting,
+          ...inSetting
         });
       } else {
         // if we have the same key but different value
@@ -157,12 +169,11 @@ const updateGroup = async (req, res) => {
       }
     }
     group = await models.Group.findByPk(groupId, {
-      include: [models.Claim, models.AdvancedSetting],
+      include: [models.Claim, models.AdvancedSetting]
     });
 
     res.status(200).json({ group });
   } catch (err) {
-    console.log("Error: " + err);
     res.status(400).json({ error: err });
   }
 };

@@ -5,7 +5,7 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { getClients, clearClient } from "../redux/actions";
 import { useHttpClient } from "../hooks/http-hook";
 
-function ClientFilterArea({ getClients, clearClient, token }) {
+function ClientFilterArea({ getClients, clearClient, user }) {
   const [searchedClients, setSearchedClients] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -36,15 +36,15 @@ function ClientFilterArea({ getClients, clearClient, token }) {
   };
 
   const renderGroups = () => {
-    // const decoded = jwt.decode(token, { complete: true });
-    // const groups = decoded.payload.groups;
-    // return groups.map((group) => {
-    //   return (
-    //     <option id={group} value={group} key={group}>
-    //       {group}
-    //     </option>
-    //   );
-    // });
+    return user
+      ? user.groups.map((group) => {
+          return (
+            <option id={group.id} key={group.name}>
+              {group.name}
+            </option>
+          );
+        })
+      : null;
   };
 
   return (
@@ -58,6 +58,7 @@ function ClientFilterArea({ getClients, clearClient, token }) {
                   <div className="d-flex justify-content-center">
                     <Form.Control
                       type="text"
+                      className="my-1 mr-sm-2"
                       placeholder="Search client..."
                       onChange={handleSearchChange}
                       value={searchedClients}
@@ -76,7 +77,7 @@ function ClientFilterArea({ getClients, clearClient, token }) {
                       onChange={handleGroupFilterChange}
                     >
                       <option id="default" value="">
-                        Choose...
+                        Filter by group...
                       </option>
                       {renderGroups()}
                     </Form.Control>
@@ -93,7 +94,7 @@ function ClientFilterArea({ getClients, clearClient, token }) {
                       custom
                       onChange={handleStatusFilterChange}
                     >
-                      <option value="">Choose...</option>
+                      <option value="">Filter by status...</option>
                       <option value="NEW">New</option>
                       <option value="REQUEST APPROVAL">Request approval</option>
                       <option value="WAIT FOR DEPLOYMENT">
@@ -120,7 +121,9 @@ function ClientFilterArea({ getClients, clearClient, token }) {
 }
 
 const mapStateToProps = (state) => {
-  return { token: state.token };
+  return {
+    user: state.userSignIn.userInfo,
+  };
 };
 
 export default connect(mapStateToProps, { clearClient, getClients })(

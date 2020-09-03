@@ -29,3 +29,5 @@ export const USER_REGISTER_FAIL = "USER_REGISTER_FAIL";
 export const USER_LOGOUT = "USER_LOGOUT";
 
 
+export const ADD_STATUS = "ADD_STATUS";
+export const GET_STATUS = "GET_STATUS";

@@ -2,25 +2,41 @@ const express = require("express");
 const { Op } = require("sequelize");
 const models = require("../database/models");
 const fs = require("fs");
+const jwt = require("jsonwebtoken");
+const { config } = require("../config");
 
 const getClients = async (req, res) => {
-  console.log("aii");
   let clients;
   let filters = [];
   const limit = parseInt(req.query.limit);
   const page = parseInt(req.query.page);
   const pageNum = page ? page - 1 : 0;
   const size = limit ? limit : 15;
+  console.log(req.user);
   if (req.query.name) {
     filters.push({ name: { [Op.substring]: req.query.name } });
   }
 
   try {
+    let accesibileClaims = await models.Claim.findAll({
+      where: { claim: { [Op.in]: req.user.claims } }
+    });
+    accesibileClaims = accesibileClaims.map((claim) => claim.group_id);
+    if (accesibileClaims.length === 0) {
+      res.status(401).json({ message: "Bad Claims" });
+    }
+    let accesibileGroupsIds = await models.Group.findAll({
+      where: { id: { [Op.in]: accesibileClaims } }
+    });
+    accesibileGroupsIds = accesibileGroupsIds.map((group) => group.id);
     let group;
     if (req.query.group) {
       group = await models.Group.findOne({
         where: {
-          [Op.and]: { name: { [Op.substring]: req.query.group } }
+          [Op.and]: [
+            { name: { [Op.substring]: req.query.group } },
+            { id: { [Op.in]: accesibileGroupsIds } }
+          ]
         }
       });
       filters.push({ group_id: { [Op.eq]: group.id } });
@@ -41,7 +57,7 @@ const getClients = async (req, res) => {
         models.Metadata
       ],
       where: {
-        [Op.and]: filters
+        [Op.and]: [filters, { group_id: { [Op.in]: accesibileGroupsIds } }]
       }
     });
     let clientCount = clients.count;
@@ -72,6 +88,7 @@ const getClients = async (req, res) => {
       clients: convertedClients
     });
   } catch (err) {
+    console.log(err);
     res.status(400).json({ error: err });
   }
 };
@@ -125,10 +142,10 @@ const createClient = async (req, res) => {
   }
   const newClient = {
     ...req.body,
-    createdBy: req.body.user_id,
+    createdBy: req.body.userId,
     creationDate: new Date().toISOString(),
     lastModified: new Date().toISOString(),
-    lastModifiedBy: req.body.user_id,
+    lastModifiedBy: req.body.userId,
     clientStatuses: [
       { creationDate: new Date().toISOString(), status_id: newStatusId.id }
     ]
@@ -153,7 +170,7 @@ const updateClient = async (req, res) => {
   const clientId = req.params.clientId;
   var incomingAdvancedSettings = req.body.advancedSettingClients;
   var incomingAttributesMapping = req.body.attributeMappings;
-  const userId = req.body.user_id;
+  const userId = req.body.userId;
 
   try {
     let client = await models.Client.findByPk(clientId, {
@@ -278,7 +295,7 @@ const deleteClient = async (req, res) => {
 
 const addStatus = async (req, res) => {
   const clientId = req.params.clientId;
-  const userId = req.body.user_id;
+  const userId = req.body.userId;
   const newStatus = req.body.status;
   let newStatusId;
   const statusValidation = (latestStatus, newStatus) => {
@@ -299,8 +316,11 @@ const addStatus = async (req, res) => {
     return true;
   };
   try {
-    oldStatus = await models.ClientStatus.findAll({
-      order: [["creationDate", "DESC"]]
+    let oldStatus = await models.ClientStatus.findAll({
+      order: [["creationDate", "DESC"]],
+      where: {
+        client_id: { [Op.eq]: clientId }
+      }
     });
     oldStatus = oldStatus[0];
     oldStatus = await models.Status.findByPk(oldStatus.status_id);
@@ -336,54 +356,30 @@ const addStatus = async (req, res) => {
   }
 };
 
-// const addMetadata = async (req, res) => {
-//   const clientId = req.params.clientId;
-//   const metadata = req.body.content;
-//   const type = req.body.type;
-//   try {
-//     if (req.body.content == undefined) {
-//       return res.status(400).json({ error: [{ message: "File undefined" }] });
-//     }
-//     let client = await models.Client.findByPk(clientId);
-//     if (!client) {
-//       return res.status(400).json({ error: [{ message: "Wrong client id" }] });
-//     }
-//     const newMetadata = {
-//       client_id: clientId,
-//       type: type,
-//       content: fs.readFileSync(
-//         __basedir + "/resources/static/assets/uploads/" + req.file.filename
-//       )
-//     };
-//     await models.Metadata.create(newMetadata);
-//     client = await models.Client.findByPk(req.params.clientId, {
-//       include: [
-//         models.AdvancedSettingClient,
-//         models.AttributeMapping,
-//         {
-//           model: models.ClientStatus,
-//           order: [["creationDate", "DESC"]],
-//           limit: 1
-//         },
-//         models.Metadata
-//       ]
-//     });
-//     const latestStatus = await models.Status.findByPk(
-//       client.clientStatuses[0].status_id
-//     );
-//     var convertedClient = client.get({ plain: true });
-//     delete convertedClient.clientStatuses;
-//     convertedClient.latestStatus = latestStatus;
-//     return res.status(200).json({ client: convertedClient });
-//   } catch (err) {
-//     return res.status(404).json({ error: err });
-//   }
-// };
+const getStatus = async (req, res) => {
+  const clientId = req.params.clientId;
+  let status;
+  try {
+    const client_status = await models.ClientStatus.findAll({
+      order: [["creationDate", "DESC"]],
+      where: {
+        client_id: { [Op.eq]: clientId }
+      }
+    });
+    status = await models.Status.findByPk(client_status[0].status_id);
 
-const addMetadata = async(req,res)=> {
-  
-const clientId = req.params.clientId;
+    return res.status(200).json({ status: status });
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
+};
 
+
+
+const addMetadata = async (req, res) => {
+  const clientId = req.params.clientId;
+  const metadata = req.body.content;
+  const type = req.body.type;
   try {
     console.log(req.file);
 
@@ -450,6 +446,7 @@ exports.getClientById = getClientById;
 exports.updateClient = updateClient;
 exports.deleteClient = deleteClient;
 exports.addStatus = addStatus;
+exports.getStatus = getStatus;
 exports.addMetadata = addMetadata;
 exports.getAllMetadata = getAllMetadata;
 exports.getMetadata = getMetadata;

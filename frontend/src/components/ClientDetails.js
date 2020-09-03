@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MDBContainer } from "mdbreact";
 import { connect } from "react-redux";
-import { getClient, uploadMetadata, getClientMetadata} from "../redux/actions";
+import { getClient, uploadMetadata, getClientMetadata,addStatus, getStatus} from "../redux/actions";
 import {
   Row,
   Col,
@@ -14,13 +14,21 @@ import {
   Table,
   Form,
 } from "react-bootstrap";
+import { store } from "../redux/store";
 
 import { useHttpClient } from "../hooks/http-hook";
 
 import "./scrollbar.css";
+import { useHttpClient } from "../hooks/http-hook";
 
-function ClientDetails({ selectedClient, uploadMetadata}) {
-
+function ClientDetails({
+  selectedClient,
+  userSignIn,
+  currentStatus,
+  addStatus,
+  getStatus,
+  uploadMetadata
+}) {
   const { sendRequest } = useHttpClient();
 
 
@@ -68,7 +76,7 @@ function ClientDetails({ selectedClient, uploadMetadata}) {
               <tbody>
                 {selectedClient.advancedSettingClients.map((setting) => {
                   return (
-                    <tr>
+                    <tr key={setting.key}>
                       <td>{setting.key}</td>
                       <td>{setting.value}</td>
                     </tr>
@@ -97,7 +105,7 @@ function ClientDetails({ selectedClient, uploadMetadata}) {
               <tbody>
                 {selectedClient.attributeMappings.map((attribute) => {
                   return (
-                    <tr>
+                    <tr key={attribute.key}>
                       <td>{attribute.key}</td>
                       <td>{attribute.value}</td>
                     </tr>
@@ -196,6 +204,35 @@ function ClientDetails({ selectedClient, uploadMetadata}) {
     // }
   };
 
+  const renderAdminButtons = () => {
+    if (userSignIn.userInfo.isAdmin) {
+      return (
+        <>
+          <Button variant="secondary" onClick={handleDeployClick}>
+            Deploy
+          </Button>
+          <Button variant="danger">Delete</Button>
+        </>
+      );
+    }
+  };
+
+  const handlePublishClick = () => {
+    addStatus(userSignIn.userInfo.id, "REQUEST APPROVAL", sendRequest);
+    const unsubscribe = store.subscribe(() => {
+      unsubscribe();
+      getStatus(sendRequest);
+    });
+  };
+
+  const handleDeployClick = () => {
+    addStatus(userSignIn.userInfo.id, "WAIT FOR DEPLOYMENT", sendRequest);
+    const unsubscribe = store.subscribe(() => {
+      unsubscribe();
+      getStatus(sendRequest);
+    });
+  };
+
   return (
     <>
       <MDBContainer>
@@ -226,11 +263,15 @@ function ClientDetails({ selectedClient, uploadMetadata}) {
                   </Row>
                   <Row>
                     <div className="d-flex float-left m-2 col-mb-6">
-                      <ButtonGroup aria-label="Basic example">
-                        <Button variant="primary">Edit</Button>
-                        <Button variant="success">Publish</Button>
-                        <Button variant="warning">Deploy</Button>
-                        <Button variant="danger">Delete</Button>
+                      <ButtonGroup aria-label="Client actions">
+                        <Button variant="secondary">Edit</Button>
+                        <Button
+                          variant="secondary"
+                          onClick={handlePublishClick}
+                        >
+                          Publish
+                        </Button>
+                        {renderAdminButtons()}
                       </ButtonGroup>
                     </div>
                   </Row>
@@ -264,10 +305,16 @@ function ClientDetails({ selectedClient, uploadMetadata}) {
 }
 
 const mapStateToProps = (state) => {
-  return { selectedClient: state.selectedClient };
+  return {
+    selectedClient: state.selectedClient,
+    userSignIn: state.userSignIn,
+    currentStatus: state.currentStatus,
+  };
 };
 
 export default connect(mapStateToProps, {
   getClient,
   uploadMetadata,
+  addStatus,
+  getStatus,
 })(ClientDetails);

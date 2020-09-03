@@ -12,6 +12,13 @@ export default (selectedClient = null, action) => {
       return action.payload; 
     case actions.GET_CLIENT_METATDATA:
       return action.payload;  
+    case actions.GET_STATUS:
+      if (action.payload.clientId === selectedClient.id) {
+        return { ...selectedClient, latestStatus: action.payload.status };
+      }
+      return selectedClient;
+    case actions.USER_LOGOUT:
+      return null;
     default:
       return selectedClient;
   }

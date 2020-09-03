@@ -12,7 +12,7 @@ const {
   requireAdvanedSettingsClients,
   requireAttributeMappings,
   requireExistingStatus,
-  requireExistingClientId,
+  requireExistingClientId
 } = require("../validators/client-validators");
 
 const { handleErrors } = require("../middleware/handle-errors");
@@ -24,17 +24,19 @@ const {
   updateClient,
   deleteClient,
   addStatus,
+  getStatus,
   addMetadata,
   getAllMetadata,
   getMetadata,
   updateMetadata,
-  deleteMetadata,
+  deleteMetadata
 } = require("../controllers/clients-controllers");
+const { isAuth } = require("../util");
 
 var cors = require('cors')
 
 // GET CLIENTS
-router.get("/", getClients);
+router.get("/", isAuth, getClients);
 
 // CREATE CLIENT
 router.post(
@@ -44,8 +46,9 @@ router.post(
     requireGroupId,
     requireAdvanedSettingsClients,
     requireAttributeMappings,
-    requireUserId,
+    requireUserId
   ],
+  //isAuth,
   handleErrors,
   createClient
 );
@@ -54,6 +57,7 @@ router.post(
 router.get(
   "/:clientId",
   [requireExistingClientId],
+  isAuth,
   handleErrors,
   getClientById
 );
@@ -67,8 +71,9 @@ router.patch(
     requireAttributeMappings,
     requireUserId,
     requireClientName,
-    requireGroupId,
+    requireGroupId
   ],
+  isAuth,
   handleErrors,
   updateClient
 );
@@ -77,6 +82,7 @@ router.patch(
 router.delete(
   "/:clientId",
   [requireExistingClientId],
+  isAuth,
   handleErrors,
   deleteClient
 );
@@ -85,23 +91,33 @@ router.delete(
 router.post(
   "/:clientId/status",
   [requireExistingStatus, requireUserId, requireExistingClientId],
+  isAuth,
   handleErrors,
   addStatus
 );
 
+// GET STATUS
+router.get(
+  "/:clientId/status",
+  [requireExistingClientId],
+  isAuth,
+  handleErrors,
+  getStatus
+);
+
 // ADD METADATA
-router.post("/:clientId/metadata", upload.single("file"), addMetadata);
+router.post("/:clientId/metadata", upload.single("file"), isAuth, addMetadata);
 
 // GET METADATA FOR A CLIENT
-router.get("/:clientId/metadata", getAllMetadata);
+router.get("/:clientId/metadata", isAuth, getAllMetadata);
 
 // GET METADATA FOR A CLIENT BY METADATA NAME
 router.get("/metadata/:name", cors(), getMetadata);
 
 // EDIT METADATA
-router.patch("/:clientId/metadata/:metadataId", updateMetadata);
+router.patch("/:clientId/metadata/:metadataId", isAuth, updateMetadata);
 
 // DELETE METADATA
-router.delete("/:clientId/metadata/:metadataId", deleteMetadata);
+router.delete("/:clientId/metadata/:metadataId", isAuth, deleteMetadata);
 
 module.exports = router;

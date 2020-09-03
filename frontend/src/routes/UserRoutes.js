@@ -7,8 +7,9 @@ import GroupsPage from "../pages/GroupsPage";
 import GroupPage from "../pages/GroupPage";
 import ClientsPage from "../pages/ClientsPage";
 import AuthPage from "../pages/AuthPage";
+import ClientRequestCard from "../components/ClientRequestCard";
 
-const UserRoutes = () => {
+const UserRoutes = (props) => {
   return (
     <div>
       <Header />
@@ -24,6 +25,7 @@ const UserRoutes = () => {
           component={TestRoute}
         />
         <Route path="/clients" exact component={ClientsPage} />
+        <Route path="/clients/requests" exact component={ClientRequestCard} />
         <Redirect to="/" />
       </Switch>
     </div>
