@@ -41,6 +41,7 @@ CREATE TABLE groups(
 CREATE TABLE client_metadata(
     metadata_id uuid DEFAULT uuid_generate_v4(),
     type varchar(32),
+    name varchar(32),
     content TEXT,
     PRIMARY KEY(metadata_id)
 );

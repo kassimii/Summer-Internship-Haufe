@@ -181,7 +181,7 @@ function CreateClientModal({ id, createClient, getClients }) {
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="name">
               <Form.Label className="font-weight-bold">
-                <li>Name</li>
+                <div>Name</div>
               </Form.Label>
               <Form.Control
                 onChange={handleChange}
@@ -200,9 +200,9 @@ function CreateClientModal({ id, createClient, getClients }) {
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                    <li className="font-weight-bold">
+                    <div className="font-weight-bold">
                       Default settings and flags
-                    </li>
+                    </div>
                   </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="0">
@@ -265,13 +265,35 @@ function CreateClientModal({ id, createClient, getClients }) {
                       ) : (
                         <ListGroup>
                           {client.advancedSettingClients.map((setting) => (
-                            <ListGroup.Item
-                              key={setting.key}
-                              className="d-flex"
-                            >
-                              <span className="p-2">
-                                {setting.key} - {setting.value}
-                              </span>
+                            // <ListGroup.Item
+                            //   key={setting.key}
+                            //   // className="d-flex"
+                            // >
+                            //   {/* <span className="p-2" >
+                            //     {setting.key} 
+                            //   </span>
+                            //   <span className="p-2">
+                            //     {setting.value}
+                            //   </span> */}
+                            //   {/* <div class = "row-md-6"> */}
+                            //     <span class="col-md-4 " align="center"> {setting.key} </span>
+                            //     <span class="col-md-4 " align="center"> {setting.value} </span>
+                            // //   {/* </div>   */}
+                            //   <Button
+                            //     variant="outline-danger"
+                            //     className="ml-auto p-2"
+                            //     size="sm"
+                            //     value={setting.key}
+                            //     onClick={deleteSetting}
+                            //   >
+                            //     Delete
+                            //  </Button>
+                            // </ListGroup.Item>
+                            <div class = "row md-12 my-2 bg-light">
+                              <div class = "col md-4 pt-2">{setting.key}</div>
+                              <span class = "pt-2">-</span>
+                              <div class = "col md-4 pt-2">{setting.value}</div>
+                              <div class = "col md-4">
                               <Button
                                 variant="outline-danger"
                                 className="ml-auto p-2"
@@ -280,8 +302,10 @@ function CreateClientModal({ id, createClient, getClients }) {
                                 onClick={deleteSetting}
                               >
                                 Delete
-                              </Button>
-                            </ListGroup.Item>
+                             </Button> 
+                              </div>
+
+                            </div>  
                           ))}
                         </ListGroup>
                       )}
@@ -293,7 +317,7 @@ function CreateClientModal({ id, createClient, getClients }) {
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                    <li className="font-weight-bold">Attribute mapping</li>
+                    <div className="font-weight-bold">Attribute mapping</div>
                   </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
@@ -358,10 +382,12 @@ function CreateClientModal({ id, createClient, getClients }) {
                       ) : (
                         <ListGroup>
                           {client.attributeMappings.map((att) => (
-                            <ListGroup.Item key={att.key} className="d-flex">
-                              <span className="p-2">
-                                {att.key} - {att.value}
-                              </span>
+                           
+                               <div class = "row md-12 my-2 bg-light">
+                              <div class = "col md-4 pt-2">{att.key}</div>
+                              <span class = "pt-2">-</span>
+                              <div class = "col md-4 pt-2">{att.value}</div>
+                              <div class = "col md-4">
                               <Button
                                 variant="outline-danger"
                                 className="ml-auto p-2"
@@ -370,8 +396,11 @@ function CreateClientModal({ id, createClient, getClients }) {
                                 onClick={deleteAttribute}
                               >
                                 Delete
-                              </Button>
-                            </ListGroup.Item>
+                             </Button> 
+                              </div>
+
+                            </div>  
+                          
                           ))}
                         </ListGroup>
                       )}

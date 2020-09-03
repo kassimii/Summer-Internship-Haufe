@@ -1,6 +1,9 @@
+import axios from "axios";
 import Cookie from "js-cookie";
 
+
 import * as actions from "./types";
+
 
 export const getGroups = (sendRequest) => async (dispatch) => {
   const response = await sendRequest("/groups", "GET", null, {
@@ -140,3 +143,82 @@ export const signin = (email, sendRequest) => async (dispatch) => {
     dispatch({ type: actions.USER_SIGNIN_FAIL, payload: error.message });
   }
 };
+
+// export const uploadMetadata = (client, file) => async(dispatch) => {
+
+  // const js = JSON.stringify({file:file , client_id: id});
+
+  // const js
+  
+  // console.log(js);
+  // client.metadata.push(file);
+  // console.log('idk');
+  // dispatch({type: actions.UPLOAD_CLIENT_METADATA, payload: client});
+  // try{
+  // console.log('in upload meata');
+  // const response = await sendRequest(
+  //   `/clients/${id}/metadata`,
+  //   "POST",
+  //   file,
+  //   { "Content-Type": "application/json" }
+  // );
+  // dispatch({type: actions.UPLOAD_CLIENT_METADATA, payload: response});
+  
+  // } catch(err){
+  //   console.log(err);
+  // }
+
+  // console.log(file);
+ 
+//}
+
+export const uploadMetadata = (client, file) => async(dispatch) => {
+  const newClient = { ...client};
+  const js = JSON.stringify({file: file.file});
+  const id = client.id;
+  newClient.metadata.push(file);
+  
+  let formData = new FormData();
+  formData.append('file', file);
+
+  // console.log('adadadad',formData.values());
+  // for(let val of formData.values()){
+  //   console.log(val);
+  // }
+  try{
+    console.log('in upload meata');
+    await axios({
+      baseURL: 'http://localhost:5000',
+      url: `/api/clients/${id}/metadata`,
+      method: 'post',
+      data: formData,
+    })  
+  // dispatch({type: actions.UPLOAD_CLIENT_METADATA, payload: newClient });
+  } catch(err){
+    console.log(err);
+  }
+  dispatch({type: actions.UPLOAD_CLIENT_METADATA, payload: newClient });
+
+}
+
+export const getClientMetadata = async(name, sendRequest) => {
+
+  
+  try{
+    const download = require("downloadjs");
+
+    const response = await axios({
+      baseURL: 'http://localhost:5000',
+      url: `/api/clients/metadata/${name}`,
+      method: 'get'
+    }).then(response => response.data);  
+   
+    download(response, name);
+  } catch(err){
+    console.log(err);
+  }
+ 
+  
+  // dispatch({type: actions.UPLOAD_CLIENT_METADATA, payload: client });
+  
+}; 

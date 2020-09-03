@@ -98,6 +98,7 @@ const getClientById = async (req, res) => {
     const latestStatus = await models.Status.findByPk(
       client.clientStatuses[0].status_id
     );
+    client.metadata = getAllMetadata(client.id);
     const group = await models.Group.findByPk(client.group_id);
     var convertedClient = client.get({ plain: true });
     delete convertedClient.clientStatuses;
@@ -335,56 +336,104 @@ const addStatus = async (req, res) => {
   }
 };
 
-const addMetadata = async (req, res) => {
-  const clientId = req.params.clientId;
-  const metadata = req.body.content;
-  const type = req.body.type;
-  try {
-    if (req.body.content == undefined) {
-      return res.status(400).json({ error: [{ message: "File undefined" }] });
-    }
-    let client = await models.Client.findByPk(clientId);
-    if (!client) {
-      return res.status(400).json({ error: [{ message: "Wrong client id" }] });
-    }
-    const newMetadata = {
-      client_id: clientId,
-      type: type,
-      content: fs.readFileSync(
-        __basedir + "/resources/static/assets/uploads/" + req.file.filename
-      )
-    };
-    await models.Metadata.create(newMetadata);
-    client = await models.Client.findByPk(req.params.clientId, {
-      include: [
-        models.AdvancedSettingClient,
-        models.AttributeMapping,
-        {
-          model: models.ClientStatus,
-          order: [["creationDate", "DESC"]],
-          limit: 1
-        },
-        models.Metadata
-      ]
-    });
-    const latestStatus = await models.Status.findByPk(
-      client.clientStatuses[0].status_id
-    );
-    var convertedClient = client.get({ plain: true });
-    delete convertedClient.clientStatuses;
-    convertedClient.latestStatus = latestStatus;
-    return res.status(200).json({ client: convertedClient });
-  } catch (err) {
-    return res.status(404).json({ error: err });
-  }
-};
+// const addMetadata = async (req, res) => {
+//   const clientId = req.params.clientId;
+//   const metadata = req.body.content;
+//   const type = req.body.type;
+//   try {
+//     if (req.body.content == undefined) {
+//       return res.status(400).json({ error: [{ message: "File undefined" }] });
+//     }
+//     let client = await models.Client.findByPk(clientId);
+//     if (!client) {
+//       return res.status(400).json({ error: [{ message: "Wrong client id" }] });
+//     }
+//     const newMetadata = {
+//       client_id: clientId,
+//       type: type,
+//       content: fs.readFileSync(
+//         __basedir + "/resources/static/assets/uploads/" + req.file.filename
+//       )
+//     };
+//     await models.Metadata.create(newMetadata);
+//     client = await models.Client.findByPk(req.params.clientId, {
+//       include: [
+//         models.AdvancedSettingClient,
+//         models.AttributeMapping,
+//         {
+//           model: models.ClientStatus,
+//           order: [["creationDate", "DESC"]],
+//           limit: 1
+//         },
+//         models.Metadata
+//       ]
+//     });
+//     const latestStatus = await models.Status.findByPk(
+//       client.clientStatuses[0].status_id
+//     );
+//     var convertedClient = client.get({ plain: true });
+//     delete convertedClient.clientStatuses;
+//     convertedClient.latestStatus = latestStatus;
+//     return res.status(200).json({ client: convertedClient });
+//   } catch (err) {
+//     return res.status(404).json({ error: err });
+//   }
+// };
 
-const getAllMetadata = async (req, res) => {
-  res.status(400).json({ message: "got all metadata for client" });
+const addMetadata = async(req,res)=> {
+  
+const clientId = req.params.clientId;
+
+  try {
+    console.log(req.file);
+
+    if(req.file == undefined){
+        return res.send('You must send a file');
+    }
+
+    const result = await models.Metadata.create({
+        client_id: clientId,
+        type: req.file.mimetype,
+        name : req.file.originalname,
+        content: req.file.path,
+    });
+
+    return res.send('File has been uploaded');
+}catch(err){
+    console.log(err);
+    return res.status(404).json({ error: err });
+}  
+
+}
+
+const getAllMetadata = async (id) => {
+ 
+  
+  try{
+  const result = await models.Metadata.findAll({
+    where: {
+      client_id: clientId
+    }
+  });
+ return result;
+}catch(err){
+  return res.status(400).json({ error: err });
+}
+  
+
+  // res.status(400).json({ message: "got all metadata for client" });
 };
 
 const getMetadata = async (req, res) => {
-  res.status(400).json({ message: "got metadata by id for client " });
+  const dataName = req.params.name;
+  
+    res.setHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Credentials", "true");
+		res.setHeader("Access-Control-Max-Age", "1800");
+		res.setHeader("Access-Control-Allow-Headers", "content-type");
+		res.setHeader("Access-Control-Allow-Methods","PUT, POST, GET, DELETE, PATCH, OPTIONS");
+  res.download(`./uploads/${dataName}`);
+  // res.status(400).json({ message: "got metadata by id for client " });
 };
 
 const updateMetadata = async (req, res) => {

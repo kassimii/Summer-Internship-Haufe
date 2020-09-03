@@ -12,6 +12,9 @@ module.exports = {
         client_id: {
           type: Sequelize.UUID
         },
+        name: {
+          type: Sequelize.STRING(32)
+        },
         type: {
           type: Sequelize.STRING(32)
         },
