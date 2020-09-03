@@ -6,7 +6,7 @@ import { useHttpClient } from "../hooks/http-hook";
 function AuthPage(props) {
   const { user, signin } = props;
   const [jwtKey, setJwtKey] = useState(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJBbGV4YW5kcnUiLCJsYXN0TmFtZSI6IlJvdGFyaXUiLCJlbWFpbCI6InJvdGFyaXVhbGV4MTBAZ21haWwuY29tIiwiY2xhaW1zIjpbImNsYWltMyIsImNsYWltNCJdfQ.il4F2Qbe8IFOX7agBqQ6Y1_Vgs-xEEiJ4Zbu6c35-G4"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJBbGV4YW5kcnUiLCJsYXN0TmFtZSI6IlJvdGFyaXUiLCJlbWFpbCI6InJvdGFyaXVhbGV4MTBAZ21haWwuY29tIiwiY2xhaW1zIjpbImNsYWltMSIsImNsYWltNCJdfQ.1f1Y2yuFXA1ImId0KZndNHfSuJgHO1ROltUNhvxBGvI"
   );
   const { sendRequest } = useHttpClient();
 

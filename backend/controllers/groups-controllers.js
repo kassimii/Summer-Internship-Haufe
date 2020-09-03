@@ -53,8 +53,22 @@ const deleteGroup = async (req, res) => {
 const getGroups = async (req, res) => {
   let groups;
   try {
+    let accesibileClaims = await models.Claim.findAll({
+      where: { claim: { [Op.in]: req.user.claims } }
+    });
+    accesibileClaims = accesibileClaims.map((claim) => claim.group_id);
+    if (accesibileClaims.length === 0) {
+      res.status(401).json({ message: "Bad Claims" });
+    }
+    let accesibileGroupsIds = await models.Group.findAll({
+      where: { id: { [Op.in]: accesibileClaims } }
+    });
+    accesibileGroupsIds = accesibileGroupsIds.map((group) => group.id);
     groups = await models.Group.findAll({
-      include: [models.Claim, models.AdvancedSetting]
+      include: [models.Claim, models.AdvancedSetting],
+      where: {
+        id: { [Op.in]: accesibileGroupsIds }
+      }
     });
 
     return res.status(200).json({ groups });

@@ -6,6 +6,13 @@ export default (selectedClient = null, action) => {
       return action.payload.client;
     case actions.CLEAR_CLIENT:
       return null;
+    case actions.GET_STATUS:
+      if (action.payload.clientId === selectedClient.id) {
+        return { ...selectedClient, latestStatus: action.payload.status };
+      }
+      return selectedClient;
+    case actions.USER_LOGOUT:
+      return null;
     default:
       return selectedClient;
   }

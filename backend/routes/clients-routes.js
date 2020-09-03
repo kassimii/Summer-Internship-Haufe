@@ -11,7 +11,7 @@ const {
   requireAdvanedSettingsClients,
   requireAttributeMappings,
   requireExistingStatus,
-  requireExistingClientId,
+  requireExistingClientId
 } = require("../validators/client-validators");
 
 const { handleErrors } = require("../middleware/handle-errors");
@@ -28,7 +28,7 @@ const {
   getAllMetadata,
   getMetadata,
   updateMetadata,
-  deleteMetadata,
+  deleteMetadata
 } = require("../controllers/clients-controllers");
 const { isAuth } = require("../util");
 
@@ -43,7 +43,7 @@ router.post(
     requireGroupId,
     requireAdvanedSettingsClients,
     requireAttributeMappings,
-    requireUserId,
+    requireUserId
   ],
   //isAuth,
   handleErrors,
@@ -68,7 +68,7 @@ router.patch(
     requireAttributeMappings,
     requireUserId,
     requireClientName,
-    requireGroupId,
+    requireGroupId
   ],
   isAuth,
   handleErrors,
@@ -88,7 +88,7 @@ router.delete(
 router.post(
   "/:clientId/status",
   [requireExistingStatus, requireUserId, requireExistingClientId],
-  //isAuth,
+  isAuth,
   handleErrors,
   addStatus
 );
@@ -97,7 +97,7 @@ router.post(
 router.get(
   "/:clientId/status",
   [requireExistingClientId],
-  //isAuth,
+  isAuth,
   handleErrors,
   getStatus
 );
