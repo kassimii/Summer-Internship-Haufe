@@ -14,9 +14,11 @@ import {
   Table,
   Form,
 } from "react-bootstrap";
+import ClientUpdateModal  from "./ClientUpdateModal";
+import CreateClientModal from "./ClientCreateModal";
+
 import { store } from "../redux/store";
 
-import { useHttpClient } from "../hooks/http-hook";
 
 import "./scrollbar.css";
 import { useHttpClient } from "../hooks/http-hook";
@@ -232,7 +234,11 @@ function ClientDetails({
       getStatus(sendRequest);
     });
   };
-
+  
+  const handleEditClick = () => {
+    
+    return <CreateClientModal />;
+  }
   return (
     <>
       <MDBContainer>
@@ -264,7 +270,7 @@ function ClientDetails({
                   <Row>
                     <div className="d-flex float-left m-2 col-mb-6">
                       <ButtonGroup aria-label="Client actions">
-                        <Button variant="secondary">Edit</Button>
+                        <ClientUpdateModal id={selectedClient.id} />
                         <Button
                           variant="secondary"
                           onClick={handlePublishClick}

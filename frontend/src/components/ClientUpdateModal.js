@@ -36,7 +36,7 @@ const initialErrors = {
     attribute: { empty: false, exists: false }
 }
 
-function CreateClientModal({
+function ClientUpdateModal({
     id,
     editClient,
     getClient,
@@ -173,8 +173,8 @@ const deleteAttribute = (event) => {
 
 return(
     <>
-    <Button variant="primary" onClick={handleShow}>
-        Update Client
+    <Button variant="secondary" onClick={handleShow}>
+        Edit
     </Button>
 
     <Modal
@@ -416,4 +416,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     editClient,
     getClient
-})(CreateClientModal);
+})(ClientUpdateModal);
