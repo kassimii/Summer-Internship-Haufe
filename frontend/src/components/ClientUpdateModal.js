@@ -1,110 +1,93 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import {
-    Modal,
-    InputGroup,
-    FormControl,
-    Form, 
-    ListGroup,
-    Card,
-    Alert,
-    Button,
-    Accordion
+  Modal,
+  InputGroup,
+  FormControl,
+  Form,
+  ListGroup,
+  Card,
+  Alert,
+  Button,
+  Accordion,
 } from "react-bootstrap";
 
-import {store} from "../redux/store";
-//import {useHttpClient} from "../hooks/http-hook";
-
-import {
-    editClient,
-    getClient
-} from "../redux/actions/index";
-
-//const { sendRequest } = useHttpClient();
+import { editClient, getClient } from "../redux/actions/index";
 
 const initialClient = {
-    name: "",
-    group_id: "",
-    user_id: "",
-    advancedSettings: [],
-    attribute: []
+  name: "",
+  group_id: "",
+  user_id: "",
+  advancedSettings: [],
+  attribute: [],
 };
 
 const initialErrors = {
-    name: false,
-    setting: { empty: false, exists: false },
-    attribute: { empty: false, exists: false }
-}
+  name: false,
+  setting: { empty: false, exists: false },
+  attribute: { empty: false, exists: false },
+};
 
-function ClientUpdateModal({
-    id,
-    editClient,
-    getClient,
-    currentClient
-}) {
- 
-const [modalShow, setModalShow] = useState(false);
-const [client, setClient] = useState(initialClient);
-const [errors, setErrors] = useState(initialErrors);
-const [currentSetting, setCurrentSetting] = useState({
+function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
+  const [modalShow, setModalShow] = useState(false);
+  const [client, setClient] = useState(initialClient);
+  const [errors, setErrors] = useState(initialErrors);
+  const [currentSetting, setCurrentSetting] = useState({
     key: "",
-    value: ""
+    value: "",
   });
-const [currentAttribute, setCurrentAttribute] = useState({
+  const [currentAttribute, setCurrentAttribute] = useState({
     key: "",
-    value: ""
-});  
+    value: "",
+  });
 
-
-useEffect(() => {
-    console.log(currentClient);
+  useEffect(() => {
     if (modalShow && currentClient && id === currentClient.id) {
       setClient(currentClient);
     }
-}, [currentClient, modalShow, id]);
+  }, [currentClient, modalShow, id]);
 
   useEffect(() => {
-    console.log(currentClient);
     if (id && modalShow) {
       getClient(id);
     }
-  }, [modalShow, id, getClient]);
+  }, [modalShow, id, getClient, currentClient]);
 
-const handleClose = () => {
+  const handleClose = () => {
     setClient(initialClient);
     setModalShow(false);
-};
+  };
 
-const handleShow = () => {
+  const handleShow = () => {
     setModalShow(true);
-};
+  };
 
-const handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    if(clientInformation.name == ""){
-        setErrors({ ...errors, name:true});
-        return;
+    if (clientInformation.name === "") {
+      setErrors({ ...errors, name: true });
+      return;
     }
-    if(!id){
+    if (!id) {
       editClient(client);
-    }else{
-        setErrors({ ...errors, id:true});
-        return;
+    } else {
+      setErrors({ ...errors, id: true });
+      return;
     }
-};
-function handleChange({ target }) {
+  };
+  function handleChange({ target }) {
     if (target.name === "name") {
       setErrors({ ...errors, name: false });
       setClient({ ...client, [target.name]: target.value });
     } else {
       setClient({
         ...client,
-        [target.name]: [...client[target.name], target.value]
+        [target.name]: [...client[target.name], target.value],
       });
     }
-};
+  }
 
-const handleSetting = () => {
+  const handleSetting = () => {
     let fieldExists = false;
     if (currentSetting.key === "" || currentSetting.value === "") {
       setErrors({ ...errors, setting: { empty: true, exists: false } });
@@ -123,19 +106,19 @@ const handleSetting = () => {
     }
     setErrors({ ...errors, setting: { empty: false, exists: false } });
     handleChange({
-      target: { name: "advancedSettings", value: currentSetting }
+      target: { name: "advancedSettings", value: currentSetting },
     });
     setCurrentSetting({ key: "", value: "" });
   };
 
-const deleteSetting = (event) => {
+  const deleteSetting = (event) => {
     let newSettings = client.advancedSettings.filter((setting) => {
       return setting.key !== event.target.value;
     });
     setClient({ ...client, advancedSettings: newSettings });
   };
 
-const handleAttribute = () => {
+  const handleAttribute = () => {
     let fieldExists = false;
     if (currentAttribute.key === "" || currentAttribute.value === "") {
       setErrors({ ...errors, attribute: { empty: true, exists: false } });
@@ -154,44 +137,39 @@ const handleAttribute = () => {
     }
     setErrors({ ...errors, attribute: { empty: false, exists: false } });
     handleChange({
-      target: { name: "attribute", value: currentAttribute }
+      target: { name: "attribute", value: currentAttribute },
     });
     setCurrentAttribute({ key: "", value: "" });
   };
 
-
-const deleteAttribute = (event) => {
+  const deleteAttribute = (event) => {
     let newAttribute = client.attribute.filter((att) => {
       return att.key !== event.target.value;
     });
     setClient({ ...client, attribute: newAttribute });
   };
 
-
-
-
-
-return(
+  return (
     <>
-    <Button variant="secondary" onClick={handleShow}>
+      <Button variant="secondary" onClick={handleShow}>
         Edit
-    </Button>
+      </Button>
 
-    <Modal
-        onHide = {handleClose}
+      <Modal
+        onHide={handleClose}
         show={modalShow}
         aria-labelledby="contained-modal-title-vcenter"
         centered
-        >
+      >
         <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-            Provide info for new Client
+          <Modal.Title id="contained-modal-title-vcenter">
+            Update client
           </Modal.Title>
-        </Modal.Header>     
+        </Modal.Header>
 
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="name">
+            <Form.Group controlId="name">
               <Form.Label className="font-weight-bold">
                 <li>Name</li>
               </Form.Label>
@@ -208,8 +186,8 @@ return(
               </Form.Control.Feedback>
             </Form.Group>
             <Accordion>
-               {/* AdvancedSettings  */}
-            <Card>
+              {/* AdvancedSettings  */}
+              <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
                     <li className="font-weight-bold">
@@ -229,7 +207,7 @@ return(
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
@@ -244,7 +222,7 @@ return(
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
@@ -301,13 +279,11 @@ return(
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>
-                {/* Attribute Mapping */}
+              {/* Attribute Mapping */}
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                    <li className="font-weight-bold">
-                      Attribute mapping
-                    </li>
+                    <li className="font-weight-bold">Attribute mapping</li>
                   </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
@@ -322,7 +298,7 @@ return(
                           onChange={(event) =>
                             setCurrentAttribute({
                               ...currentAttribute,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
@@ -337,7 +313,7 @@ return(
                           onChange={(event) =>
                             setCurrentAttribute({
                               ...currentAttribute,
-                              [event.target.name]: event.target.value.trim()
+                              [event.target.name]: event.target.value.trim(),
                             })
                           }
                           isInvalid={
@@ -370,10 +346,7 @@ return(
                       ) : (
                         <ListGroup>
                           {client.attribute.map((att) => (
-                            <ListGroup.Item
-                              key={att.key}
-                              className="d-flex"
-                            >
+                            <ListGroup.Item key={att.key} className="d-flex">
                               <span className="p-2">
                                 {att.key} - {att.value}
                               </span>
@@ -394,26 +367,24 @@ return(
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>
-            </Accordion>   
+            </Accordion>
             <Modal.Footer>
-            <Button type="submit" className="btn btn-primary">
+              <Button type="submit" className="btn btn-primary">
                 Update
-             </Button>
-            </Modal.Footer>     
-          </Form>    
+              </Button>
+            </Modal.Footer>
+          </Form>
         </Modal.Body>
-      </Modal>  
+      </Modal>
     </>
-);
-
+  );
 }
 
 const mapStateToProps = (state) => {
-    return { currentClient: state.client };
+  return { currentClient: state.client };
 };
-  
 
 export default connect(mapStateToProps, {
-    editClient,
-    getClient
+  editClient,
+  getClient,
 })(ClientUpdateModal);

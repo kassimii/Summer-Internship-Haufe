@@ -1,16 +1,15 @@
 import axios from "axios";
 import Cookie from "js-cookie";
 
-
 import * as actions from "./types";
 
 export const getGroups = (sendRequest) => async (dispatch, getState) => {
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     const response = await sendRequest("/groups", "GET", null, {
-      Authorization: "Bearer " + userInfo.token
+      Authorization: "Bearer " + userInfo.token,
     });
     dispatch({ type: actions.GET_GROUPS, payload: response });
   } catch (err) {
@@ -21,10 +20,10 @@ export const getGroups = (sendRequest) => async (dispatch, getState) => {
 export const getGroup = (id, sendRequest) => async (dispatch, getState) => {
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     const response = await sendRequest(`/groups/${id}`, "GET", null, {
-      Authorization: "Bearer " + userInfo.token
+      Authorization: "Bearer " + userInfo.token,
     });
     dispatch({ type: actions.GET_GROUP, payload: response });
   } catch (err) {
@@ -39,7 +38,7 @@ export const editGroup = (formValues, sendRequest) => async (
   let response;
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     response = await sendRequest(
       `/groups/${formValues.id}`,
@@ -47,7 +46,7 @@ export const editGroup = (formValues, sendRequest) => async (
       JSON.stringify(formValues),
       {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + userInfo.token
+        Authorization: "Bearer " + userInfo.token,
       }
     );
     dispatch({ type: actions.EDIT_GROUP, payload: response });
@@ -63,7 +62,7 @@ export const createGroup = (formValues, sendRequest) => async (
   let response;
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     response = await sendRequest(
       `/groups`,
@@ -71,7 +70,7 @@ export const createGroup = (formValues, sendRequest) => async (
       JSON.stringify(formValues),
       {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + userInfo.token
+        Authorization: "Bearer " + userInfo.token,
       }
     );
     dispatch({ type: actions.CREATE_GROUP, payload: response });
@@ -83,10 +82,10 @@ export const createGroup = (formValues, sendRequest) => async (
 export const deleteGroup = (id, sendRequest) => async (dispatch, getState) => {
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     const response = await sendRequest(`/groups/${id}`, "DELETE", null, {
-      Authorization: "Bearer " + userInfo.token
+      Authorization: "Bearer " + userInfo.token,
     });
     dispatch({ type: actions.DELETE_GROUP, payload: response });
   } catch (err) {
@@ -104,7 +103,7 @@ export const createClient = (formValues, sendRequest) => async (
 ) => {
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     const response = await sendRequest(
       `/clients`,
@@ -112,7 +111,7 @@ export const createClient = (formValues, sendRequest) => async (
       JSON.stringify(formValues),
       {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + userInfo.token
+        Authorization: "Bearer " + userInfo.token,
       }
     );
     dispatch({ type: actions.CREATE_CLIENT, payload: response });
@@ -128,7 +127,7 @@ export const editClient = (formValues, sendRequest) => async (
   let response;
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     response = await sendRequest(
       `/clients/${formValues.id}`,
@@ -136,7 +135,7 @@ export const editClient = (formValues, sendRequest) => async (
       JSON.stringify(formValues),
       {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + userInfo.token
+        Authorization: "Bearer " + userInfo.token,
       }
     );
     dispatch({ type: actions.EDIT_CLIENT, payload: response });
@@ -148,10 +147,10 @@ export const editClient = (formValues, sendRequest) => async (
 export const getClient = (id, sendRequest) => async (dispatch, getState) => {
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     const response = await sendRequest(`/clients/${id}`, "GET", null, {
-      Authorization: "Bearer " + userInfo.token
+      Authorization: "Bearer " + userInfo.token,
     });
     dispatch({ type: actions.GET_CLIENT, payload: response });
   } catch (err) {
@@ -165,14 +164,14 @@ export const getClients = (sendRequest, query, page, limit) => async (
 ) => {
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     const response = await sendRequest(
       `/clients?page=${page}&limit=${limit}` + query,
       "GET",
       null,
       {
-        Authorization: "Bearer " + userInfo.token
+        Authorization: "Bearer " + userInfo.token,
       }
     );
     dispatch({ type: actions.GET_CLIENTS, payload: response });
@@ -184,10 +183,10 @@ export const getClients = (sendRequest, query, page, limit) => async (
 export const deleteClient = (id, sendRequest) => async (dispatch, getState) => {
   try {
     const {
-      userSignIn: { userInfo }
+      userSignIn: { userInfo },
     } = getState();
     const response = await sendRequest(`/clients/${id}`, "DELETE", null, {
-      Authorization: "Bearer " + userInfo.token
+      Authorization: "Bearer " + userInfo.token,
     });
     dispatch({ type: actions.DELETE_CLIENT, payload: response });
   } catch (err) {
@@ -207,7 +206,7 @@ export const signin = (jwtKey, sendRequest) => async (dispatch) => {
       "POST",
       JSON.stringify({ jwtKey }),
       {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       }
     );
     dispatch({ type: actions.USER_SIGNIN_SUCCESS, payload: user });
@@ -218,51 +217,43 @@ export const signin = (jwtKey, sendRequest) => async (dispatch) => {
   }
 };
 
-
-export const uploadMetadata = (client, file) => async(dispatch) => {
-  const newClient = { ...client};
-  const js = JSON.stringify({file: file.file});
+export const uploadMetadata = (client, file) => async (dispatch) => {
+  const newClient = { ...client };
+  const js = JSON.stringify({ file: file.file });
   const id = client.id;
   newClient.metadata.push(file);
-  
-  let formData = new FormData();
-  formData.append('file', file);
 
-  
-  try{
-    console.log('in upload meata');
+  let formData = new FormData();
+  formData.append("file", file);
+
+  try {
     await axios({
-      baseURL: 'http://localhost:5000',
+      baseURL: "http://localhost:5000",
       url: `/api/clients/${id}/metadata`,
-      method: 'post',
+      method: "post",
       data: formData,
-    }) 
-  } catch(err){
+    });
+  } catch (err) {
     console.log(err);
   }
-  dispatch({type: actions.UPLOAD_CLIENT_METADATA, payload: newClient });
+  dispatch({ type: actions.UPLOAD_CLIENT_METADATA, payload: newClient });
+};
 
-}
-
-export const getClientMetadata = async(name, sendRequest) => {
-
-  
-  try{
+export const getClientMetadata = async (name, sendRequest) => {
+  try {
     const download = require("downloadjs");
 
     const response = await axios({
-      baseURL: 'http://localhost:5000',
+      baseURL: "http://localhost:5000",
       url: `/api/clients/metadata/${name}`,
-      method: 'get'
-    }).then(response => response.data);  
-   
+      method: "get",
+    }).then((response) => response.data);
+
     download(response, name);
-  } catch(err){
+  } catch (err) {
     console.log(err);
   }
- 
-  
-}; 
+};
 export const logout = () => (dispatch) => {
   Cookie.remove("userInfo");
   dispatch({ type: actions.USER_LOGOUT });
@@ -275,7 +266,7 @@ export const addStatus = (userId, status, sendRequest) => async (
   try {
     const {
       userSignIn: { userInfo },
-      selectedClient
+      selectedClient,
     } = getState();
     const data = { userId, status };
 
@@ -285,7 +276,7 @@ export const addStatus = (userId, status, sendRequest) => async (
       JSON.stringify(data),
       {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + userInfo.token
+        Authorization: "Bearer " + userInfo.token,
       }
     );
 
@@ -299,14 +290,14 @@ export const getStatus = (sendRequest) => async (dispatch, getState) => {
   try {
     const {
       userSignIn: { userInfo },
-      selectedClient: { id }
+      selectedClient: { id },
     } = getState();
     const response = await sendRequest(`/clients/${id}/status`, "GET", null, {
-      Authorization: "Bearer " + userInfo.token
+      Authorization: "Bearer " + userInfo.token,
     });
     dispatch({
       type: actions.GET_STATUS,
-      payload: { clientId: id, ...response }
+      payload: { clientId: id, ...response },
     });
   } catch (err) {
     console.log(err);

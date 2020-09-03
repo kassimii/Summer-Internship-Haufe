@@ -265,47 +265,22 @@ function CreateClientModal({ id, createClient, getClients, user }) {
                       ) : (
                         <ListGroup>
                           {client.advancedSettingClients.map((setting) => (
-                            // <ListGroup.Item
-                            //   key={setting.key}
-                            //   // className="d-flex"
-                            // >
-                            //   {/* <span className="p-2" >
-                            //     {setting.key} 
-                            //   </span>
-                            //   <span className="p-2">
-                            //     {setting.value}
-                            //   </span> */}
-                            //   {/* <div class = "row-md-6"> */}
-                            //     <span class="col-md-4 " align="center"> {setting.key} </span>
-                            //     <span class="col-md-4 " align="center"> {setting.value} </span>
-                            // //   {/* </div>   */}
-                            //   <Button
-                            //     variant="outline-danger"
-                            //     className="ml-auto p-2"
-                            //     size="sm"
-                            //     value={setting.key}
-                            //     onClick={deleteSetting}
-                            //   >
-                            //     Delete
-                            //  </Button>
-                            // </ListGroup.Item>
-                            <div class = "row md-12 my-2 bg-light">
-                              <div class = "col md-4 pt-2">{setting.key}</div>
-                              <span class = "pt-2">-</span>
-                              <div class = "col md-4 pt-2">{setting.value}</div>
-                              <div class = "col md-4">
-                              <Button
-                                variant="outline-danger"
-                                className="ml-auto p-2"
-                                size="sm"
-                                value={setting.key}
-                                onClick={deleteSetting}
-                              >
-                                Delete
-                             </Button> 
+                            <div class="row md-12 my-2 bg-light">
+                              <div class="col md-4 pt-2">{setting.key}</div>
+                              <span class="pt-2">-</span>
+                              <div class="col md-4 pt-2">{setting.value}</div>
+                              <div class="col md-4">
+                                <Button
+                                  variant="outline-danger"
+                                  className="ml-auto p-2"
+                                  size="sm"
+                                  value={setting.key}
+                                  onClick={deleteSetting}
+                                >
+                                  Delete
+                                </Button>
                               </div>
-
-                            </div>  
+                            </div>
                           ))}
                         </ListGroup>
                       )}
@@ -382,25 +357,22 @@ function CreateClientModal({ id, createClient, getClients, user }) {
                       ) : (
                         <ListGroup>
                           {client.attributeMappings.map((att) => (
-                           
-                               <div class = "row md-12 my-2 bg-light">
-                              <div class = "col md-4 pt-2">{att.key}</div>
-                              <span class = "pt-2">-</span>
-                              <div class = "col md-4 pt-2">{att.value}</div>
-                              <div class = "col md-4">
-                              <Button
-                                variant="outline-danger"
-                                className="ml-auto p-2"
-                                size="sm"
-                                value={att.key}
-                                onClick={deleteAttribute}
-                              >
-                                Delete
-                             </Button> 
+                            <div class="row md-12 my-2 bg-light">
+                              <div class="col md-4 pt-2">{att.key}</div>
+                              <span class="pt-2">-</span>
+                              <div class="col md-4 pt-2">{att.value}</div>
+                              <div class="col md-4">
+                                <Button
+                                  variant="outline-danger"
+                                  className="ml-auto p-2"
+                                  size="sm"
+                                  value={att.key}
+                                  onClick={deleteAttribute}
+                                >
+                                  Delete
+                                </Button>
                               </div>
-
-                            </div>  
-                          
+                            </div>
                           ))}
                         </ListGroup>
                       )}

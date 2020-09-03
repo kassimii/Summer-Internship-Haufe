@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { MDBContainer } from "mdbreact";
 import { connect } from "react-redux";
-import { getClient, uploadMetadata, getClientMetadata,addStatus, getStatus} from "../redux/actions";
+import {
+  getClient,
+  uploadMetadata,
+  getClientMetadata,
+  addStatus,
+  getStatus,
+} from "../redux/actions";
 import {
   Row,
   Col,
@@ -14,11 +20,9 @@ import {
   Table,
   Form,
 } from "react-bootstrap";
-import ClientUpdateModal  from "./ClientUpdateModal";
-import CreateClientModal from "./ClientCreateModal";
+import ClientUpdateModal from "./ClientUpdateModal";
 
 import { store } from "../redux/store";
-
 
 import "./scrollbar.css";
 import { useHttpClient } from "../hooks/http-hook";
@@ -29,20 +33,13 @@ function ClientDetails({
   currentStatus,
   addStatus,
   getStatus,
-  uploadMetadata
+  uploadMetadata,
 }) {
   const { sendRequest } = useHttpClient();
-
 
   useEffect(() => {
     setKey("advancedSetings");
   }, [selectedClient]);
-
-
-  // useEffect(()=> {
-  //   console.log("s-a bagat meatda");
-  //   console.log(selectedClient.metadata);
-  // }, [selectedClient.metadata]);
 
   const [activeKey, setKey] = useState("advancedSetings");
   if (!selectedClient) {
@@ -121,88 +118,78 @@ function ClientDetails({
     }
   };
 
-  const handleAttachFile = e => {
+  const handleAttachFile = (e) => {
+    for (let file of e.target.files) {
+      uploadMetadata(selectedClient, file);
+    }
+    //getClientMetadata(selectedClient, sendRequest);
+  };
 
-    for(let file of e.target.files)
-      {
-        uploadMetadata(selectedClient, file);
-      }  
-     //getClientMetadata(selectedClient, sendRequest); 
-};
-
-  const handleDownloadFile = (e,name) => {
-      // const name = "start.sh";
-      getClientMetadata( name, sendRequest);
-      console.log(name);
-  }
+  const handleDownloadFile = (e, name) => {
+    // const name = "start.sh";
+    getClientMetadata(name, sendRequest);
+    console.log(name);
+  };
 
   const renderMetadataDownload = () => {
     // if (selectedClient.metadata !== 0)
     // {
-    if(selectedClient.metadata.length === 0 ){
-    return (
-      <Card>
-        <Card.Body>
-          <Row>
-            <Col xs={6}>
-              <div className="d-flex float-centre m-2 col-mb-6">
-                {/* <Button variant="success"> Download SP</Button> */}
-                <Form.Group>
-                   <Form.File.Input multiple onChange = {handleAttachFile}/>
-                </Form.Group>  
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={6}>
-              {/* <div className="d-flex float-centre m-2 col-mb-6">
-                <Button variant="success"> Download IDP </Button>
-              </div> */}
-               <div>No file uploaded</div>
-              
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-    );
-      }
-    else {
-
-      return(
+    if (selectedClient.metadata.length === 0) {
+      return (
         <Card>
-        <Card.Body>
-          <Row>
-            <Col xs={6}>
-              <div className="d-flex float-centre m-2 col-mb-6">
-                {/* <Button variant="success"> Download SP</Button> */}
-                <Form.Group>
-                   <Form.File.Input multiple onChange = {handleAttachFile}/>
-                </Form.Group>  
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={6}>
-              {/* <div className="d-flex float-centre m-2 col-mb-6">
-                <Button variant="success"> Download IDP </Button>
-              </div> */}
-                  <ul>
-                {selectedClient.metadata.map((meta) => {
-                  return (
-                       <a onClick = {(e) =>  handleDownloadFile(e, meta.name)} href= "#" >
-                         <li> {meta.name} </li>
-                       </a>
-                  );
-                })}
-                </ul>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+          <Card.Body>
+            <Row>
+              <Col xs={6}>
+                <div className="d-flex float-centre m-2 col-mb-6">
+                  <Form.Group>
+                    <Form.File.Input multiple onChange={handleAttachFile} />
+                  </Form.Group>
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={6}>
+                <div>No file uploaded</div>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
       );
-      
+    } else {
+      return (
+        <Card>
+          <Card.Body>
+            <Row>
+              <Col xs={6}>
+                <div className="d-flex float-centre m-2 col-mb-6">
+                  <Form.Group>
+                    <Form.File.Input multiple onChange={handleAttachFile} />
+                  </Form.Group>
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={6}>
+                <ul>
+                  {selectedClient.metadata.map((meta) => {
+                    return (
+                      <a
+                        key={meta.name}
+                        onClick={(e) => handleDownloadFile(e, meta.name)}
+                        href="#"
+                      >
+                        <li> {meta.name} </li>
+                      </a>
+                    );
+                  })}
+                </ul>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+      );
     }
-    
+
     // }
   };
 
@@ -234,11 +221,7 @@ function ClientDetails({
       getStatus(sendRequest);
     });
   };
-  
-  const handleEditClick = () => {
-    
-    return <CreateClientModal />;
-  }
+
   return (
     <>
       <MDBContainer>
