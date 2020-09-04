@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ListGroup, Pagination } from "react-bootstrap";
+import { ListGroup, Pagination, Button } from "react-bootstrap";
 import { connect } from "react-redux";
 import { getClient, getClients } from "../redux/actions";
 import { useHttpClient } from "../hooks/http-hook";
@@ -41,11 +41,15 @@ const ClientsList = ({ getClient, getClients, clients, selectedClient }) => {
             clients.clients.map((client) => {
               return (
                 <ListGroup.Item
+                  as={Button}
                   key={client.id}
-                  action
-                  variant="primary"
+                  variant={
+                    selectedClient && selectedClient.id === client.id
+                      ? "primary"
+                      : "dark"
+                  }
                   onClick={() => getClient(client.id, sendRequest)}
-                  className="btn-block "
+                  className="btn btn-block"
                 >
                   {client.name}
                 </ListGroup.Item>
@@ -69,5 +73,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   getClients,
-  getClient,
+  getClient
 })(ClientsList);

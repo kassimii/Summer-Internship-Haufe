@@ -9,49 +9,56 @@ import {
   Card,
   Alert,
   Button,
-  Accordion,
+  Accordion
 } from "react-bootstrap";
 
-import { editClient, getClient } from "../redux/actions/index";
-
-const initialClient = {
-  name: "",
-  group_id: "",
-  user_id: "",
-  advancedSettings: [],
-  attribute: [],
-};
+import { store } from "../redux/store";
+import { useHttpClient } from "../hooks/http-hook";
+import { editClient, getClient, getClients } from "../redux/actions/index";
 
 const initialErrors = {
   name: false,
   setting: { empty: false, exists: false },
-  attribute: { empty: false, exists: false },
+  attribute: { empty: false, exists: false }
 };
 
-function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
+function ClientUpdateModal({
+  id,
+  editClient,
+  getClient,
+  getClients,
+  selectedClient
+}) {
+  const initialClient = {
+    name: "",
+    group_id: "",
+    createdBy: "",
+    advancedSettingClients: [],
+    attributeMappings: []
+  };
   const [modalShow, setModalShow] = useState(false);
-  const [client, setClient] = useState(initialClient);
+  const [client, setClient] = useState(selectedClient);
   const [errors, setErrors] = useState(initialErrors);
   const [currentSetting, setCurrentSetting] = useState({
     key: "",
-    value: "",
+    value: ""
   });
+  const { sendRequest } = useHttpClient();
   const [currentAttribute, setCurrentAttribute] = useState({
     key: "",
-    value: "",
+    value: ""
   });
-
   useEffect(() => {
-    if (modalShow && currentClient && id === currentClient.id) {
-      setClient(currentClient);
+    if (modalShow && selectedClient && id === selectedClient.id) {
+      setClient(selectedClient);
     }
-  }, [currentClient, modalShow, id]);
+  }, [selectedClient, modalShow, id]);
 
   useEffect(() => {
     if (id && modalShow) {
-      getClient(id);
+      getClient(id, sendRequest);
     }
-  }, [modalShow, id, getClient, currentClient]);
+  }, [modalShow, id, getClient, sendRequest]);
 
   const handleClose = () => {
     setClient(initialClient);
@@ -64,16 +71,21 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (clientInformation.name === "") {
+    if (client.name === "") {
       setErrors({ ...errors, name: true });
       return;
     }
-    if (!id) {
-      editClient(client);
+    if (id) {
+      editClient(client, sendRequest);
     } else {
       setErrors({ ...errors, id: true });
       return;
     }
+    const unsubscribe = store.subscribe(() => {
+      unsubscribe();
+      getClients(sendRequest, "", 1, 15);
+      handleClose();
+    });
   };
   function handleChange({ target }) {
     if (target.name === "name") {
@@ -82,7 +94,7 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
     } else {
       setClient({
         ...client,
-        [target.name]: [...client[target.name], target.value],
+        [target.name]: [...client[target.name], target.value]
       });
     }
   }
@@ -93,7 +105,7 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
       setErrors({ ...errors, setting: { empty: true, exists: false } });
       return;
     }
-    client.advancedSettings.forEach((setting) => {
+    client.advancedSettingClients.forEach((setting) => {
       if (currentSetting.key === setting.key) {
         fieldExists = true;
         return;
@@ -106,16 +118,16 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
     }
     setErrors({ ...errors, setting: { empty: false, exists: false } });
     handleChange({
-      target: { name: "advancedSettings", value: currentSetting },
+      target: { name: "advancedSettingClients", value: currentSetting }
     });
     setCurrentSetting({ key: "", value: "" });
   };
 
   const deleteSetting = (event) => {
-    let newSettings = client.advancedSettings.filter((setting) => {
+    let newSettings = client.advancedSettingClients.filter((setting) => {
       return setting.key !== event.target.value;
     });
-    setClient({ ...client, advancedSettings: newSettings });
+    setClient({ ...client, advancedSettingClients: newSettings });
   };
 
   const handleAttribute = () => {
@@ -124,7 +136,7 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
       setErrors({ ...errors, attribute: { empty: true, exists: false } });
       return;
     }
-    client.advancedSettings.forEach((att) => {
+    client.attributeMappings.forEach((att) => {
       if (currentAttribute.key === att.key) {
         fieldExists = true;
         return;
@@ -137,16 +149,16 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
     }
     setErrors({ ...errors, attribute: { empty: false, exists: false } });
     handleChange({
-      target: { name: "attribute", value: currentAttribute },
+      target: { name: "attributeMappings", value: currentAttribute }
     });
     setCurrentAttribute({ key: "", value: "" });
   };
 
   const deleteAttribute = (event) => {
-    let newAttribute = client.attribute.filter((att) => {
+    let newAttribute = client.attributeMappings.filter((att) => {
       return att.key !== event.target.value;
     });
-    setClient({ ...client, attribute: newAttribute });
+    setClient({ ...client, attributeMappings: newAttribute });
   };
 
   return (
@@ -189,13 +201,13 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
               {/* AdvancedSettings  */}
               <Card>
                 <Card.Header>
-                  <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                  <Accordion.Toggle as={Button} variant="link" eventKey="0">
                     <li className="font-weight-bold">
                       Default settings and flags
                     </li>
                   </Accordion.Toggle>
                 </Card.Header>
-                <Accordion.Collapse eventKey="1">
+                <Accordion.Collapse eventKey="0">
                   <Card.Body>
                     <Form.Group>
                       <InputGroup className="mb-3">
@@ -207,7 +219,7 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim(),
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
                           isInvalid={
@@ -222,7 +234,7 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
                           onChange={(event) =>
                             setCurrentSetting({
                               ...currentSetting,
-                              [event.target.name]: event.target.value.trim(),
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
                           isInvalid={
@@ -248,13 +260,13 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
                       </InputGroup>
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-center">
-                      {client.advancedSettings.length === 0 ? (
+                      {client.advancedSettingClients.length === 0 ? (
                         <Alert variant="danger">
                           No setting or flags added yet
                         </Alert>
                       ) : (
                         <ListGroup>
-                          {client.advancedSettings.map((setting) => (
+                          {client.advancedSettingClients.map((setting) => (
                             <ListGroup.Item
                               key={setting.key}
                               className="d-flex"
@@ -298,7 +310,7 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
                           onChange={(event) =>
                             setCurrentAttribute({
                               ...currentAttribute,
-                              [event.target.name]: event.target.value.trim(),
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
                           isInvalid={
@@ -313,7 +325,7 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
                           onChange={(event) =>
                             setCurrentAttribute({
                               ...currentAttribute,
-                              [event.target.name]: event.target.value.trim(),
+                              [event.target.name]: event.target.value.trim()
                             })
                           }
                           isInvalid={
@@ -339,13 +351,13 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
                       </InputGroup>
                     </Form.Group>
                     <Form.Group className="d-flex justify-content-center">
-                      {client.attribute.length === 0 ? (
+                      {client.attributeMappings.length === 0 ? (
                         <Alert variant="danger">
                           No setting or flags added yet
                         </Alert>
                       ) : (
                         <ListGroup>
-                          {client.attribute.map((att) => (
+                          {client.attributeMappings.map((att) => (
                             <ListGroup.Item key={att.key} className="d-flex">
                               <span className="p-2">
                                 {att.key} - {att.value}
@@ -381,10 +393,11 @@ function ClientUpdateModal({ id, editClient, getClient, currentClient }) {
 }
 
 const mapStateToProps = (state) => {
-  return { currentClient: state.client };
+  return { selectedClient: state.selectedClient };
 };
 
 export default connect(mapStateToProps, {
   editClient,
   getClient,
+  getClients
 })(ClientUpdateModal);

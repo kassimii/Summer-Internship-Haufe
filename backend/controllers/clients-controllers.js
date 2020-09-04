@@ -115,7 +115,11 @@ const getClientById = async (req, res) => {
     const latestStatus = await models.Status.findByPk(
       client.clientStatuses[0].status_id
     );
-    client.metadata = getAllMetadata(client.id);
+    client.metadata = await models.Metadata.findAll({
+      where: {
+        client_id: client.id
+      }
+    });
     const group = await models.Group.findByPk(client.group_id);
     var convertedClient = client.get({ plain: true });
     delete convertedClient.clientStatuses;
@@ -167,6 +171,7 @@ const createClient = async (req, res) => {
 };
 
 const updateClient = async (req, res) => {
+  console.log(req.body);
   const clientId = req.params.clientId;
   var incomingAdvancedSettings = req.body.advancedSettingClients;
   var incomingAttributesMapping = req.body.attributeMappings;
@@ -274,6 +279,8 @@ const updateClient = async (req, res) => {
     var convertedClient = client.get({ plain: true });
     delete convertedClient.clientStatuses;
     convertedClient.latestStatus = latestStatus;
+    const group = await models.Group.findByPk(client.group_id);
+    convertedClient.group = group;
     res.status(200).json({ client: convertedClient });
   } catch (err) {
     res.status(400).json({ error: err });
@@ -374,8 +381,6 @@ const getStatus = async (req, res) => {
   }
 };
 
-
-
 const addMetadata = async (req, res) => {
   const clientId = req.params.clientId;
   const metadata = req.body.content;
@@ -383,51 +388,35 @@ const addMetadata = async (req, res) => {
   try {
     console.log(req.file);
 
-    if(req.file == undefined){
-        return res.send('You must send a file');
+    if (req.file == undefined) {
+      return res.send("You must send a file");
     }
 
     const result = await models.Metadata.create({
-        client_id: clientId,
-        type: req.file.mimetype,
-        name : req.file.originalname,
-        content: req.file.path,
+      client_id: clientId,
+      type: req.file.mimetype,
+      name: req.file.originalname,
+      content: req.file.path
     });
 
-    return res.send('File has been uploaded');
-}catch(err){
+    return res.send("File has been uploaded");
+  } catch (err) {
     console.log(err);
     return res.status(404).json({ error: err });
-}  
-
-}
-
-const getAllMetadata = async (id) => {
- 
-  
-  try{
-  const result = await models.Metadata.findAll({
-    where: {
-      client_id: clientId
-    }
-  });
- return result;
-}catch(err){
-  return res.status(400).json({ error: err });
-}
-  
-
-  // res.status(400).json({ message: "got all metadata for client" });
+  }
 };
 
 const getMetadata = async (req, res) => {
   const dataName = req.params.name;
-  
-    res.setHeader("Access-Control-Allow-Origin", "*");
-		res.setHeader("Access-Control-Allow-Credentials", "true");
-		res.setHeader("Access-Control-Max-Age", "1800");
-		res.setHeader("Access-Control-Allow-Headers", "content-type");
-		res.setHeader("Access-Control-Allow-Methods","PUT, POST, GET, DELETE, PATCH, OPTIONS");
+
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Max-Age", "1800");
+  res.setHeader("Access-Control-Allow-Headers", "content-type");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "PUT, POST, GET, DELETE, PATCH, OPTIONS"
+  );
   res.download(`./uploads/${dataName}`);
   // res.status(400).json({ message: "got metadata by id for client " });
 };
@@ -448,7 +437,6 @@ exports.deleteClient = deleteClient;
 exports.addStatus = addStatus;
 exports.getStatus = getStatus;
 exports.addMetadata = addMetadata;
-exports.getAllMetadata = getAllMetadata;
 exports.getMetadata = getMetadata;
 exports.updateMetadata = updateMetadata;
 exports.deleteMetadata = deleteMetadata;

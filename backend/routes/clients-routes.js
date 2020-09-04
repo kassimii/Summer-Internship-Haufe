@@ -4,7 +4,6 @@ const router = express.Router();
 
 const upload = require("../middleware/uploadMetadatas");
 
-
 const {
   requireClientName,
   requireGroupId,
@@ -26,14 +25,13 @@ const {
   addStatus,
   getStatus,
   addMetadata,
-  getAllMetadata,
   getMetadata,
   updateMetadata,
   deleteMetadata
 } = require("../controllers/clients-controllers");
 const { isAuth } = require("../util");
 
-var cors = require('cors')
+var cors = require("cors");
 
 // GET CLIENTS
 router.get("/", isAuth, getClients);
@@ -109,7 +107,7 @@ router.get(
 router.post("/:clientId/metadata", upload.single("file"), isAuth, addMetadata);
 
 // GET METADATA FOR A CLIENT
-router.get("/:clientId/metadata", isAuth, getAllMetadata);
+// router.get("/:clientId/metadata", isAuth, getAllMetadata);
 
 // GET METADATA FOR A CLIENT BY METADATA NAME
 router.get("/metadata/:name", cors(), getMetadata);

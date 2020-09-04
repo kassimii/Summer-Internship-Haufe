@@ -6,7 +6,7 @@ import {
   uploadMetadata,
   getClientMetadata,
   addStatus,
-  getStatus,
+  getStatus
 } from "../redux/actions";
 import {
   Row,
@@ -18,7 +18,7 @@ import {
   Tab,
   ButtonGroup,
   Table,
-  Form,
+  Form
 } from "react-bootstrap";
 import ClientUpdateModal from "./ClientUpdateModal";
 
@@ -33,7 +33,7 @@ function ClientDetails({
   currentStatus,
   addStatus,
   getStatus,
-  uploadMetadata,
+  uploadMetadata
 }) {
   const { sendRequest } = useHttpClient();
 
@@ -297,7 +297,7 @@ const mapStateToProps = (state) => {
   return {
     selectedClient: state.selectedClient,
     userSignIn: state.userSignIn,
-    currentStatus: state.currentStatus,
+    currentStatus: state.currentStatus
   };
 };
 
@@ -305,5 +305,5 @@ export default connect(mapStateToProps, {
   getClient,
   uploadMetadata,
   addStatus,
-  getStatus,
+  getStatus
 })(ClientDetails);

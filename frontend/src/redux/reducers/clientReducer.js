@@ -4,6 +4,8 @@ export default (selectedClient = null, action) => {
   switch (action.type) {
     case actions.GET_CLIENT:
       return action.payload.client;
+    case actions.EDIT_CLIENT:
+      return action.payload.client;
     case actions.CLEAR_CLIENT:
       return null;
     case actions.UPLOAD_CLIENT_METADATA:
