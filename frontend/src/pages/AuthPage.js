@@ -30,7 +30,7 @@ function AuthPage(props) {
           </li> */}
         <div>
           <label className="m-2" htmlFor="jwtKey">
-            Email
+            JWT
           </label>
           <input
             className="m-2"

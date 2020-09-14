@@ -23,10 +23,9 @@ const initialErrors = {
 };
 
 function CreateClientModal({ id, createClient, getClients, user }) {
-  console.log(id);
   const initialClient = {
     name: "",
-    group_id: "337b9242-2aac-442e-a353-b1290f3eb1bc",
+    group_id: "",
     userId: user.id,
     advancedSettingClients: [],
     attributeMappings: []
@@ -81,6 +80,16 @@ function CreateClientModal({ id, createClient, getClients, user }) {
     if (target.name === "name") {
       setErrors({ ...errors, name: false });
       setClient({ ...client, [target.name]: target.value });
+    } else if (target.name === "group_id") {
+      let selectedGroupId = user.groups.find(
+        (group) => target.value === group.name
+      );
+      if (selectedGroupId) {
+        setClient({
+          ...client,
+          group_id: selectedGroupId.id
+        });
+      }
     } else {
       setClient({
         ...client,
@@ -160,6 +169,18 @@ function CreateClientModal({ id, createClient, getClients, user }) {
     setClient({ ...client, attributeMappings: newAttribute });
   };
 
+  const renderGroups = () => {
+    return user
+      ? user.groups.map((group) => {
+          return (
+            <option id={group.id} key={group.name}>
+              {group.name}
+            </option>
+          );
+        })
+      : null;
+  };
+
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
@@ -194,6 +215,27 @@ function CreateClientModal({ id, createClient, getClients, user }) {
               />
               <Form.Control.Feedback type="invalid">
                 Please provide a client name
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="font-weight-bold">
+                <div>Group</div>
+              </Form.Label>
+              <Form.Control
+                as="select"
+                className="my-1 mr-sm-2"
+                id="groupSelect"
+                name="group_id"
+                custom
+                onChange={handleChange}
+              >
+                <option id="default" value="">
+                  Filter by group...
+                </option>
+                {renderGroups()}
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Please select a group
               </Form.Control.Feedback>
             </Form.Group>
             <Accordion>
