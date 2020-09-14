@@ -25,6 +25,7 @@ export const getGroup = (id, sendRequest) => async (dispatch, getState) => {
     const response = await sendRequest(`/groups/${id}`, "GET", null, {
       Authorization: "Bearer " + userInfo.token
     });
+    console.log(response);
     dispatch({ type: actions.GET_GROUP, payload: response });
   } catch (err) {
     console.log(err);

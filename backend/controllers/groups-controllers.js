@@ -52,7 +52,17 @@ const deleteGroup = async (req, res) => {
 
 const getGroups = async (req, res) => {
   let groups;
+
   try {
+    let admin = await models.Admin.findAll({
+      where: { emailAddress: { [Op.eq]: req.user.email } }
+    });
+    if (admin) {
+      groups = await models.Group.findAll({
+        include: [models.Claim, models.AdvancedSetting]
+      });
+      return res.status(200).json({ groups });
+    }
     let accesibileClaims = await models.Claim.findAll({
       where: { claim: { [Op.in]: req.user.claims } }
     });
