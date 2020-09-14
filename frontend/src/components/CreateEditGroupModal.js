@@ -231,7 +231,7 @@ function CreateEditGroupModal({
             {/* ======= NAME INPUT COMPONENTS ======= */}
             <Form.Group controlId="name">
               <Form.Label className="font-weight-bold">
-                <li>Name</li>
+                <div>Name</div>
               </Form.Label>
               <Form.Control
                 onChange={handleChange}
@@ -250,7 +250,7 @@ function CreateEditGroupModal({
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                    <li className="font-weight-bold">Claims to group</li>
+                    <div className="font-weight-bold">Claims to group</div>
                   </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="0">
@@ -319,9 +319,9 @@ function CreateEditGroupModal({
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                    <li className="font-weight-bold">
+                    <div className="font-weight-bold">
                       Default settings and flags
-                    </li>
+                    </div>
                   </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
