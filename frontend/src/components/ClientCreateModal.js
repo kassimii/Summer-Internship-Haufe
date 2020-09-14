@@ -308,27 +308,23 @@ function CreateClientModal({ id, createClient, getClients, user }) {
                       ) : (
                         <ListGroup>
                           {client.advancedSettingClients.map((setting) => (
-                            <div
-                              className="row md-12 my-2 bg-light"
+                            <ListGroup.Item
                               key={setting.key}
+                              className="d-flex"
                             >
-                              <div className="col md-4 pt-2">{setting.key}</div>
-                              <span className="pt-2">-</span>
-                              <div className="col md-4 pt-2">
-                                {setting.value}
-                              </div>
-                              <div className="col md-4">
-                                <Button
-                                  variant="outline-danger"
-                                  className="ml-auto p-2"
-                                  size="sm"
-                                  value={setting.key}
-                                  onClick={deleteSetting}
-                                >
-                                  Delete
-                                </Button>
-                              </div>
-                            </div>
+                              <span className="p-2">
+                                {setting.key} - {setting.value}
+                              </span>
+                              <Button
+                                variant="outline-danger"
+                                className="ml-auto p-2"
+                                size="sm"
+                                value={setting.key}
+                                onClick={deleteSetting}
+                              >
+                                Delete
+                              </Button>
+                            </ListGroup.Item>
                           ))}
                         </ListGroup>
                       )}
@@ -405,22 +401,20 @@ function CreateClientModal({ id, createClient, getClients, user }) {
                       ) : (
                         <ListGroup>
                           {client.attributeMappings.map((att) => (
-                            <div class="row md-12 my-2 bg-light">
-                              <div class="col md-4 pt-2">{att.key}</div>
-                              <span class="pt-2">-</span>
-                              <div class="col md-4 pt-2">{att.value}</div>
-                              <div class="col md-4">
-                                <Button
-                                  variant="outline-danger"
-                                  className="ml-auto p-2"
-                                  size="sm"
-                                  value={att.key}
-                                  onClick={deleteAttribute}
-                                >
-                                  Delete
-                                </Button>
-                              </div>
-                            </div>
+                            <ListGroup.Item key={att.key} className="d-flex">
+                              <span className="p-2">
+                                {att.key} - {att.value}
+                              </span>
+                              <Button
+                                variant="outline-danger"
+                                className="ml-auto p-2"
+                                size="sm"
+                                value={att.key}
+                                onClick={deleteAttribute}
+                              >
+                                Delete
+                              </Button>
+                            </ListGroup.Item>
                           ))}
                         </ListGroup>
                       )}
