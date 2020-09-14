@@ -5,14 +5,17 @@ import TestRoute from "../components/TestRoute";
 import Header from "../components/Header";
 import GroupsPage from "../pages/GroupsPage";
 import GroupPage from "../pages/GroupPage";
+import ClientsPage from "../pages/ClientsPage";
+import AuthPage from "../pages/AuthPage";
+import ClientRequestCard from "../components/ClientRequestCard";
 
-const UserRoutes = () => {
+const UserRoutes = (props) => {
   return (
     <div>
       <Header />
       <Switch class="container vh-100 d-flex justify-content-center">
-        <Route path="/" exact component={GroupsPage} />
-        <Route path="/groups" exact component={TestRoute} />
+        <Route path="/" exact component={AuthPage} />
+        <Route path="/groups" exact component={GroupsPage} />
         <Route path="/groups/:groupId" exact component={GroupPage} />
         <Route path="/groups/new/:groupId" exact component={TestRoute} />
         <Route path="/groups/:groupId/:clientId" exact component={TestRoute} />
@@ -21,6 +24,8 @@ const UserRoutes = () => {
           exact
           component={TestRoute}
         />
+        <Route path="/clients" exact component={ClientsPage} />
+        <Route path="/clients/requests" exact component={ClientRequestCard} />
         <Redirect to="/" />
       </Switch>
     </div>

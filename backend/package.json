@@ -5,8 +5,8 @@
   "scripts": {
     "start": "nodemon --inspect index.js ",
     "migrate": "npx sequelize-cli db:migrate",
-    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npm run migrate",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=10000 ",
+    "migrate:reset": " sequelize db:migrate:undo:all && sequelize db:migrate && sequelize db:seed:all",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000 --detectOpenHandles",
     "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
     "coverage": "npm run pretest && jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
@@ -23,13 +23,15 @@
     "express-ejs-layouts": "^2.5.0",
     "express-validator": "^6.6.1",
     "fs": "0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.2",
     "mysql2": "^2.1.0",
     "path": "^0.12.7",
     "pg": "^8.3.0",
     "sequelize": "^6.3.4",
     "sequelize-cli": "^6.2.0",
     "sqlite3": "^5.0.0",
-    "uuid": "^8.2.0",
+    "uuid": "^8.3.0",
     "uuid-validate": "0.0.3"
   },
   "devDependencies": {

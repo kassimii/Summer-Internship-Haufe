@@ -1,9 +1,13 @@
-const { v4: uuidv4 } = require("uuid");
-
+const { Sequelize } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   const Claim = sequelize.define(
     "claim",
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        primaryKey: true
+      },
       group_id: {
         type: DataTypes.UUID
       },
@@ -17,12 +21,6 @@ module.exports = (sequelize, DataTypes) => {
       tableName: "group_claims"
     }
   );
-
-  Claim.beforeCreate((claim, _) => {
-    return (claim.id = uuidv4());
-  });
-
-  // GroupClaim.removeAttribute("id");
 
   return Claim;
 };
