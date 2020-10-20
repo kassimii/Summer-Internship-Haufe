@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: internship-backend
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    ingress.kubernetes.io/default-backend: custom-default-backend
+spec:
+  backend:
+    serviceName: custom-default-backend
+    servicePort: 80
+  rules:
+    - host: dev-radu.fs.haufe.io
+      http:
+        paths:
+          - backend:
+              serviceName: internship-backend
+              servicePort: 8080
+            path: /api

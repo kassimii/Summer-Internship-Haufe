@@ -1,0 +1,53 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: dev-radu
+
+resources:
+  - ../../base/internship-backend
+  - ../../base/internship-pg
+
+patchesStrategicMerge:
+
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: internship-backend
+  spec:
+      replicas: 1
+      template:
+        spec:
+          containers:
+          - name: internship-backend
+            imagePullPolicy: Always
+            env:
+              - name: NODE_ENV
+                value: dev
+          serviceAccountName: dev
+          nodeSelector:
+            environment: development
+
+
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: internship-pg
+  spec:
+      replicas: 1
+      template:
+        spec:
+          containers:
+          - name: internship-pg
+            imagePullPolicy: Always
+            env:
+              - name: POSTGRES_PASSWORD
+                value: "1234"
+              - name: POSTGRES_USER
+                value: postgres
+              - name: POSTGRES_DB
+                value: haufe
+          serviceAccountName: dev
+          nodeSelector:
+            environment: development

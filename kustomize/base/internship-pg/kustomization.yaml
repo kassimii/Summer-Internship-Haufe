@@ -1,0 +1,6 @@
+commonLabels:
+  app: internship-pg
+  tier: ui
+resources:
+- deployment.yaml
+- service.yaml

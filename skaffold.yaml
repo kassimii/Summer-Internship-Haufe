@@ -1,0 +1,31 @@
+# skaffold -f skaffold-6.5.yaml dev
+# For creating your own custom skaffold profiles we recommend making a copy of this
+# file to skaffold-dev.yaml (which is in .gitignore).
+# You can "mix and match" diferent services together by creating skaffold profiles
+# and by creating a new kustomize profile in kustomize/6.5/env
+
+# The default below for skaffold dev is to deploy all services in one shot:
+apiVersion: skaffold/v1
+kind: Config
+# Additional profiles
+profiles:
+  - name: internship-backend
+    build:
+      tagPolicy:
+        dateTime: {}
+      artifacts:
+        - image: internship-backend
+          context: backend
+    deploy:
+      kustomize:
+        path: ./kustomize/overlay/dev-radu
+  - name: internship-frontend
+    build:
+      tagPolicy:
+        dateTime: {}
+      artifacts:
+        - image: internship-frontend
+          context: frontend
+    deploy:
+      kustomize:
+        path: ./kustomize/overlay/6.5/forgerops-secrets

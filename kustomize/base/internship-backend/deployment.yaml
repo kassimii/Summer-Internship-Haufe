@@ -1,0 +1,28 @@
+# Copyright (c) 2016-2018 ForgeRock AS. All rights reserved
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internship-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: internship-backend
+  template:
+    metadata:
+      labels:
+        app: internship-backend
+    spec:
+      containers:
+        - image: internship-backend
+          name: internship-backend
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "10m"
+            limits:
+              memory: "300Mi"
+          ports:
+            - name: nodejs-port
+              containerPort: 8080
+          imagePullPolicy: Always

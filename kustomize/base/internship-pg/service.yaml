@@ -1,0 +1,16 @@
+# Copyright (c) 2016-2017 ForgeRock AS. Use of this source code is subject to the
+# Common Development and Distribution License (CDDL) that can be found in the LICENSE file
+apiVersion: v1
+kind: Service
+metadata:
+  name: internship-pg
+spec:
+  type: ClusterIP
+  ports:
+    - name: "internship-pg"
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    app: internship-pg
+
